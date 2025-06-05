@@ -1,8 +1,15 @@
 import psycopg2
-from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import arabic_reshaper
+from bidi.algorithm import get_display
 
-# Connexion à la base PostgreSQL
+# Enregistrer une police arabe compatible
+pdfmetrics.registerFont(TTFont('ArabicFont', 'Amiri-Regular.ttf'))  # Remplace si autre police
+
+# Connexion à PostgreSQL
 conn = psycopg2.connect(
     dbname="pfe_bdd",
     user="postgres",
@@ -12,50 +19,86 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 
-# Requête pour récupérer les données
+# Exécuter la requête
 cursor.execute("""
     SELECT
-        di.valeur_prix1,
-        di.contenu1,
-        tg.libile_gouv,
-        t.gouv_titre,
-        r.nom_redacteur,
-        r.prenom_redacteur,
-        acheteur.nom AS nom_acheteur,
-        acheteur.prenom AS prenom_acheteur,
-        vendeur.nom AS nom_vendeur,
-        vendeur.prenom AS prenom_vendeur
+    di.valeur_prix1,
+    di.contenu1,
+    r.nom_redacteur,
+    r.prenom_redacteur
     FROM dessin_immobiler1 di
-    JOIN T_gouv tg ON di.id_demande = tg.id_demande
-    JOIN titres t ON di.id_demande = t.id_demande
     JOIN redacteur r ON di.id_demande = r.id_demande
-    JOIN personnes_contracteurs acheteur 
-         ON di.id_demande = acheteur.id_demande AND acheteur.vendeur_acheteur = 'المشتري'
-    JOIN personnes_contracteurs vendeur 
-         ON di.id_demande = vendeur.id_demande AND vendeur.vendeur_acheteur = 'البائع';
+
+
 """)
 resultats = cursor.fetchall()
-# Génération du PDF
-chemin_pdf = r"C:\Users\erije\OneDrive\Desktop\contrat\rapport_utilisateurs.pdf"
+print("Nombre de lignes retournées :", len(resultats))
+print("Résultats récupérés :", resultats)
+# Préparer le PDF
+chemin_pdf = r"C:\Users\erije\OneDrive\Desktop\contrat\lettre_contrat.pdf"
 c = canvas.Canvas(chemin_pdf, pagesize=A4)
 width, height = A4
+c.setFont("ArabicFont", 14)
 
-c.setFont("Helvetica", 12)
-c.drawString(100, height - 40, "Liste des utilisateurs :")
 
-y = height - 80
-for row in resultats:
-    ligne = f"ID: {row[0]}, Nom: {row[1]}, Email: {row[2]}"
-    c.drawString(100, y, ligne)
+def draw_arabic_text(text, x, y):
+    reshaped = arabic_reshaper.reshape(text)
+    bidi_text = get_display(reshaped)
+    c.drawRightString(x, y, bidi_text)
+
+
+# En-tête
+y = height - 50
+entete = [
+    "الجمهورية التونسية",
+    "وزارة أملاك الدولة والشؤون العقارية",
+    "الديوان الوطني للملكية العقارية",
+    "*****"
+]
+for line in entete:
+    draw_arabic_text(line, width - 50, y)
     y -= 20
-    if y < 50:
-        c.showPage()
-        y = height - 50
 
+y -= 20
+draw_arabic_text("إلى السيد حافظ الملكية العقارية", width - 50, y)
+y -= 20
+draw_arabic_text("تحت إشراف السيد المدير العام للإدارة العامة للإعلامية و الإدارة الالكترونية", width - 50, y)
+
+# Saut de ligne
+y -= 40
+draw_arabic_text("الموضوع :", width - 50, y)
+y -= 30
+
+# Corps pour chaque enregistrement
+for row in resultats:
+    valeur_prix1 = f"{row[5]}"
+    contenu1 = f"{row[4]} "
+    nom_redacteur = f"{row[0]} "
+    prenom_redacteur = f"{row[1]} "
+
+    paragraphe = [
+        f"تحية طيبة و بعد ، أنا {nom_redacteur} محرر هذا العقد بالإدارة الجهوية للملكية العقارية بـ ،",
+        f"أشهد أن الأطراف الواردة هوياتهم أعلاه أمضوا أمامي و ضمن ذلك صلب هذا العقد تحت عدد : 12345",
+        "موضوع هذا العقد أن الأطراف المتعاقدة صرّحت بالحالة القانونية الواردة بها، و عدم وجود أي مانع قانوني للتحرير."
+    ]
+
+    for line in paragraphe:
+        draw_arabic_text(line, width - 50, y)
+        y -= 25
+        if y < 100:
+            c.showPage()
+            c.setFont("ArabicFont", 14)
+            y = height - 50
+
+    y -= 20
+    draw_arabic_text("الإمضاء", width - 50, y)
+    y -= 40
+
+# Sauvegarder le PDF
 c.save()
 
-# Fermeture de la connexion
+# Fermer la base
 cursor.close()
 conn.close()
 
-print(f"PDF généré avec succès : {chemin_pdf}")
+print(f"✅ PDF généré avec succès à : {chemin_pdf}")
