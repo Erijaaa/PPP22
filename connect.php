@@ -811,7 +811,7 @@ class ClsConnect {
         return null;
     }
 
-    
+
     public function insertContractData4($pdo) {
         if (isset($_POST['submit'])) {
             try {
@@ -887,37 +887,42 @@ class ClsConnect {
 
 
     public function nomTITRE($pdo) {
-        if (isset($_POST['submit'])) {
-            try {
-                $num_titre = $_POST['num_titre'] ?? null;
-                $gouv_titre = $_POST['gouv_titre'] ?? null;
-                $doub_titre = $_POST['doub_titre'] ?? null;
-                $etat_titre = $_POST['etat_titre'] ?? null;
+    if (isset($_POST['submit'])) {
+        try {
+            $num_titre = $_POST['num_titre'] ?? null;
+            $gouv_titre = $_POST['gouv_titre'] ?? null;
+            $doub_titre = $_POST['doub_titre'] ?? null;
+            $etat_titre = $_POST['etat_titre'] ?? null;
 
-                // Vérification qu'au moins un champ est rempli
-                if (!$valeur_contrat_dinar && !$prix_ecriture) {
-                    return "❌ ";
-                }
+            // Déclaration des variables nécessaires
+            $valeur_contrat_dinar = $_POST['valeur_contrat_dinar'] ?? null;
+            $prix_ecriture = $_POST['prix_ecriture'] ?? null;
 
-                $sql = "INSERT INTO titres(
-                    num_titre, gouv_titre, doub_titre, etat_titre)
-                    VALUES (num_titre, gouv_titre, doub_titre, etat_titre)";
-
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':num_titre' => $num_titre,
-                    ':gouv_titre' => $gouv_titre,
-                    ':doub_titre' => $doub_titre,
-                    ':etat_titre' => $etat_titre
-
-                ]);
-
-                return "✅ ";
-            } catch (PDOException $e) {
-                return "❌";
+            // Vérification qu'au moins un champ est rempli
+            if (!$valeur_contrat_dinar && !$prix_ecriture) {
+                return "❌ ";
             }
+
+            $sql = "INSERT INTO titres (
+                num_titre, gouv_titre, doub_titre, etat_titre
+            ) VALUES (
+                :num_titre, :gouv_titre, :doub_titre, :etat_titre
+            )";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':num_titre' => $num_titre,
+                ':gouv_titre' => $gouv_titre,
+                ':doub_titre' => $doub_titre,
+                ':etat_titre' => $etat_titre
+            ]);
+
+            return "✅ ";
+        } catch (PDOException $e) {
+            return "❌";
         }
-        return null;
+    }
+    return null;
     }
 
 
