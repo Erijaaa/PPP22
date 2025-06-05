@@ -55,7 +55,6 @@ body {
   flex: 1;
   margin-right: 250px;
   display: none;
-  /*min-height: 100vh;*/
   background: #fff;
   padding: 20px;
   position: absolute;
@@ -73,8 +72,6 @@ body {
   max-height: 100vh;
   max-width: 100vw;
 }
-
-/* Inclure les autres styles du fichier original pour les modals, tables, etc. */
 
 /* Top Bar Styles */
 .top-bar {
@@ -240,7 +237,6 @@ th {
 .btn-add {
   background-color: #28a745;
   color: white;
-  display: inline-block;
   margin: 10px 5px;
 }
 
@@ -1102,74 +1098,3 @@ input[type="text"] {
 .form-actions .btn-add:hover {
   background-color: #0a3d5c;
 }
-/* Réduction des marges au strict minimum */
-form,
-textarea,
-h2,
-.section-title,
-.top-bar,
-.main-content,
-.content-block,
-.form-container {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Espacement minimum entre les formulaires uniquement */
-.extraction-form {
-  margin-bottom: 20px;
-}
-
-/* Supprimer les marges des titres */
-h2.section-title {
-  margin: 0 !important;
-}
-
-/* Pour la première section, pas de marge du tout */
-.extraction-form:first-of-type {
-  margin-top: 0 !important;
-}
-
-/* Ajustement des formulaires */
-.main-content form {
-  margin: 0 !important;
-  padding: 10px !important;
-}
-
-/* Ajustement spécifique pour les trois dernières sections */
-#property-burdens-content,
-#contract-terms-content,
-#extraction-content {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-#property-burdens-content > *,
-#contract-terms-content > *,
-#extraction-content > * {
-  margin: 0 !important;
-}
-
-/* Styles spécifiques pour les sections de contenu */
-#general-data-content,
-#documents-content,
-#contract-parties-content,
-#contract-subject-content,
-#property-burdens-content,
-#contract-terms-content,
-#extraction-content {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-#general-data-content.active,
-#documents-content.active,
-#contract-parties-content.active,
-#contract-subject-content.active,
-#property-burdens-content.active,
-#contract-terms-content.active,
-#extraction-content.active {
-  opacity: 1;
-}
-

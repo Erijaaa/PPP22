@@ -704,8 +704,8 @@ echo $gouv;
                   </thead>
                   <tbody>
                     <tr>
-                      <td><input type="text" name="" required /></td>
-                      <td><input type="text" name="" required /></td>
+                      <td><input type="text" name="valeur_contrat_dinar" required /></td>
+                      <td><input type="text" name="prix_ecriture" required /></td>
                     </tr>
                   </tbody>
                 </table>

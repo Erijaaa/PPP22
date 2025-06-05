@@ -811,7 +811,7 @@ class ClsConnect {
         return null;
     }
 
-
+    
     public function insertContractData4($pdo) {
         if (isset($_POST['submit'])) {
             try {
@@ -834,7 +834,7 @@ class ClsConnect {
                     ':prix_ecriture' => $prix_ecriture
                 ]);
 
-                return "✅ ";
+                return "✅";
             } catch (PDOException $e) {
                 return "❌";
             }
