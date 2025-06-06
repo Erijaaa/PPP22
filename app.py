@@ -22,15 +22,17 @@ cursor = conn.cursor()
 # Exécuter la requête
 cursor.execute("""
     SELECT
-    di.valeur_prix1,
-    di.contenu1,
-    r.nom_redacteur,
-    r.prenom_redacteur
-    FROM dessin_immobiler1 di
-    JOIN redacteur r ON di.id_demande = r.id_demande
-
-
+        di.valeur_prix1,
+        di.contenu1,
+        di.detail_general,
+        tg.libile_gouv,
+        r.nom_redacteur,
+        r.prenom_redacteur
+    FROM "dessin_immobiler1" di
+    JOIN "T_gouv" tg ON di.id_demande = tg.id_demande
+    JOIN "redacteur" r ON di.id_demande = r.id_demande
 """)
+
 resultats = cursor.fetchall()
 print("Nombre de lignes retournées :", len(resultats))
 print("Résultats récupérés :", resultats)
@@ -72,13 +74,15 @@ y -= 30
 # Corps pour chaque enregistrement
 for row in resultats:
     valeur_prix1 = f"{row[5]}"
-    contenu1 = f"{row[4]} "
-    nom_redacteur = f"{row[0]} "
-    prenom_redacteur = f"{row[1]} "
+    contenu1 = f"{row[4]}"
+    getail_general =f"{row[3]}"
+    libile_gouv = f"{row[1]}"
+    nom_redacteur = f"{row[0]}"
+    prenom_redacteur = f"{row[1]}"
 
     paragraphe = [
-        f"تحية طيبة و بعد ، أنا {nom_redacteur} محرر هذا العقد بالإدارة الجهوية للملكية العقارية بـ ،",
-        f"أشهد أن الأطراف الواردة هوياتهم أعلاه أمضوا أمامي و ضمن ذلك صلب هذا العقد تحت عدد : 12345",
+        f"تحية طيبة و بعد ، أنا {nom_redacteur} {prenom_redacteur} محرر هذا العقد بالإدارة الجهوية للملكية العقارية بـ {libile_gouv}،",
+        f"أشهد أن الأطراف الواردة هوياتهم أعلاه أمضوا أمامي و ضمن ذلك صلب هذا العقد تحت عدد : {valeur_prix1}",
         "موضوع هذا العقد أن الأطراف المتعاقدة صرّحت بالحالة القانونية الواردة بها، و عدم وجود أي مانع قانوني للتحرير."
     ]
 
@@ -89,7 +93,6 @@ for row in resultats:
             c.showPage()
             c.setFont("ArabicFont", 14)
             y = height - 50
-
     y -= 20
     draw_arabic_text("الإمضاء", width - 50, y)
     y -= 40
