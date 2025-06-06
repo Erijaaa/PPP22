@@ -47,11 +47,16 @@ $sujetContrat = $db->getSubject($id_demande);
 $message = $db->insertContractData($pdo);
 echo $message;
 
+
+
 $message2 = $db->insertContractData2($pdo);
 echo $message2;
 
 $message3 = $db->insertContractData3($pdo);
 echo $message3;
+
+$p= $db->validerPrix($pdo);
+echo $p;
 
 $message4 = $db->insertContractData4($pdo);
 echo $message4;
@@ -65,7 +70,20 @@ echo $idPER;
 $revVal = $db->validationRevision($pdo);
 echo $revVal ;
 
-$prix = $db->validerPrix($pdo);
+// Traitement des données avant l'appel à validerPrix
+$valeur_dinar3 = '';
+$pourcent3 = '';
+$montant_dinar3 = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['valeur_dinar3']) && isset($_POST['pourcent3']) && isset($_POST['montant_dinar3'])) {
+        $valeur_dinar3 = is_array($_POST['valeur_dinar3']) ? $_POST['valeur_dinar3'][0] : $_POST['valeur_dinar3'];
+        $pourcent3 = is_array($_POST['pourcent3']) ? $_POST['pourcent3'][0] : $_POST['pourcent3'];
+        $montant_dinar3 = is_array($_POST['montant_dinar3']) ? $_POST['montant_dinar3'][0] : $_POST['montant_dinar3'];
+    }
+}
+
+$prix = $db->validerPrix($pdo, $valeur_dinar3, $pourcent3, $montant_dinar3);
 echo $prix;
 
 $perc1 = $db->perception1($pdo);
@@ -73,8 +91,6 @@ echo $perc1;
 
 $perc4 = $db->perception4($pdo);
 echo $perc4;
-
-
 
 $titre = $db->nomTITRE($pdo);
 echo $titre;
@@ -555,7 +571,7 @@ echo $gouv;
                     </div> 
                   </td>
                   <td>
-                  <select name="vendeur_acheteur" id="vendeur_acheteur" required>
+                  <select name="vendeur_acheteur[]" id="vendeur_acheteur" required>
                         <option value="vendeur_acheteur">صفة المتعاقد ..</div></option>
                         <option value="vendeur">البائع</option>
                         <option value="acheteur">المشتري</option>
@@ -607,14 +623,14 @@ echo $gouv;
                   </thead>
                   <tbody>
                       <tr>
-                          <td><input type="text" name="nom_droit1" required /></td>
-                          <td><input type="text" name="sujet_contrat1" required /></td>
-                          <td><input type="text" name="unite1" required /></td>
-                          <td><input type="number" name="detail_general" required /></td>
-                          <td><input type="text" name="contenu1" required /></td>
-                          <td><input type="text" name="valeur_prix1" required /></td>
-                          <td><input type="text" name="dure1" required /></td>
-                          <td><input type="text" name="surplus1" required /></td>
+                          <td><input type="text" name="nom_droit1[]" required /></td>
+                          <td><input type="text" name="sujet_contrat1[]" required /></td>
+                          <td><input type="text" name="unite1[]" required /></td>
+                          <td><input type="number" name="detail_general[]" required /></td>
+                          <td><input type="text" name="contenu1[]" required /></td>
+                          <td><input type="text" name="valeur_prix1[]" required /></td>
+                          <td><input type="text" name="dure1[]" required /></td>
+                          <td><input type="text" name="surplus1[]" required /></td>
                       </tr>
                   </tbody>
               </table>
@@ -640,11 +656,11 @@ echo $gouv;
                 </thead>
                 <tbody>
                   <tr>
-                    <td><input type="text" name="date_inscri2"></td>
-                    <td><input type="text" name="lieu_inscri2"></td>
-                    <td><input type="text" name="doc2"></td>
-                    <td><input type="text" name="num_inscri2"></td>
-                    <td><input type="text" name="num_succursale2"></td>
+                    <td><input type="text" name="date_inscri2[]"></td>
+                    <td><input type="text" name="lieu_inscri2[]"></td>
+                    <td><input type="text" name="doc2[]"></td>
+                    <td><input type="text" name="num_inscri2[]"></td>
+                    <td><input type="text" name="num_succursale2[]"></td>
                   </tr>
                 </tbody>
               </table>
@@ -672,8 +688,8 @@ echo $gouv;
                   </thead>
                   <tbody>
                     <tr>
-                    <td><input type="text" name="regime_finance_couple3" required /></td>
-                    <td><input type="text" name="remarques3" required /></td>
+                    <td><input type="text" name="regime_finance_couple3[]" required /></td>
+                    <td><input type="text" name="remarques3[]" required /></td>
                     
                     </tr>
                   </tbody>
@@ -703,8 +719,8 @@ echo $gouv;
                   </thead>
                   <tbody>
                     <tr>
-                      <td><input type="text" name="" required /></td>
-                      <td><input type="text" name="" required /></td>
+                      <td><input type="text" name="valeur_contrat_dinar[]" required /></td>
+                      <td><input type="text" name="prix_ecriture[]" required /></td>
                     </tr>
                   </tbody>
                 </table>
@@ -726,8 +742,8 @@ echo $gouv;
                   </thead>
                   <tbody>
                     <tr>
-                      <td><input type="text" name="libile_gouv" required /></td>
-                      <td><input type="text" name="gouv_titre" required /></td>
+                      <td><input type="text" name="libile_gouv[]" required /></td>
+                      <td><input type="text" name="gouv_titre[]" required /></td>
                     </tr>
                   </tbody>
                 </table>
@@ -794,6 +810,9 @@ echo $gouv;
         
         <!-- Signatures Form -->
         <form method="POST" action="" class="extraction-form">
+          <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+          <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
+          
           <table class="documents-table">
             <thead>
               <tr>
@@ -807,12 +826,12 @@ echo $gouv;
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="prenom_personne" required/></td>
-                <td><input type="text" name="prenom_pere" required/></td>
-                <td><input type="text" name="prenom_grandpere" required/></td>
-                <td><input type="text" name="nom_personne" required/></td>
-                <td><input type="text" name="statut" required/></td>
-                <td><input type="text" name="signature" required/></td>
+                <td><input type="text" name="prenom_personne[]" required/></td>
+                <td><input type="text" name="prenom_pere[]" required/></td>
+                <td><input type="text" name="prenom_grandpere[]" required/></td>
+                <td><input type="text" name="nom_personne[]" required/></td>
+                <td><input type="text" name="statut[]" required/></td>
+                <td><input type="text" name="signature[]" required/></td>
               </tr>
             </tbody>
           </table>
@@ -825,6 +844,9 @@ echo $gouv;
 
         <!-- Fees Form -->
         <form method="POST" action="" class="extraction-form">
+          <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+          <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
+          
           <h3>معاليم التحرير و مراجع الاستخلاص</h3>
           <table class="documents-table">
             <thead>
@@ -844,7 +866,7 @@ echo $gouv;
                 <td><input type="text" name="montant_obligatoire1" required/></td>
                 <td><input type="text" name="montant_paye1" required/></td>
                 <td><input type="text" name="num_recu1" required/></td>
-                <td><input type="text" name="date_payement1" required/></td>
+                <td><input type="date" name="date_payement1" required/></td>
               </tr>
             </tbody>
           </table>
@@ -857,6 +879,9 @@ echo $gouv;
 
         <!-- Total Form -->
         <form method="POST" action="" class="extraction-form">
+          <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+          <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
+          
           <h3>المجموع</h3>
           <table class="documents-table">
             <thead>
@@ -867,8 +892,8 @@ echo $gouv;
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="somme_prix_obligatoire" required/></td>
-                <td><input type="text" name="somme_prix_paye" required/></td>
+                <td><input type="text" name="somme_prix_obligatoire[]" required/></td>
+                <td><input type="text" name="somme_prix_paye[]" required/></td>
               </tr>
             </tbody>
           </table>
@@ -881,6 +906,9 @@ echo $gouv;
 
         <!-- Contract Confirmation Form -->
         <form method="POST" action="" class="extraction-form">
+          <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+          <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
+          
           <h3>البيانات المتعلقة بتأكيد العقد</h3>
           <table class="documents-table">
             <thead>
@@ -894,11 +922,11 @@ echo $gouv;
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="statut2" required/></td>
-                <td><input type="text" name="redacteur2" required/></td>
-                <td><input type="text" name="redaction2" required/></td>
-                <td><input type="text" name="revision2" required/></td>
-                <td><input type="text" name="validationFinal2" required/></td>
+                <td><input type="text" name="statut2[]" required/></td>
+                <td><input type="text" name="redacteur2[]" required/></td>
+                <td><input type="text" name="redaction2[]" required/></td>
+                <td><input type="text" name="revision2[]" required/></td>
+                <td><input type="text" name="validationFinal2[]" required/></td>
               </tr>
             </tbody>
           </table>
@@ -911,6 +939,9 @@ echo $gouv;
 
         <!-- Registration Form -->
         <form method="POST" action="" class="extraction-form">
+          <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+          <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
+          
           <h3>البيانات المتعلقة بتسجيل العقد لدى القباضة المالية و استخلاص معلوم ادارة الملكية العقارية</h3>
           <table class="documents-table">
             <thead>
@@ -923,10 +954,10 @@ echo $gouv;
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="valeur_dinar3" required/></td>
-                <td><input type="text" name="pourcent3" required/></td>
-                <td><input type="text" name="montant_dinar3" required/></td>
-                <td><input type="text" /></td>
+                <td><input type="text" name="valeur_dinar3[]" required/></td>
+                <td><input type="text" name="pourcent3[]" required/></td>
+                <td><input type="text" name="montant_dinar3[]" required/></td>
+                <td><input type="text" name="signature3[]" required/></td>
               </tr>
             </tbody>
           </table>
@@ -939,6 +970,9 @@ echo $gouv;
 
         <!-- Property Services Form -->
         <form method="POST" action="" class="extraction-form">
+          <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+          <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
+          
           <h3>البيانات المتعلقة بتصفية معاليم الخدمات الراجعة لادارة الملكية العقارية</h3>
           <table class="documents-table">
             <thead>

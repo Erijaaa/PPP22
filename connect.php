@@ -17,17 +17,68 @@ class ClsConnect {
             $this->pdo = new PDO($dsn, $this->user, $this->pass);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            
+            // Test de la connexion
+            $this->pdo->query('SELECT 1');
+            error_log("Connexion à la base de données réussie");
         } catch(PDOException $e) {
-            echo "Erreur de connexion : " . $e->getMessage();
-            die();
+            error_log("Erreur de connexion à la base de données : " . $e->getMessage());
+            throw new Exception("Erreur de connexion à la base de données : " . $e->getMessage());
         }
     }
 
     public function getConnection() {
+        if (!$this->pdo) {
+            throw new Exception("Pas de connexion à la base de données");
+        }
         return $this->pdo;
     }
 
+    // Méthode pour exécuter une requête avec gestion des erreurs
+    public function executeQuery($sql, $params = []) {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            if (!$result) {
+                error_log("Erreur d'exécution de la requête : " . implode(", ", $stmt->errorInfo()));
+                return false;
+            }
+            return $stmt;
+        } catch (PDOException $e) {
+            error_log("Erreur SQL : " . $e->getMessage());
+            throw $e;
+        }
+    }
 
+    // Méthode pour démarrer une transaction
+    public function beginTransaction() {
+        try {
+            return $this->pdo->beginTransaction();
+        } catch (PDOException $e) {
+            error_log("Erreur lors du démarrage de la transaction : " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    // Méthode pour valider une transaction
+    public function commit() {
+        try {
+            return $this->pdo->commit();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la validation de la transaction : " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    // Méthode pour annuler une transaction
+    public function rollBack() {
+        try {
+            return $this->pdo->rollBack();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de l'annulation de la transaction : " . $e->getMessage());
+            throw $e;
+        }
+    }
 
     public function verifierUtilisateur($cin, $password){
         if (empty($cin) || empty($password)) {
@@ -639,21 +690,6 @@ class ClsConnect {
         }
     }
 
-    public function beginTransaction() {
-        return $this->pdo->beginTransaction();
-    }
-
-    public function commit() {
-        return $this->pdo->commit();
-    }
-
-    public function rollBack() {
-        return $this->pdo->rollBack();
-    }
-
-
-
-
     //القسم الرابع
     //وثيقة الهوية
     public function personneContratc($pdo) {
@@ -1040,19 +1076,19 @@ class ClsConnect {
     public function idPersonnes($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $prenom_personne = $_POST['prenom_personne'] ?? null;
-                $prenom_pere = $_POST['prenom_pere'] ?? null;
-                $prenom_grandpere = $_POST['prenom_grandpere'] ?? null;
-                $nom_personne = $_POST['nom_personne'] ?? null;
-                $statut = $_POST['statut'] ?? null;
-                $signature = $_POST['signature'] ?? null;
+                // Vérifier l'existence des clés et convertir les tableaux en valeurs simples
+                $prenom_personne = isset($_POST['prenom_personne']) ? (is_array($_POST['prenom_personne']) ? $_POST['prenom_personne'][0] : $_POST['prenom_personne']) : null;
+                $prenom_pere = isset($_POST['prenom_pere']) ? (is_array($_POST['prenom_pere']) ? $_POST['prenom_pere'][0] : $_POST['prenom_pere']) : null;
+                $prenom_grandpere = isset($_POST['prenom_grandpere']) ? (is_array($_POST['prenom_grandpere']) ? $_POST['prenom_grandpere'][0] : $_POST['prenom_grandpere']) : null;
+                $nom_personne = isset($_POST['nom_personne']) ? (is_array($_POST['nom_personne']) ? $_POST['nom_personne'][0] : $_POST['nom_personne']) : null;
+                $statut = isset($_POST['statut']) ? (is_array($_POST['statut']) ? $_POST['statut'][0] : $_POST['statut']) : null;
+                $signature = isset($_POST['signature']) ? (is_array($_POST['signature']) ? $_POST['signature'][0] : $_POST['signature']) : null;
     
                 // Vérification que le champ n'est pas vide
                 if (!$statut) {
                     return "❌ ";
                 }
     
-                // Corrected SQL query with placeholders
                 $sql = "INSERT INTO IDpersonnes (
                     prenom_personne, prenom_pere, prenom_grandpere, nom_personne, statut, signature
                 ) VALUES (
@@ -1123,33 +1159,44 @@ class ClsConnect {
     public function perception4($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $nom4 = $_POST['nom4'] ?? null;
-                $valeur_dinar4 = $_POST['valeur_dinar4'] ?? null;
-                $pourcent4 = $_POST['pourcent4'] ?? null;
-                $montant_dinar4 = $_POST['montant_dinar4'] ?? null;
-                
+                // Récupération des valeurs et conversion en scalaires
+                $nom4 = isset($_POST['nom4']) ? (is_array($_POST['nom4']) ? $_POST['nom4'][0] : $_POST['nom4']) : null;
+                $valeur_dinar4 = isset($_POST['valeur_dinar4']) ? (is_array($_POST['valeur_dinar4']) ? $_POST['valeur_dinar4'][0] : $_POST['valeur_dinar4']) : null;
+                $pourcent4 = isset($_POST['pourcent4']) ? (is_array($_POST['pourcent4']) ? $_POST['pourcent4'][0] : $_POST['pourcent4']) : null;
+                $montant_dinar4 = isset($_POST['montant_dinar4']) ? (is_array($_POST['montant_dinar4']) ? $_POST['montant_dinar4'][0] : $_POST['montant_dinar4']) : null;
 
                 // Vérification que le champ n'est pas vide
                 if (!$nom4) {
                     return "❌ ";
                 }
 
+                // Log des valeurs pour le débogage
+                error_log("Valeurs reçues : " . print_r([
+                    'nom4' => $nom4,
+                    'valeur_dinar4' => $valeur_dinar4,
+                    'pourcent4' => $pourcent4,
+                    'montant_dinar4' => $montant_dinar4
+                ], true));
+
                 $sql = "INSERT INTO perception4(
                     nom4, valeur_dinar4, pourcent4, montant_dinar4)
-                    VALUES (nom4, valeur_dinar4, pourcent4, montant_dinar4)";
+                    VALUES (:nom4, :valeur_dinar4, :pourcent4, :montant_dinar4)";
 
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
+                $result = $stmt->execute([
                     ':nom4' => $nom4,
                     ':valeur_dinar4' => $valeur_dinar4,
                     ':pourcent4' => $pourcent4,
                     ':montant_dinar4' => $montant_dinar4
-                    
-
                 ]);
+
+                if (!$result) {
+                    throw new Exception("Erreur lors de l'insertion des données");
+                }
 
                 return "✅";
             } catch (PDOException $e) {
+                error_log("Erreur dans perception4 : " . $e->getMessage());
                 return "❌";
             }
         }
@@ -1168,69 +1215,115 @@ class ClsConnect {
     public function validerPrix($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $valeur_dinar3 = $_POST['valeur_dinar3'] ?? null;
-                $pourcent3 = $_POST['pourcent3'] ?? null;
-                $montant_dinar3 = $_POST['montant_dinar3'] ?? null;
-                
-
-                // Vérification que le champ n'est pas vide
-                if (!$montant_dinar3) {
-                    return "❌";
+                // Check if inputs are arrays and convert single values to arrays if necessary
+                $valeur_dinar3_array = isset($_POST['valeur_dinar3']) ? (is_array($_POST['valeur_dinar3']) ? $_POST['valeur_dinar3'] : [$_POST['valeur_dinar3']]) : [];
+                $pourcent3_array = isset($_POST['pourcent3']) ? (is_array($_POST['pourcent3']) ? $_POST['pourcent3'] : [$_POST['pourcent3']]) : [];
+                $montant_dinar3_array = isset($_POST['montant_dinar3']) ? (is_array($_POST['montant_dinar3']) ? $_POST['montant_dinar3'] : [$_POST['montant_dinar3']]) : [];
+                $signature3_array = isset($_POST['signature3']) ? (is_array($_POST['signature3']) ? $_POST['signature3'] : [$_POST['signature3']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($montant_dinar3_array) || !isset($montant_dinar3_array[0]) || empty($montant_dinar3_array[0])) {
+                    return "❌ No valid amount provided";
                 }
-
-                $sql = "INSERT INTO perecption3(
-                    valeur_dinar3, pourcent3, montant_dinar3)
-                    VALUES (valeur_dinar3, pourcent3, montant_dinar3)";
-
+    
+                $sql = "INSERT INTO perecption3 (valeur_dinar3, pourcent3, montant_dinar3, signature3)
+                        VALUES (:valeur_dinar3, :pourcent3, :montant_dinar3, :signature3)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':valeur_dinar3' => $valeur_dinar3,
-                    ':pourcent3' => $pourcent3,
-                    ':montant_dinar3' => $montant_dinar3
-                ]);
-
-                return "✅";
+    
+                // Process each row
+                $success = true;
+                foreach ($montant_dinar3_array as $index => $montant_dinar3) {
+                    // Ensure scalar values
+                    $valeur_dinar3 = isset($valeur_dinar3_array[$index]) && is_scalar($valeur_dinar3_array[$index]) ? $valeur_dinar3_array[$index] : null;
+                    $pourcent3 = isset($pourcent3_array[$index]) && is_scalar($pourcent3_array[$index]) ? $pourcent3_array[$index] : null;
+                    $montant_dinar3 = is_scalar($montant_dinar3) ? $montant_dinar3 : null;
+                    $signature3 = isset($signature3_array[$index]) && is_scalar($signature3_array[$index]) ? $signature3_array[$index] : null;
+    
+                    // Skip if no valid montant_dinar3 for this row
+                    if (empty($montant_dinar3)) {
+                        error_log("Skipping row $index: montant_dinar3 is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':valeur_dinar3' => $valeur_dinar3,
+                        ':pourcent3' => $pourcent3,
+                        ':montant_dinar3' => $montant_dinar3,
+                        ':signature3' => $signature3
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌";
+                error_log("Erreur dans validerPrix : " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
     }
 
-
     //perception2
     public function validationRevision($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $statut2 = $_POST['statut2'] ?? null;
-                $redacteur2 = $_POST['redacteur2'] ?? null;
-                $redaction2 = $_POST['redaction2'] ?? null;
-                $revision2 = $_POST['revision2'] ?? null;
-                $validationFinal2 = $_POST['validationFinal2'] ?? null;
-                
-
-                // Vérification que le champ n'est pas vide
-                if (!$statut2) {
-                    return "❌";
+                // Check if inputs are arrays and iterate over them
+                $statut2_array = isset($_POST['statut2']) ? (is_array($_POST['statut2']) ? $_POST['statut2'] : [$_POST['statut2']]) : [];
+                $redacteur2_array = isset($_POST['redacteur2']) ? (is_array($_POST['redacteur2']) ? $_POST['redacteur2'] : [$_POST['redacteur2']]) : [];
+                $redaction2_array = isset($_POST['redaction2']) ? (is_array($_POST['redaction2']) ? $_POST['redaction2'] : [$_POST['redaction2']]) : [];
+                $revision2_array = isset($_POST['revision2']) ? (is_array($_POST['revision2']) ? $_POST['revision2'] : [$_POST['revision2']]) : [];
+                $validation_final2_array = isset($_POST['validation_final2']) ? (is_array($_POST['validation_final2']) ? $_POST['validation_final2'] : [$_POST['validation_final2']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($statut2_array) || !isset($statut2_array[0]) || empty(trim($statut2_array[0]))) {
+                    error_log("Validation failed: No valid statut2 provided");
+                    return "❌ No valid status provided";
                 }
-
-                $sql = "INSERT INTO perception2(
-                    statut2, redacteur2, redaction2, revision2, validationFinal2)
-                    VALUES (statut2, redacteur2, redaction2, revision2, validationFinal2)";
-
+    
+                $sql = "INSERT INTO perception2 (statut2, redacteur2, redaction2, revision2, validation_final2)
+                        VALUES (:statut2, :redacteur2, :redaction2, :revision2, :validation_final2)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':statut2' => $statut2,
-                    ':redacteur2' => $redacteur2,
-                    ':redaction2' => $redaction2,
-                    ':revision2' => $revision2,
-                    ':validationFinal2' => $validationFinal2
-
-                ]);
-
-                return "✅";
+    
+                // Process each row
+                $success = true;
+                foreach ($statut2_array as $index => $statut2) {
+                    // Ensure scalar values
+                    $statut2 = is_scalar($statut2) ? trim($statut2) : null;
+                    $redacteur2 = isset($redacteur2_array[$index]) && is_scalar($redacteur2_array[$index]) ? trim($redacteur2_array[$index]) : null;
+                    $redaction2 = isset($redaction2_array[$index]) && is_scalar($redaction2_array[$index]) ? trim($redaction2_array[$index]) : null;
+                    $revision2 = isset($revision2_array[$index]) && is_scalar($revision2_array[$index]) ? trim($revision2_array[$index]) : null;
+                    $validation_final2 = isset($validation_final2_array[$index]) && is_scalar($validation_final2_array[$index]) ? trim($validation_final2_array[$index]) : null;
+    
+                    // Skip if no valid data for this row
+                    if (empty($statut2)) {
+                        error_log("Skipping row $index: statut2 is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':statut2' => $statut2,
+                        ':redacteur2' => $redacteur2,
+                        ':redaction2' => $redaction2,
+                        ':revision2' => $revision2,
+                        ':validation_final2' => $validation_final2
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌";
+                error_log("Erreur dans validationRevision: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
@@ -1287,7 +1380,7 @@ class ClsConnect {
         try {
             // Chemin vers l'interpréteur Python et le script
             $python = "python";  // ou "python3" selon votre système
-            $script = __DIR__ . "/PDF.py";
+            $script = _DIR_ . "/PDF.py";
             
             // Échapper les arguments pour la sécurité
             $id_demande = escapeshellarg($id_demande);

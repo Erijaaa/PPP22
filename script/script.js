@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Mettre à jour le numéro de ligne si nécessaire
+    // Mettre à jour le numéro de ligne
     const firstCell = newRow.querySelector("td:first-child");
     if (firstCell && !isNaN(firstCell.textContent)) {
       const rowCount = tbody.querySelectorAll("tr").length;
@@ -38,17 +38,22 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!row) return;
 
     const tbody = row.parentElement;
-    if (!tbody || tbody.querySelectorAll("tr").length <= 1) return;
+    if (!tbody || tbody.querySelectorAll("tr").length <= 1) {
+      alert("لا يمكن حذف السطر الأخير"); // Ne peut pas supprimer la dernière ligne
+      return;
+    }
 
-    row.remove();
-
-    // Mettre à jour les numéros de ligne
-    tbody.querySelectorAll("tr").forEach((row, index) => {
-      const firstCell = row.querySelector("td:first-child");
-      if (firstCell && !isNaN(firstCell.textContent)) {
-        firstCell.textContent = index + 1;
-      }
-    });
+    if (confirm("هل أنت متأكد من حذف هذا السطر؟")) {
+      // Confirmation de suppression
+      row.remove();
+      // Mettre à jour les numéros de ligne
+      tbody.querySelectorAll("tr").forEach((row, index) => {
+        const firstCell = row.querySelector("td:first-child");
+        if (firstCell && !isNaN(firstCell.textContent)) {
+          firstCell.textContent = index + 1;
+        }
+      });
+    }
   }
 
   // Fonction pour sauvegarder les données d'un formulaire
@@ -73,9 +78,42 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Fonction pour sauvegarder les données du tableau
+  function saveTableData(form) {
+    const formData = new FormData(form);
+
+    // Afficher un indicateur de chargement
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.textContent = "جاري الحفظ...";
+    submitButton.disabled = true;
+
+    fetch(form.action, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.text())
+      .then((result) => {
+        if (result.includes("success")) {
+          alert("تم الحفظ بنجاح"); // Sauvegarde réussie
+        } else {
+          alert("حدث خطأ أثناء الحفظ"); // Erreur lors de la sauvegarde
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("حدث خطأ أثناء الحفظ"); // Erreur lors de la sauvegarde
+      })
+      .finally(() => {
+        // Restaurer le bouton
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+      });
+  }
+
   // Initialisation quand le DOM est chargé
   document.addEventListener("DOMContentLoaded", function () {
-    // Gestionnaire pour les boutons d'ajout de ligne
+    // Gestionnaire pour les boutons d'ajout
     document.querySelectorAll(".btn-add").forEach((button) => {
       button.addEventListener("click", function (e) {
         e.preventDefault();
@@ -94,11 +132,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // Gestionnaire pour la soumission des formulaires
+    // Gestionnaire pour les formulaires
     document.querySelectorAll("form").forEach((form) => {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        saveForm(this);
+        saveTableData(this);
       });
     });
 
@@ -798,7 +836,7 @@ function saveTableData(form) {
 }
 
 // Initialisation des gestionnaires d'événements
-document.addEventListener("DOMContentLoaded", function () { 
+document.addEventListener("DOMContentLoaded", function () {
   // Gestionnaire pour les boutons d'ajout
   document.querySelectorAll(".btn-add").forEach((button) => {
     button.addEventListener("click", function () {

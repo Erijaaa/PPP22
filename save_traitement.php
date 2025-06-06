@@ -11,19 +11,35 @@ class TraitementManager {
     private $pdo;
 
     public function __construct() {
-        $this->db = new ClsConnect();
-        $this->pdo = $this->db->getConnection();
+        try {
+            $this->db = new ClsConnect();
+            $this->pdo = $this->db->getConnection();
+        } catch (Exception $e) {
+            error_log("Erreur de connexion : " . $e->getMessage());
+            throw new Exception("Erreur de connexion à la base de données");
+        }
     }
 
     // Sauvegarder les données générales
     public function saveGeneralData($data) {
         try {
+            $this->db->beginTransaction();
+
             $sql = "INSERT INTO donnees_generales (id_demande, num_contrat, sujet_contrat, nom_deposant, prenom_deposant) 
                     VALUES (:id_demande, :num_contrat, :sujet_contrat, :nom_deposant, :prenom_deposant)";
             
             $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute($data);
-        } catch (PDOException $e) {
+            $result = $stmt->execute($data);
+
+            if (!$result) {
+                throw new Exception("Erreur lors de l'insertion des données générales");
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Erreur dans saveGeneralData : " . $e->getMessage());
             return false;
         }
     }
@@ -31,15 +47,25 @@ class TraitementManager {
     // Sauvegarder les documents
     public function saveDocuments($documents) {
         try {
+            $this->db->beginTransaction();
+
             $sql = "INSERT INTO documents (id_demande, libile_pieces, date_document, ref_document, date_ref, code_pieces) 
                     VALUES (:id_demande, :libile_pieces, :date_document, :ref_document, :date_ref, :code_pieces)";
             
             $stmt = $this->pdo->prepare($sql);
+            
             foreach ($documents as $doc) {
-                $stmt->execute($doc);
+                $result = $stmt->execute($doc);
+                if (!$result) {
+                    throw new Exception("Erreur lors de l'insertion du document");
+                }
             }
+
+            $this->db->commit();
             return true;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Erreur dans saveDocuments : " . $e->getMessage());
             return false;
         }
     }
@@ -120,6 +146,30 @@ class TraitementManager {
             return false;
         }
     }
+
+    // Méthode pour sauvegarder toutes les données en une seule transaction
+    public function saveAllData($generalData, $documents) {
+        try {
+            $this->db->beginTransaction();
+
+            // Sauvegarder les données générales
+            if (!$this->saveGeneralData($generalData)) {
+                throw new Exception("Erreur lors de la sauvegarde des données générales");
+            }
+
+            // Sauvegarder les documents
+            if (!$this->saveDocuments($documents)) {
+                throw new Exception("Erreur lors de la sauvegarde des documents");
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Erreur dans saveAllData : " . $e->getMessage());
+            return false;
+        }
+    }
 }
 
 // Traitement de la sauvegarde
@@ -188,4 +238,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo json_encode($response);
     exit;
 }
-?> 
+?>
