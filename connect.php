@@ -963,7 +963,7 @@ class ClsConnect {
 
 
     //القسم السادس
-    public function insertChapitres($pdo) {
+    public function insertChapitres($pdo) { 
         if (isset($_POST['submit'])) {
             try {
                 $contenue_chapitre = $_POST['contenue_chapitre'] ?? null;
@@ -1046,7 +1046,7 @@ class ClsConnect {
                 $date_payement1 = $_POST['date_payement1'] ?? null;
 
                 // Vérification que le champ n'est pas vide
-                if (!$date_payement1) {
+                if (!$id_montant1) {
                     return "❌ ";
                 }
 

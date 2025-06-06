@@ -42,28 +42,11 @@ $deposant = $db->getDeposant($id_demande);
 $sujetContrat = $db->getSubject($id_demande);
 
 
+$message = $db->insertContractData($pdo);
+echo $message;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  error_log("Données POST : " . print_r($_POST, true));
-  $message2 = $db->insertContractData2($pdo);
-  echo $message2;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  error_log("Requête POST reçue : " . print_r($_POST, true));
-  if (isset($_POST['submit_parties'])) {
-      error_log("Données POST pour idPersonnes : " . print_r($_POST, true));
-      $idPER = $db->idPersonnes($pdo);
-      if ($idPER === "✅") {
-          echo "<script>alert('تم حفظ البيانات بنجاح');</script>";
-      } else {
-          echo "<script>alert('خطأ: " . addslashes($idPER) . "');</script>";
-      }
-  } else {
-      error_log("Erreur : submit_parties non défini dans POST");
-      echo "<script>alert('Erreur : Le bouton حفظ n\'a pas été détecté.');</script>";
-  }
-}
+$message2 = $db->insertContractData2($pdo);
+echo $message2;
 
 $message3 = $db->insertContractData3($pdo);
 echo $message3;
@@ -71,7 +54,7 @@ echo $message3;
 $message4 = $db->insertContractData4($pdo);
 echo $message4;
 
-$chapitre = $db->insertChapitres($pdo);
+$chapitre = $db->insertChapitres($pdo); 
 echo $chapitre;
 
 $idPER = $db->idPersonnes($pdo);
@@ -84,7 +67,7 @@ $prix = $db->validerPrix($pdo);
 echo $prix;
 
 $perc1 = $db->perception1($pdo);
-echo $perc1;
+echo $perc1; 
 
 $perc4 = $db->perception4($pdo);
 echo $perc4;
@@ -561,7 +544,11 @@ echo $gouv;
                               </div>
                             </div> 
                             <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="hideMessage()"></div>
-                          
+                            <form action="verifierContrat.php" method="post" onsubmit="return showMessage();">              
+                              <div class="form-actions">
+                                <button type="submit" name="submit" class="btn-save">حفظ البيانات الشخصية</button>
+                              </div>
+                            </form>
                           </form>
                         </div>  
                       </div> 
@@ -579,7 +566,8 @@ echo $gouv;
           </table>
           </form>
           <div class="form-actions">
-          <button type="submit" name="submit_parties" class="btn-save">حفظ</button>            <button type="button" class="btn-delete">حذف</button>
+            <button type="submit" name="submit" class="btn-save">حفظ</button>
+            <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
           </div>
@@ -641,34 +629,33 @@ echo $gouv;
 
             <form method="POST" action="">
               <h3>بيانات تتعلق بمراجع انجرار الترسيم</h3>
-                <table id="inscription-table">
-                    <thead>
-                        <tr>
-                            <th>التاريخ</th>
-                            <th>الايداع</th>
-                            <th>المجلد</th>
-                            <th>العدد</th>
-                            <th>ع.الفرعي</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="date" name="date_inscri2[]" value="" required></td>
-                            <td><input type="text" name="lieu_inscri2[]" value="" required></td>
-                            <td><input type="text" name="doc2[]" value="" required></td>
-                            <td><input type="text" name="num_inscri2[]" value="" required></td>
-                            <td><input type="text" name="num_succursale2[]" value="" required></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="form-actions">
-                    <button type="submit" name="submit" class="btn-save">حفظ</button>
-                    <button type="button" class="btn-delete">حذف</button>
-                    <button type="button" class="btn-add">إضافة سطر</button>
-                </div>
-            </form>
-
-
+              <table>
+                <thead>
+                  <tr>
+                    <th> التاريخ</th>
+                    <th> الايداع</th>
+                    <th>المجلد</th>
+                    <th>العدد </th>
+                    <th>ع.الفرعي</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="text" name="date_inscri2"></td>
+                    <td><input type="text" name="lieu_inscri2"></td>
+                    <td><input type="text" name="doc2"></td>
+                    <td><input type="text" name="num_inscri2"></td>
+                    <td><input type="text" name="num_succursale2"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="form-actions">
+                <button type="submit" name="submit" class="btn-save">حفظ</button>
+                <button type="button" class="btn-delete">حذف</button>
+                <button type="button" class="btn-add">إضافة سطر</button>
+              </div>
+              </form>
+              
              
 
 
@@ -692,6 +679,9 @@ echo $gouv;
                     </tr>
                   </tbody>
                 </table>
+                <div class="form-actions">
+                  <button type="submit" name="submit" class="btn-save">حفظ</button>
+                </div>
                 </form>
                 <div class="form-actions">
                   <button type="submit" name="submit" class="btn-save">حفظ</button>
@@ -714,8 +704,8 @@ echo $gouv;
                   </thead>
                   <tbody>
                     <tr>
-                      <td><input type="text" name="valeur_contrat_dinar" required /></td>
-                      <td><input type="text" name="prix_ecriture" required /></td>
+                      <td><input type="text" name="" required /></td>
+                      <td><input type="text" name="" required /></td>
                     </tr>
                   </tbody>
                 </table>
