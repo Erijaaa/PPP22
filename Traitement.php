@@ -35,7 +35,9 @@ $success = $contratManagement->enregistrerContrat($id_demande, $annee_demande, $
 
 
 $id_demande = isset($_GET['id_demande']) ? intval($_GET['id_demande']) : 0;
-
+$sujetducontrat = $db->getSujetContrat($id_demande);
+$anneecontrat = $db->getAnneeContrat($id_demande);
+$numcontrat = $db->getNumContrat($id_demande);
 $pieces_jointes = $db->getPiecesJointesByDemande($id_demande);
 $agent = $db->getAgent($id_demande);
 $deposant = $db->getDeposant($id_demande);
@@ -115,21 +117,19 @@ echo $gouv;
                     <input type="text" class="search-input" name="id_demande" 
                     value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
                     <span>/</span>
-                    <input type="text" class="search-input" name="annee_demande" 
-                    value="<?php echo isset($demande['annee_demande']) ? date('Y', strtotime($demande['annee_demande']))  : ''; ?>" />           
+                    <input type="number" name="annee_contrat" value="<?php echo isset($anneecontrat['annee_contrat']) ? htmlspecialchars($anneecontrat['annee_contrat']) : ''; ?>" />           
                     <span>تاريخه</span>
                     <input type="text" class="search-input" name="date_demande" 
                     value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
                     <span>عدد العقد</span>
-                    <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />          
+                    <input type="number" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />                    
                   </div>
                   <img src="media/logo.png" alt="ONPFF" class="logo" />
                 </div>
                 <div id="form-container">
                   <div class="subject-field">
                     <span>موضوع العقد</span>
-                    <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />
-                    </div>
+                    <input type="text" name="sujet_contrat" value="<?= $sujetducontrat ? htmlspecialchars($sujetducontrat['sujet_contrat']) : '' ?>" />                    </div>
                   <div class="section-title">القسم الأول : البيانات المتعلقة بطالب الخدمة</div>
                   <div class="person-info">
                     <div class="person-title">طالب الخدمة</div>
@@ -192,21 +192,21 @@ echo $gouv;
             </div>
             <!-- Documents Section -->
             <div id="documents-content" class="main-content">
-              <div class="top-bar">
-                <div class="search-form">
-                <span>عدد مطلب التحرير</span>
-                  <input type="text" class="search-input" name="id_demande" 
-                  value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
-                  <span>/</span>
-                  <input type="text" class="search-input" name="annee_demande" 
-                  value="<?php echo isset($demande['annee_demande']) ? date('Y', strtotime($demande['annee_demande']))  : ''; ?>" />           
-                  <span>تاريخه</span>
-                  <input type="text" class="search-input" name="date_demande" 
-                  value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
-                  <span>عدد العقد</span>
-                  <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />          </div>
-                <img src="media/logo.png" alt="ONPFF" class="logo" />
-              </div>
+            <div class="top-bar">
+                  <div class="search-form">
+                    <span>عدد مطلب التحرير</span>
+                    <input type="text" class="search-input" name="id_demande" 
+                    value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+                    <span>/</span>
+                    <input type="number" name="annee_contrat" value="<?php echo isset($anneecontrat['annee_contrat']) ? htmlspecialchars($anneecontrat['annee_contrat']) : ''; ?>" />                    
+                    <span>تاريخه</span>
+                    <input type="text" class="search-input" name="date_demande" 
+                    value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
+                    <span>عدد العقد</span>
+                    <input type="number" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />                    
+                  </div>
+                  <img src="media/logo.png" alt="ONPFF" class="logo" />
+                </div>
 
               <div class="section-title">القسم الثالث : البيانات المتعلقة بالمؤيدات</div>
               <form method="POST" action="">
@@ -252,21 +252,21 @@ echo $gouv;
             </div>
       <!-- Contract Parties Section -->
       <div id="contract-parties-content" class="main-content">
-        <div class="top-bar">
-          <div class="search-form">
-          <span>عدد مطلب التحرير</span>
-            <input type="text" class="search-input" name="id_demande" 
-            value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
-            <span>/</span>
-            <input type="text" class="search-input" name="annee_demande" 
-            value="<?php echo isset($demande['annee_demande']) ? date('Y', strtotime($demande['annee_demande']))  : ''; ?>" />           
-            <span>تاريخه</span>
-            <input type="text" class="search-input" name="date_demande" 
-            value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
-            <span>عدد العقد</span>
-            <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />          </div>
-          <img src="media/logo.png" alt="ONPFF" class="logo" />
-        </div>
+      <div class="top-bar">
+                  <div class="search-form">
+                    <span>عدد مطلب التحرير</span>
+                    <input type="text" class="search-input" name="id_demande" 
+                    value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
+                    <span>/</span>
+                    <input type="number" name="annee_contrat" value="<?php echo isset($anneecontrat['annee_contrat']) ? htmlspecialchars($anneecontrat['annee_contrat']) : ''; ?>" />                      
+                    <span>تاريخه</span>
+                    <input type="text" class="search-input" name="date_demande" 
+                    value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
+                    <span>عدد العقد</span>
+                    <input type="number" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />                    
+                  </div>
+                  <img src="media/logo.png" alt="ONPFF" class="logo" />
+                </div>
 
         <div class="table-container">
           <div class="section-title">القسم الرابع : البيانات المتعلقة بأطراف التعاقد</div>
@@ -582,11 +582,10 @@ echo $gouv;
                 <span>عدد مطلب التحرير</span>
                 <input type="text" class="search-input" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
                 <span>/</span>
-                <input type="text" class="search-input" name="annee_demande" value="<?php echo isset($demande['annee_demande']) ? date('Y', strtotime($demande['annee_demande']))  : ''; ?>" />           
-                <span>تاريخه</span>
+                <input type="number" name="annee_contrat" value="<?php echo isset($anneecontrat['annee_contrat']) ? htmlspecialchars($anneecontrat['annee_contrat']) : ''; ?>" />           
                 <input type="text" class="search-input" name="date_demande" value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
                 <span>عدد العقد</span>
-                <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />
+                <input type="number" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />                    
               </div>
               <img src="media/logo.png" alt="ONPFF" class="logo" />
             </div>
@@ -752,11 +751,11 @@ echo $gouv;
             <span>عدد مطلب التحرير</span>
             <input type="text" class="search-input" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
             <span>/</span>
-            <input type="text" class="search-input" name="annee_demande" value="<?php echo isset($demande['annee_demande']) ? date('Y', strtotime($demande['annee_demande']))  : ''; ?>" />           
+            <input type="number" name="annee_contrat" value="<?php echo isset($anneecontrat['annee_contrat']) ? htmlspecialchars($anneecontrat['annee_contrat']) : ''; ?>" />                       
             <span>تاريخه</span>
             <input type="text" class="search-input" name="date_demande" value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
             <span>عدد العقد</span>
-            <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />
+            <input type="number" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />                    
           </div>
           <img src="media/logo.png" alt="ONPFF" class="logo" />
         </div>
@@ -782,11 +781,11 @@ echo $gouv;
             <span>عدد مطلب التحرير</span>
             <input type="text" class="search-input" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
             <span>/</span>
-            <input type="text" class="search-input" name="annee_demande" value="<?php echo isset($demande['annee_demande']) ? date('Y', strtotime($demande['annee_demande']))  : ''; ?>" />           
+            <input type="number" name="annee_contrat" value="<?php echo isset($anneecontrat['annee_contrat']) ? htmlspecialchars($anneecontrat['annee_contrat']) : ''; ?>" />                       
             <span>تاريخه</span>
             <input type="text" class="search-input" name="date_demande" value="<?php echo isset($demande['date_demande']) ? htmlspecialchars($demande['date_demande']) : ''; ?>" />
             <span>عدد العقد</span>
-            <input type="text" class="search-input" value="<?php echo htmlspecialchars($id_contrat); ?>" />
+            <input type="number" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />                    
           </div>
           <img src="media/logo.png" alt="ONPFF" class="logo" />
         </div>

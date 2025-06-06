@@ -798,7 +798,7 @@ function saveTableData(form) {
 }
 
 // Initialisation des gestionnaires d'événements
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () { 
   // Gestionnaire pour les boutons d'ajout
   document.querySelectorAll(".btn-add").forEach((button) => {
     button.addEventListener("click", function () {

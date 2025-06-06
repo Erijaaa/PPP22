@@ -170,7 +170,50 @@ class ClsConnect {
     }
 
 
+    //annee contrat
+    public function getAnneeContrat($id_demande) {
+        $sql = "SELECT * FROM contrats WHERE id_demande = :id";
+        $stmt = $this->pdo->prepare($sql); 
+        $stmt->bindParam(':id', $id_demande, PDO::PARAM_INT);
+        $stmt->execute();
 
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
+
+    //numero contrat
+    public function getNumContrat($id_demande) {
+        $sql = "SELECT * FROM contrats WHERE id_demande = :id";
+        $stmt = $this->pdo->prepare($sql); 
+        $stmt->bindParam(':id', $id_demande, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
+    //SUJET DU CONTRAT
+    public function getSujetContrat($id_demande) {
+        $sql = "SELECT * FROM contrats WHERE id_demande = :id";
+        $stmt = $this->pdo->prepare($sql); 
+        $stmt->bindParam(':id', $id_demande, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
+
+
+
+    //AGENT
     public function getAgent($id_demande) {
         $sql = "SELECT * FROM agent WHERE id_demande = :id";
         $stmt = $this->pdo->prepare($sql); 
@@ -186,6 +229,7 @@ class ClsConnect {
   
     
 
+    //DEPOSANT
     public function getDeposant($id_demande) {
         $sql = "SELECT * FROM deposant WHERE id_demande = :id";
         $stmt = $this->pdo->prepare($sql); 
