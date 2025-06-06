@@ -3,12 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function addRow(table) {
     const tbody = table.querySelector("tbody");
     if (!tbody) return;
-    
+
     const lastRow = tbody.querySelector("tr:last-child");
     if (!lastRow) return;
-    
+
     const newRow = lastRow.cloneNode(true);
-    
+
     // Vider les inputs de la nouvelle ligne
     newRow.querySelectorAll("input").forEach((input) => {
       input.value = "";
@@ -21,14 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
         input.setAttribute("required", "required");
       }
     });
-    
+
     // Mettre à jour le numéro de ligne si nécessaire
     const firstCell = newRow.querySelector("td:first-child");
     if (firstCell && !isNaN(firstCell.textContent)) {
       const rowCount = tbody.querySelectorAll("tr").length;
       firstCell.textContent = rowCount + 1;
     }
-    
+
     tbody.appendChild(newRow);
   }
 
@@ -36,12 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function deleteRow(button) {
     const row = button.closest("tr");
     if (!row) return;
-    
+
     const tbody = row.parentElement;
     if (!tbody || tbody.querySelectorAll("tr").length <= 1) return;
-    
+
     row.remove();
-    
+
     // Mettre à jour les numéros de ligne
     tbody.querySelectorAll("tr").forEach((row, index) => {
       const firstCell = row.querySelector("td:first-child");
@@ -51,96 +51,224 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Fonction pour sauvegarder les données d'un formulaire
-  function saveForm(form) {
-    const formData = new FormData(form);
-    
-    fetch(form.action, {
-      method: "POST",
-      body: formData
-    })
-    .then((response) => response.text())
-    .then((result) => {
-      if (result.includes("✅")) {
-        alert("تم الحفظ بنجاح"); // Sauvegarde réussie
-      } else {
-        alert("حدث خطأ أثناء الحفظ"); // Erreur lors de la sauvegarde
+  document.addEventListener('DOMContentLoaded', function() {
+    // Gestion de la sidebar
+    const menuItems = document.querySelectorAll('.menu-item');
+    const contents = document.querySelectorAll('.main-content');
+  
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        menuItems.forEach(i => i.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const contentId = this.id + '-content';
+        document.getElementById(contentId).classList.add('active');
+      });
+    });
+  
+    // Stocker les modèles de lignes pour chaque tableau
+    const tableTemplates = {};
+  
+    // Sauvegarder les modèles de lignes au chargement
+    document.querySelectorAll('table').forEach(table => {
+      if (table.id) {
+        const firstRow = table.querySelector('tbody tr');
+        if (firstRow) {
+          tableTemplates[table.id] = firstRow.cloneNode(true);
+        }
       }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("حدث خطأ أثناء الحفظ"); // Erreur lors de la sauvegarde
     });
-  }
-
-  // Initialisation quand le DOM est chargé
-  document.addEventListener("DOMContentLoaded", function () {
-    // Gestionnaire pour les boutons d'ajout de ligne
-    document.querySelectorAll(".btn-add").forEach((button) => {
-      button.addEventListener("click", function (e) {
+  
+    // Fonction pour mettre à jour les numéros des lignes
+    function updateRowNumbers(tableId) {
+      const tbody = document.querySelector(`#${tableId} tbody`);
+      if (!tbody) return;
+  
+      const rows = tbody.querySelectorAll('tr');
+      rows.forEach((row, index) => {
+        const firstCell = row.querySelector('td:first-child');
+        if (firstCell) {
+          firstCell.textContent = index + 1;
+        }
+        // Mettre à jour les ID des selects
+        const select = row.querySelector('select');
+        if (select) {
+          select.id = `vendeur_acheteur_${index}`;
+        }
+        // Mettre à jour l'attribut data-row-index des boutons
+        const modalBtn = row.querySelector('.open-modal-btn');
+        if (modalBtn) {
+          modalBtn.setAttribute('data-row-index', index);
+        }
+      });
+    }
+  
+    // Fonction pour créer une nouvelle ligne
+    function createNewRow(tableId) {
+      const template = tableTemplates[tableId];
+      if (!template) return null;
+  
+      const newRow = template.cloneNode(true);
+      newRow.classList.add('new-row');
+  
+      // Vider tous les champs de saisie
+      newRow.querySelectorAll('input').forEach(input => {
+        input.value = input.classList.contains('signature') ? 'non signé' : '';
+      });
+  
+      // Réinitialiser les selects
+      newRow.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+      });
+  
+      return newRow;
+    }
+  
+    // Fonction pour ajouter une ligne dans un tableau
+    function addTableRow(tableId) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+  
+      const tbody = table.querySelector('tbody');
+      if (!tbody) return;
+  
+      const newRow = createNewRow(tableId);
+      if (!newRow) return;
+  
+      tbody.appendChild(newRow);
+      updateRowNumbers(tableId);
+    }
+  
+    // Gestionnaire pour les boutons d'ajout
+    document.querySelectorAll('.btn-add').forEach(button => {
+      button.addEventListener('click', function(e) {
         e.preventDefault();
-        const table = this.closest("form").querySelector("table");
-        if (table) {
-          addRow(table);
+        const tableId = this.getAttribute('data-table') || this.closest('form').querySelector('table').id;
+        if (tableId) {
+          addTableRow(tableId);
         }
       });
     });
-
+  
     // Gestionnaire pour les boutons de suppression
-    document.querySelectorAll(".btn-delete").forEach((button) => {
-      button.addEventListener("click", function (e) {
+    document.querySelectorAll('.btn-delete').forEach(button => {
+      button.addEventListener('click', function(e) {
         e.preventDefault();
-        deleteRow(this);
-      });
-    });
-
-    // Gestionnaire pour la soumission des formulaires
-    document.querySelectorAll("form").forEach((form) => {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        saveForm(this);
-      });
-    });
-
-    // Améliorer l'expérience de saisie des inputs
-    document.querySelectorAll("input[type='text'], input[type='number']").forEach((input) => {
-      // Ajouter une classe active quand l'input est focalisé
-      input.addEventListener("focus", function () {
-        this.classList.add("active");
-      });
-
-      // Retirer la classe active quand l'input perd le focus
-      input.addEventListener("blur", function () {
-        if (!this.value) {
-          this.classList.remove("active");
-        }
-      });
-
-      // S'assurer que la valeur est bien alignée
-      input.addEventListener("input", function () {
-        this.style.textAlign = "right";
-      });
-    });
-
-    // Gestionnaire pour la navigation du menu
-    document.querySelectorAll(".menu-item").forEach((item) => {
-      item.addEventListener("click", function () {
-        // Retirer la classe active de tous les éléments
-        document.querySelectorAll(".menu-item").forEach((i) => i.classList.remove("active"));
-        document.querySelectorAll(".main-content").forEach((c) => c.classList.remove("active"));
-        
-        // Ajouter la classe active à l'élément cliqué
-        this.classList.add("active");
-        
-        // Afficher le contenu correspondant
-        const contentId = this.id + "-content";
-        const content = document.getElementById(contentId);
-        if (content) {
-          content.classList.add("active");
+        const row = this.closest('tr');
+        const table = this.closest('table');
+        if (row && table) {
+          row.remove();
+          updateRowNumbers(table.id);
         }
       });
     });
+  
+    // Initialiser les numéros pour tous les tableaux
+    document.querySelectorAll('table').forEach(table => {
+      if (table.id) {
+        updateRowNumbers(table.id);
+      }
+    });
+  
+    // Gestion de la modale
+    const modal = document.getElementById('identity-modal');
+    const openModalBtns = document.querySelectorAll('.open-modal-btn');
+    const closeModalBtn = modal ? modal.querySelector('.close') : null;
+    const saveModalBtn = modal ? modal.querySelector('.btn-save-modal') : null;
+    const identityForm = document.getElementById('identity-form');
+    const currentRowIndexInput = document.getElementById('current-row-index');
+  
+    if (modal && openModalBtns && closeModalBtn && saveModalBtn && identityForm) {
+      // Ouvrir la modale
+      openModalBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const rowIndex = this.getAttribute('data-row-index');
+          currentRowIndexInput.value = rowIndex;
+          modal.style.display = 'block';
+  
+          // Pré-remplir le formulaire avec les données existantes (si modification)
+          const row = this.closest('tr');
+          if (row) {
+            identityForm.querySelector('#prenom_personne').value = row.querySelector('.prenom-personne').value || '';
+            identityForm.querySelector('#prenom_pere').value = row.querySelector('.prenom-pere').value || '';
+            identityForm.querySelector('#prenom_grandpere').value = row.querySelector('.prenom-grandpere').value || '';
+            identityForm.querySelector('#nom_personne').value = row.querySelector('.nom-personne').value || '';
+          }
+        });
+      });
+  
+      // Fermer la modale
+      closeModalBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        identityForm.reset();
+        currentRowIndexInput.value = '';
+      });
+  
+      window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+          identityForm.reset();
+          currentRowIndexInput.value = '';
+        }
+      });
+  
+      // Sauvegarder les données de la modale dans le tableau
+      saveModalBtn.addEventListener('click', function() {
+        const rowIndex = currentRowIndexInput.value;
+        const tbody = document.querySelector('#parties-table tbody');
+        const row = tbody.querySelectorAll('tr')[parseInt(rowIndex)];
+  
+        if (row) {
+          const prenom = identityForm.querySelector('#prenom_personne').value;
+          const nom = identityForm.querySelector('#nom_personne').value;
+          const prenomPere = identityForm.querySelector('#prenom_pere').value;
+          const prenomGrandpere = identityForm.querySelector('#prenom_grandpere').value;
+  
+          // Mettre à jour le champ nom complet
+          const nomComplet = `${prenom} ${prenomPere} ${prenomGrandpere} ${nom}`.trim();
+          row.querySelector('.nom-complet').value = nomComplet;
+  
+          // Mettre à jour les champs cachés
+          row.querySelector('.prenom-personne').value = prenom;
+          row.querySelector('.prenom-pere').value = prenomPere;
+          row.querySelector('.prenom-grandpere').value = prenomGrandpere;
+          row.querySelector('.nom-personne').value = nom;
+  
+          // Fermer la modale et réinitialiser le formulaire
+          modal.style.display = 'none';
+          identityForm.reset();
+          currentRowIndexInput.value = '';
+        }
+      });
+    }
   });
+
+// Gestion de la modale
+var modal = document.getElementById("myModal");
+var openModalBtn = document.getElementsByClassName("open-modal");
+var closeModalBtn = document.getElementsByClassName("close")[0];
+
+for (var i = 0; i < openModalBtn.length; i++) {
+    openModalBtn[i].onclick = function() {
+        modal.style.display = "block";
+    }
+}
+
+closeModalBtn.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Ajout de ligne
+document.querySelector('.btn-add').addEventListener('click', function() {
+    var table = document.getElementById('parties-table');
+    var row = table.insertRow(-1);
+    // Code pour insérer une nouvelle ligne
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -773,47 +901,68 @@ function submitObjection() {
 
 // Fonction pour sauvegarder les données d'une table
 function saveTableData(form) {
-    const formData = new FormData(form);
-    
-    fetch(form.action, {
-        method: 'POST',
-        body: formData
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text())
+    .then((result) => {
+      // Afficher un message de succès
+      alert("تم الحفظ بنجاح"); // Les données ont été sauvegardées avec succès
     })
-    .then(response => response.text())
-    .then(result => {
-        // Afficher un message de succès
-        alert('تم الحفظ بنجاح'); // Les données ont été sauvegardées avec succès
-    })
-    .catch(error => {
-        // Afficher un message d'erreur
-        alert('حدث خطأ أثناء الحفظ'); // Une erreur s'est produite lors de la sauvegarde
-        console.error('Error:', error);
+    .catch((error) => {
+      // Afficher un message d'erreur
+      alert("حدث خطأ أثناء الحفظ"); // Une erreur s'est produite lors de la sauvegarde
+      console.error("Error:", error);
     });
 }
 
 // Initialisation des gestionnaires d'événements
-document.addEventListener('DOMContentLoaded', function() {
-    // Gestionnaire pour les boutons d'ajout
-    document.querySelectorAll('.btn-add').forEach(button => {
-        button.addEventListener('click', function() {
-            const table = this.closest('form').querySelector('table');
-            const tbody = table.querySelector('tbody');
-            addRow(tbody);
-        });
+document.addEventListener("DOMContentLoaded", function () {
+  // Gestionnaire pour les boutons d'ajout
+  document.querySelectorAll(".btn-add").forEach((button) => {
+    button.addEventListener("click", function () {
+      const table = this.closest("form").querySelector("table");
+      const tbody = table.querySelector("tbody");
+      addRow(tbody);
     });
-    
-    // Gestionnaire pour les boutons de suppression
-    document.querySelectorAll('.btn-delete').forEach(button => {
-        button.addEventListener('click', function() {
-            deleteRow(this);
-        });
+  });
+
+  // Gestionnaire pour les boutons de suppression
+  document.querySelectorAll(".btn-delete").forEach((button) => {
+    button.addEventListener("click", function () {
+      deleteRow(this);
     });
-    
-    // Gestionnaire pour les formulaires
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            saveTableData(this);
-        });
+  });
+
+  // Gestionnaire pour les formulaires
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      saveTableData(this);
     });
+  });
+});
+
+//dessin_immobiler2
+document.querySelector(".btn-add").addEventListener("click", function () {
+  const table = document.querySelector("#inscription-table tbody");
+  const newRow = document.createElement("tr");
+  newRow.innerHTML = `
+      <td><input type="date" name="date_inscri2[]" required></td>
+      <td><input type="text" name="lieu_inscri2[]"></td>
+      <td><input type="text" name="doc2[]"></td>
+      <td><input type="text" name="num_inscri2[]"></td>
+      <td><input type="text" name="num_succursale2[]"></td>
+  `;
+  table.appendChild(newRow);
+});
+
+document.querySelector(".btn-delete").addEventListener("click", function () {
+  const table = document.querySelector("#inscription-table tbody");
+  if (table.rows.length > 1) {
+    table.deleteRow(table.rows.length - 1);
+  }
 });

@@ -745,40 +745,51 @@ class ClsConnect {
 
     //perception2
     public function insertContractData2($pdo) {
-        if (isset($_POST['submit'])) {
+        if (isset($_POST['submit']) && isset($_POST['date_inscri2'])) {
             try {
-                $date_inscri2 = $_POST['date_inscri2'] ?? null;
-                $lieu_inscri2 = $_POST['lieu_inscri2'] ?? null;
-                $doc2 = $_POST['doc2'] ?? null;
-                $num_inscri2 = $_POST['num_inscri2'] ?? null;
-                $num_succursale2 = $_POST['num_succursale2'] ?? null;
-
-                // Vérification qu'au moins un champ est rempli
-                if (!$date_inscri2 && !$lieu_inscri2 && !$doc2 && !$num_inscri2 && !$num_succursale2) {
-                    return "❌";
-                }
-
-                $sql = "INSERT INTO dessin_immobilier2 
+                $sql = "INSERT INTO dessin_immobilers2 
                         (date_inscri2, lieu_inscri2, doc2, num_inscri2, num_succursale2) 
                         VALUES 
                         (:date_inscri2, :lieu_inscri2, :doc2, :num_inscri2, :num_succursale2)";
-
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':date_inscri2' => $date_inscri2,
-                    ':lieu_inscri2' => $lieu_inscri2,
-                    ':doc2' => $doc2,
-                    ':num_inscri2' => $num_inscri2,
-                    ':num_succursale2' => $num_succursale2
-                ]);
-
-                return "✅ ";
+    
+                // Gérer les tableaux imbriqués
+                $date_inscri2_array = is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'] : [$_POST['date_inscri2']];
+                foreach ($date_inscri2_array as $index => $date_inscri2) {
+                    // Extraire la valeur scalaire
+                    $date_inscri2_value = is_array($date_inscri2) ? ($date_inscri2[0] ?? null) : $date_inscri2;
+                    if (empty($date_inscri2_value)) {
+                        error_log("Erreur : date_inscri2 requis pour ligne " . ($index + 1));
+                        continue;
+                    }
+    
+                    // Valider le format de la date (YYYY-MM-DD)
+                    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date_inscri2_value)) {
+                        error_log("Erreur : format de date invalide pour ligne " . ($index + 1) . ": " . $date_inscri2_value);
+                        continue;
+                    }
+    
+                    $stmt->execute([
+                        ':date_inscri2' => $date_inscri2_value,
+                        ':lieu_inscri2' => is_array($_POST['lieu_inscri2'][$index]) ? ($_POST['lieu_inscri2'][$index][0] ?? null) : ($_POST['lieu_inscri2'][$index] ?? null),
+                        ':doc2' => is_array($_POST['doc2'][$index]) ? ($_POST['doc2'][$index][0] ?? null) : ($_POST['doc2'][$index] ?? null),
+                        ':num_inscri2' => is_array($_POST['num_inscri2'][$index]) ? ($_POST['num_inscri2'][$index][0] ?? null) : ($_POST['num_inscri2'][$index] ?? null),
+                        ':num_succursale2' => is_array($_POST['num_succursale2'][$index]) ? ($_POST['num_succursale2'][$index][0] ?? null) : ($_POST['num_succursale2'][$index] ?? null)
+                    ]);
+                }
+    
+                return "✅";
             } catch (PDOException $e) {
-                return "❌";
+                error_log("Erreur dans insertContractData2 : " . $e->getMessage());
+                return "❌ Erreur SQL : " . $e->getMessage();
             }
         }
+        error_log("Aucune donnée valide : " . print_r($_POST, true));
         return null;
     }
+
+
+    
 
     //perception3
     public function insertContractData3($pdo) {
@@ -1041,7 +1052,7 @@ class ClsConnect {
 
                 $sql = "INSERT INTO perception1(
                     id_montant1, partieabstrait1, montant_obligatoire1, montant_paye1, num_recu1, date_payement1)
-                    VALUES (id_montant1, partieabstrait1, montant_obligatoire1, montant_paye1, num_recu1, date_payement1)";
+                    VALUES (:id_montant1, :partieabstrait1, :montant_obligatoire1, :montant_paye1, :num_recu1, :date_payement1)";
 
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
