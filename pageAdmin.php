@@ -43,7 +43,7 @@ $sql = "
 ";
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute();
+//$stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $message = '';

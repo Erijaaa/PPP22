@@ -72,40 +72,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $nom_complet_personne = $_POST['nom_complet_personne'] ?? [];
     $statut_contractant = $_POST['statut_contractant'] ?? [];
     $notes = $_POST['notes'] ?? [];
-    $id_demande = $_POST['id_demande'] ?? [$id_demande]; // Use GET id_demande if not in POST
+    $id_demande_array = $_POST['id_demande'] ?? [$id_demande]; // Use GET id_demande if not in POST
 
     // Call personneContratc function
-    $personne = $db->personneContratc(
-        $pdo, 
-        $prenom, 
-        $numero_document_identite, 
-        $nom, 
-        $prenom_pere, 
-        $date_emission_document, 
-        $sexe, 
-        $nationalite, 
-        $adresse, 
-        $profession, 
-        $etat_civil, 
-        $prenom_conjoint, 
-        $nom_conjoint, 
-        $prenom_pere_conjoint, 
-        $prenom_grand_pere_conjoint, 
-        $surnom_conjoint, 
-        $date_naissance_conjoint, 
-        $lieu_naissance_conjoint, 
-        $nationalite_conjoint, 
-        $numero_document_conjoint, 
-        $date_document_conjoint, 
-        $lieu_document_conjoint, 
-        $vendeur_acheteur, 
-        $id_demande, 
-        $nom_complet_personne, 
-        $statut_contractant
+    $personne = $db->personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint,
+      $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, 
+      $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande_array, $nom_complet_personne, $statut_contractant
     );
     echo $personne;
 }
-
 
 
 $pdo = $db->getConnection();
@@ -117,7 +92,7 @@ $annee_demande = $_POST['annee_demande'] ?? '';
 $date_demande = date('Y-m-d');
 
 
-$success = $contratManagement->enregistrerContrat($id_demande, $annee_demande, $date_demande, $id_contrat);
+//$success = $contratManagement->enregistrerContrat($id_demande, $annee_demande, $date_demande, $id_contrat);
 
 
 $id_demande = isset($_GET['id_demande']) ? intval($_GET['id_demande']) : 0;
@@ -248,6 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 }
 $p1 = $db->perception1($pdo , $id_montant1, $partieabstrait1, $montant_obligatoire1, $montant_paye1, $num_recu1, $date_payement1);
 echo $p1;
+
 // Traitement des données avant l'appel à perception3
 $valeur_dinar3 = '';
 $pourcent3 = '';
@@ -525,7 +501,7 @@ echo $gouv;
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="numero_document_identite">رقم وثيقة الهوية</label>
-                                <input type="text" id="numero_document_identite" name="numero_document_identite" required />
+                                <input type="text" id="numero_document_identite" name="numero_document_identite[]" required />
                               </div>
                             </div>
 
@@ -537,7 +513,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="prenom"
-                                      name="prenom"
+                                      name="prenom[]"
                                       required
                                     />
                                   </div>
@@ -548,7 +524,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="prenom_pere"
-                                      name="prenom_pere"
+                                      name="prenom_pere[]"
                                       required
                                     />
                                   </div>
@@ -562,7 +538,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="nom"
-                                      name="nom"
+                                      name="nom[]"
                                       required
                                     />
                                   </div>
@@ -573,7 +549,7 @@ echo $gouv;
                                     <input
                                       type="date"
                                       id="date_emission_document"
-                                      name="date_emission_document"
+                                      name="date_emission_document[]"
                                       required
                                     />
                                   </div>
@@ -586,7 +562,7 @@ echo $gouv;
                                 <div class="form-col">
                                   <div class="form-group">
                                     <label for="sexe">الجنس</label>
-                                    <select id="sexe" name="sexe" required>
+                                    <select id="sexe" name="sexe[]" required>
                                       <option value="">اختر الجنس</option>
                                       <option value="male">ذكر</option>
                                       <option value="female">أنثى</option>
@@ -599,7 +575,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="nationalite"
-                                      name="nationalite"
+                                      name="nationalite[]"
                                       required
                                     />
                                   </div>
@@ -610,7 +586,7 @@ echo $gouv;
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="adresse">العنوان</label>
-                                <input type="text" id="adresse" name="adresse" required />
+                                <input type="text" id="adresse" name="adresse[]" required />
                               </div>
                               <div class="form-row">
                                 <div class="form-col">
@@ -619,7 +595,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="profession"
-                                      name="profession"
+                                      name="profession[]"
                                       required
                                     />
                                   </div>
@@ -629,7 +605,7 @@ echo $gouv;
                                     <label for="etat_civil">الحالة العائلية</label>
                                     <select
                                       id="etat_civil"
-                                      name="etat_civil"
+                                      name="etat_civil[]"
                                       required
                                     >
                                       <option value="">اختر الحالة</option>
@@ -660,7 +636,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="prenom_pere_conjoint"
-                                      name="prenom_pere_conjoint"
+                                      name="prenom_pere_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -674,7 +650,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="prenom_grand_pere_conjoint"
-                                      name="prenom_grand_pere_conjoint"
+                                      name="prenom_grand_pere_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -685,7 +661,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="nom_conjoint"
-                                      name="nom_conjoint"
+                                      name="nom_conjoint[]"
                                     />
                                   </div>
                                 </div>
@@ -698,7 +674,7 @@ echo $gouv;
                                     <input
                                       type="date"
                                       id="date_naissance_conjoint"
-                                      name="date_naissance_conjoint"
+                                      name="date_naissance_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -709,7 +685,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="lieu_naissance_conjoint"
-                                      name="lieu_naissance_conjoint"
+                                      name="lieu_naissance_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -723,7 +699,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="nationalite_conjoint"
-                                      name="nationalite_conjoint"
+                                      name="nationalite_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -734,7 +710,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="numero_document_conjoint"
-                                      name="numero_document_conjoint"
+                                      name="numero_document_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -748,7 +724,7 @@ echo $gouv;
                                     <input
                                       type="date"
                                       id="date_document_conjoint"
-                                      name="date_document_conjoint"
+                                      name="date_document_conjoint[]"
                                     />
                                   </div>
                                 </div>
@@ -758,7 +734,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="lieu_document_conjoint"
-                                      name="lieu_document_conjoint"
+                                      name="lieu_document_conjoint[]"
                                     />
                                   </div>
                                 </div>
@@ -770,7 +746,7 @@ echo $gouv;
                                 <label for="notes">ملاحظات</label>
                                 <textarea
                                   id="notes"
-                                  name="notes"
+                                  name="notes[]"
                                   class="notes-area"
                                 ></textarea>
                               </div>
@@ -1201,10 +1177,10 @@ echo $gouv;
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="nom4" required/></td>
-                <td><input type="text" name="valeur_dinar4" required/></td>
-                <td><input type="text" name="pourcent4" required/></td>
-                <td><input type="text" name="montant_dinar4" required/></td>
+                <td><input type="text" name="nom4[]" required/></td>
+                <td><input type="text" name="valeur_dinar4[]" required/></td>
+                <td><input type="text" name="pourcent4[]" required/></td>
+                <td><input type="text" name="montant_dinar4[]" required/></td>
               </tr>
             </tbody>
           </table>
