@@ -18,7 +18,93 @@ if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
 }
 
 
-$id_contrat = ($cc = $db->getidcontract()) && isset($cc['nextval']) ? $cc['nextval'] : '';
+// Initialize variables for personneContratc
+$prenom = '';
+$numero_document_identite = '';
+$nom = '';
+$prenom_pere = '';
+$date_emission_document = '';
+$sexe = '';
+$nationalite = '';
+$adresse = '';
+$profession = '';
+$etat_civil = '';
+$prenom_conjoint = '';
+$nom_conjoint = '';
+$prenom_pere_conjoint = '';
+$prenom_grand_pere_conjoint = '';
+$surnom_conjoint = '';
+$date_naissance_conjoint = '';
+$lieu_naissance_conjoint = '';
+$nationalite_conjoint = '';
+$numero_document_conjoint = '';
+$date_document_conjoint = '';
+$lieu_document_conjoint = '';
+$vendeur_acheteur = '';
+$nom_complet_personne = '';
+$statut_contractant = '';
+$notes = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    // Extract POST data, handling arrays
+    $prenom = $_POST['prenom'] ?? [];
+    $numero_document_identite = $_POST['numero_document_identite'] ?? [];
+    $nom = $_POST['nom'] ?? [];
+    $prenom_pere = $_POST['prenom_pere'] ?? [];
+    $date_emission_document = $_POST['date_emission_document'] ?? [];
+    $sexe = $_POST['sexe'] ?? [];
+    $nationalite = $_POST['nationalite'] ?? [];
+    $adresse = $_POST['adresse'] ?? [];
+    $profession = $_POST['profession'] ?? [];
+    $etat_civil = $_POST['etat_civil'] ?? [];
+    $prenom_conjoint = $_POST['prenom_conjoint'] ?? [];
+    $nom_conjoint = $_POST['nom_conjoint'] ?? [];
+    $prenom_pere_conjoint = $_POST['prenom_pere_conjoint'] ?? [];
+    $prenom_grand_pere_conjoint = $_POST['prenom_grand_pere_conjoint'] ?? [];
+    $surnom_conjoint = $_POST['surnom_conjoint'] ?? [];
+    $date_naissance_conjoint = $_POST['date_naissance_conjoint'] ?? [];
+    $lieu_naissance_conjoint = $_POST['lieu_naissance_conjoint'] ?? [];
+    $nationalite_conjoint = $_POST['nationalite_conjoint'] ?? [];
+    $numero_document_conjoint = $_POST['numero_document_conjoint'] ?? [];
+    $date_document_conjoint = $_POST['date_document_conjoint'] ?? [];
+    $lieu_document_conjoint = $_POST['lieu_document_conjoint'] ?? [];
+    $vendeur_acheteur = $_POST['vendeur_acheteur'] ?? [];
+    $nom_complet_personne = $_POST['nom_complet_personne'] ?? [];
+    $statut_contractant = $_POST['statut_contractant'] ?? [];
+    $notes = $_POST['notes'] ?? [];
+    $id_demande = $_POST['id_demande'] ?? [$id_demande]; // Use GET id_demande if not in POST
+
+    // Call personneContratc function
+    $personne = $db->personneContratc(
+        $pdo, 
+        $prenom, 
+        $numero_document_identite, 
+        $nom, 
+        $prenom_pere, 
+        $date_emission_document, 
+        $sexe, 
+        $nationalite, 
+        $adresse, 
+        $profession, 
+        $etat_civil, 
+        $prenom_conjoint, 
+        $nom_conjoint, 
+        $prenom_pere_conjoint, 
+        $prenom_grand_pere_conjoint, 
+        $surnom_conjoint, 
+        $date_naissance_conjoint, 
+        $lieu_naissance_conjoint, 
+        $nationalite_conjoint, 
+        $numero_document_conjoint, 
+        $date_document_conjoint, 
+        $lieu_document_conjoint, 
+        $vendeur_acheteur, 
+        $id_demande, 
+        $nom_complet_personne, 
+        $statut_contractant
+    );
+    echo $personne;
+}
 
 
 
@@ -44,31 +130,124 @@ $deposant = $db->getDeposant($id_demande);
 $sujetContrat = $db->getSubject($id_demande);
 
 
-$message = $db->insertContractData($pdo);
-echo $message;
+// Initialize variables for dessin_immobilier1
 
+$nom_droit1 = '';
+$sujet_contrat1 = '';
+$unite1 = '';
+$detail_general = '';
+$contenu1 = '';
+$valeur_prix1 = '';
+$dure1 = '';
+$surplus1 = '';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['nom_droit1']) && isset($_POST['sujet_contrat1']) && isset($_POST['unite1']) && 
+        isset($_POST['detail_general']) && isset($_POST['contenu1']) && isset($_POST['valeur_prix1']) && 
+        isset($_POST['dure1']) && isset($_POST['surplus1'])) {
+        $nom_droit1 = is_array($_POST['nom_droit1']) ? $_POST['nom_droit1'][0] : $_POST['nom_droit1'];
+        $sujet_contrat1 = is_array($_POST['sujet_contrat1']) ? $_POST['sujet_contrat1'][0] : $_POST['sujet_contrat1'];
+        $unite1 = is_array($_POST['unite1']) ? $_POST['unite1'][0] : $_POST['unite1'];
+        $detail_general = is_array($_POST['detail_general']) ? $_POST['detail_general'][0] : $_POST['detail_general'];
+        $contenu1 = is_array($_POST['contenu1']) ? $_POST['contenu1'][0] : $_POST['contenu1'];
+        $valeur_prix1 = is_array($_POST['valeur_prix1']) ? $_POST['valeur_prix1'][0] : $_POST['valeur_prix1'];
+        $dure1 = is_array($_POST['dure1']) ? $_POST['dure1'][0] : $_POST['dure1'];
+        $surplus1 = is_array($_POST['surplus1']) ? $_POST['surplus1'][0] : $_POST['surplus1'];
+    }
+}
+$dessin1 = $db->dessin_immobilier1($pdo, $nom_droit1, $sujet_contrat1, $unite1, $detail_general, $contenu1, $valeur_prix1, $dure1, $surplus1);
+echo $dessin1;
 
-$message2 = $db->insertContractData2($pdo);
-echo $message2;
+// Initialize variables for dessin_immobilier2
+$date_inscri2 = '';
+$lieu_inscri2 = '';
+$doc2 = '';
+$num_inscri2 = '';
+$num_succursale2 = '';
 
-$message3 = $db->insertContractData3($pdo);
-echo $message3;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['date_inscri2']) && isset($_POST['lieu_inscri2']) && isset($_POST['doc2']) && 
+        isset($_POST['num_inscri2']) && isset($_POST['num_succursale2'])) {
+        $date_inscri2 = is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'][0] : $_POST['date_inscri2'];
+        $lieu_inscri2 = is_array($_POST['lieu_inscri2']) ? $_POST['lieu_inscri2'][0] : $_POST['lieu_inscri2'];
+        $doc2 = is_array($_POST['doc2']) ? $_POST['doc2'][0] : $_POST['doc2'];
+        $num_inscri2 = is_array($_POST['num_inscri2']) ? $_POST['num_inscri2'][0] : $_POST['num_inscri2'];
+        $num_succursale2 = is_array($_POST['num_succursale2']) ? $_POST['num_succursale2'][0] : $_POST['num_succursale2'];
+    }
+}
+$dessin2 = $db->dessin_immobilier2($pdo, $date_inscri2, $lieu_inscri2, $doc2, $num_inscri2, $num_succursale2);
+echo $dessin2;
 
+// Initialize variables for dessin_immobilier3
+$regime_finance_couple3 = '';
+$remarques3 = '';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['regime_finance_couple3']) && isset($_POST['remarques3'])) {
+        $regime_finance_couple3 = is_array($_POST['regime_finance_couple3']) ? $_POST['regime_finance_couple3'][0] : $_POST['regime_finance_couple3'];
+        $remarques3 = is_array($_POST['remarques3']) ? $_POST['remarques3'][0] : $_POST['remarques3'];
+    }
+}
+$dessin3 = $db->dessin_immobilier3($pdo, $regime_finance_couple3, $remarques3);
+echo $dessin3;
 
-$message4 = $db->insertContractData4($pdo);
-echo $message4;
+// Initialize variables for dessin_immobilier4
+$valeur_contrat_dinar = '';
+$prix_ecriture = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['valeur_contrat_dinar']) && isset($_POST['prix_ecriture'])) {
+        $valeur_contrat_dinar = is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'][0] : $_POST['valeur_contrat_dinar'];
+        $prix_ecriture = is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'][0] : $_POST['prix_ecriture'];
+    }
+}
+$dessin4 = $db->dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture);
+echo $dessin4;
 
 $chapitre = $db->insertChapitres($pdo); 
 echo $chapitre;
 
-$idPER = $db->idPersonnes($pdo);
-echo $idPER;
+$prenom_personne = '';
+$prenom_pere = '';
+$prenom_grandpere = '';
+$nom_personne = '';
+$statut = '';
+$signature = '';
 
-$p2 = $db->perception2($pdo);
-echo $p2 ;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['prenom_personne']) && isset($_POST['prenom_pere']) && isset($_POST['prenom_grandpere']) && isset($_POST['nom_personne']) && isset($_POST['statut']) && isset($_POST['signature'])) {
+        $prenom_personne = is_array($_POST['prenom_personne']) ? $_POST['prenom_personne'][0] : $_POST['prenom_personne'];
+        $prenom_pere = is_array($_POST['prenom_pere']) ? $_POST['prenom_pere'][0] : $_POST['prenom_pere'];
+        $prenom_grandpere = is_array($_POST['prenom_grandpere']) ? $_POST['prenom_grandpere'][0] : $_POST['prenom_grandpere'];
+        $nom_personne = is_array($_POST['nom_personne']) ? $_POST['nom_personne'][0] : $_POST['nom_personne'];
+        $statut = is_array($_POST['statut']) ? $_POST['statut'][0] : $_POST['statut'];
+        $signature = is_array($_POST['signature']) ? $_POST['signature'][0] : $_POST['signature'];
+    }
+}
 
+$personne1 = $db->idPersonnes($pdo);
+echo $personne1;
+
+
+$id_montant1 = '';
+$partieabstrait1 = '';
+$montant_obligatoire1 = '';
+$montant_paye1 = '';
+$num_recu1 = '';
+$date_payement1 = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['id_montant1']) && isset($_POST['partieabstrait1']) && isset($_POST['montant_obligatoire1']) && isset($_POST['montant_paye1']) && isset($_POST['num_recu1']) && isset($_POST['date_payement1'])) {
+        $id_montant1 = is_array($_POST['id_montant1']) ? $_POST['id_montant1'][0] : $_POST['id_montant1'];
+        $partieabstrait1 = is_array($_POST['partieabstrait1']) ? $_POST['partieabstrait1'][0] : $_POST['partieabstrait1'];
+        $montant_obligatoire1 = is_array($_POST['montant_obligatoire1']) ? $_POST['montant_obligatoire1'][0] : $_POST['montant_obligatoire1'];
+        $montant_paye1 = is_array($_POST['montant_paye1']) ? $_POST['montant_paye1'][0] : $_POST['montant_paye1'];
+        $num_recu1 = is_array($_POST['num_recu1']) ? $_POST['num_recu1'][0] : $_POST['num_recu1'];
+        $date_payement1 = is_array($_POST['date_payement1']) ? $_POST['date_payement1'][0] : $_POST['date_payement1'];
+    }
+}
+$p1 = $db->perception1($pdo , $id_montant1, $partieabstrait1, $montant_obligatoire1, $montant_paye1, $num_recu1, $date_payement1);
+echo $p1;
 // Traitement des données avant l'appel à perception3
 $valeur_dinar3 = '';
 $pourcent3 = '';
@@ -106,8 +285,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 $p2 = $db->perception2($pdo, $statut2, $redacteur2, $redaction2, $revision2, $validationFinal2);
 echo $p2;
 
-$perc1 = $db->perception1($pdo);
-echo $perc1; 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+  // Check if all required POST fields are set
+  if (isset($_POST['id_montant1'], $_POST['partieabstrait1'], $_POST['montant_obligatoire1'], 
+            $_POST['montant_paye1'], $_POST['num_recu1'], $_POST['date_payement1'])) {
+      $id_montant1 = is_array($_POST['id_montant1']) ? $_POST['id_montant1'][0] : $_POST['id_montant1'];
+      $partieabstrait1 = is_array($_POST['partieabstrait1']) ? $_POST['partieabstrait1'][0] : $_POST['partieabstrait1'];
+      $montant_obligatoire1 = is_array($_POST['montant_obligatoire1']) ? $_POST['montant_obligatoire1'][0] : $_POST['montant_obligatoire1'];
+      $montant_paye1 = is_array($_POST['montant_paye1']) ? $_POST['montant_paye1'][0] : $_POST['montant_paye1'];
+      $num_recu1 = is_array($_POST['num_recu1']) ? $_POST['num_recu1'][0] : $_POST['num_recu1'];
+      $date_payement1 = is_array($_POST['date_payement1']) ? $_POST['date_payement1'][0] : $_POST['date_payement1'];
+
+      // Call perception1 with defined variables
+      $p1 = $db->perception1($pdo, $id_montant1, $partieabstrait1, $montant_obligatoire1, 
+                             $montant_paye1, $num_recu1, $date_payement1);
+      echo $p1;
+  } else {
+      echo "❌ Missing required POST fields";
+  }
+}
 
 $p4 = $db->perception4($pdo);
 echo $p4;
@@ -881,12 +1077,12 @@ echo $gouv;
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="id_montant1" required/></td>
-                <td><input type="text" name="partieabstrait1" required/></td>
-                <td><input type="text" name="montant_obligatoire1" required/></td>
-                <td><input type="text" name="montant_paye1" required/></td>
-                <td><input type="text" name="num_recu1" required/></td>
-                <td><input type="date" name="date_payement1" required/></td>
+                <td><input type="text" name="id_montant1[]" required/></td>
+                <td><input type="text" name="partieabstrait1[]" required/></td>
+                <td><input type="text" name="montant_obligatoire1[]" required/></td>
+                <td><input type="text" name="montant_paye1[]" required/></td>
+                <td><input type="text" name="num_recu1[]" required/></td>
+                <td><input type="date" name="date_payement1[]" required/></td>
               </tr>
             </tbody>
           </table>

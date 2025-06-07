@@ -692,78 +692,114 @@ class ClsConnect {
 
     //القسم الرابع
     //وثيقة الهوية
-    public function personneContratc($pdo) {
-        if (isset($_POST['submit'])) {
+    public function personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande, $nom_complet_personne, $statut_contractant) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             try {
-                $prenom = $_POST['prenom'] ?? null;
-                $numero_document_identite = $_POST['numero_document_identite'] ?? null;
-                $nom = $_POST['nom'] ?? null;
-                $prenom_pere = $_POST['prenom_pere'] ?? null;
-                $date_emission_document = $_POST['date_emission_document'] ?? null;
-                $sexe = $_POST['sexe'] ?? null;
-                $nationalite = $_POST['nationalite'] ?? null;
-                $adresse = $_POST['adresse'] ?? null;
-                $profession = $_POST['profession'] ?? null;
-                $etat_civil = $_POST['etat_civil'] ?? null;
-                $prenom_conjoint = $_POST['prenom_conjoint'] ?? null;
-                $nom_conjoint = $_POST['nom_conjoint'] ?? null;
-                $prenom_pere_conjoint = $_POST['prenom_pere_conjoint'] ?? null;
-                $prenom_grand_pere_conjoint = $_POST['prenom_grand_pere_conjoint'] ?? null;
-                $surnom_conjoint = $_POST['surnom_conjoint'] ?? null;
-                $date_naissance_conjoint = $_POST['date_naissance_conjoint'] ?? null;
-                $lieu_naissance_conjoint = $_POST['lieu_naissance_conjoint'] ?? null;
-                $nationalite_conjoint = $_POST['nationalite_conjoint'] ?? null;
-                $numero_document_conjoint = $_POST['numero_document_conjoint'] ?? null;
-                $date_document_conjoint = $_POST['date_document_conjoint'] ?? null;
-                $lieu_document_conjoint = $_POST['lieu_document_conjoint'] ?? null;
-                $vendeur_acheteur =$_POST['vendeur_acheteur'] ?? null ;
-    
-                // Vérification qu'au moins le numéro de document est rempli
-                if (!$numero_document_identite) {
-                    return "❌ ";
+                // Check if required fields are provided
+                if (!$numero_document_identite || !$id_demande || !$nom_complet_personne || !$statut_contractant) {
+                    error_log("Missing required fields: numero_document_identite, id_demande, nom_complet_personne, or statut_contractant");
+                    return "❌ Missing required data";
                 }
     
-                $sql = "INSERT INTO personnes_contracteurs (
-                    prenom, numero_document_identite, nom, prenom_pere, date_emission_document, sexe,
-                    nationalite, adresse, profession, etat_civil,prenom_conjoint, nom_conjoint, prenom_pere_conjoint,
-                    prenom_grand_pere_conjoint, surnom_conjoint, date_naissance_conjoint, lieu_naissance_conjoint,
-                    nationalite_conjoint, numero_document_conjoint, date_document_conjoint, lieu_document_conjoint,vendeur_acheteur
-                ) VALUES (
-                    :prenom, :numero_document_identite, :nom, :prenom_pere, :date_emission_document, :sexe,
-                    :nationalite, :adresse, :profession, :etat_civil,:prenom_conjoint, :nom_conjoint, :prenom_pere_conjoint,
-                    :prenom_grand_pere_conjoint, :surnom_conjoint, :date_naissance_conjoint, :lieu_naissance_conjoint,
-                    :nationalite_conjoint, :numero_document_conjoint, :date_document_conjoint, :lieu_document_conjoint,:vendeur_acheteur
-                )";
+                // Handle array inputs for multiple rows
+                $prenom = is_array($prenom) ? $prenom : [$prenom];
+                $numero_document_identite = is_array($numero_document_identite) ? $numero_document_identite : [$numero_document_identite];
+                $nom = is_array($nom) ? $nom : [$nom];
+                $prenom_pere = is_array($prenom_pere) ? $prenom_pere : [$prenom_pere];
+                $date_emission_document = is_array($date_emission_document) ? $date_emission_document : [$date_emission_document];
+                $sexe = is_array($sexe) ? $sexe : [$sexe];
+                $nationalite = is_array($nationalite) ? $nationalite : [$nationalite];
+                $adresse = is_array($adresse) ? $adresse : [$adresse];
+                $profession = is_array($profession) ? $profession : [$profession];
+                $etat_civil = is_array($etat_civil) ? $etat_civil : [$etat_civil];
+                $prenom_conjoint = is_array($prenom_conjoint) ? $prenom_conjoint : [$prenom_conjoint];
+                $nom_conjoint = is_array($nom_conjoint) ? $nom_conjoint : [$nom_conjoint];
+                $prenom_pere_conjoint = is_array($prenom_pere_conjoint) ? $prenom_pere_conjoint : [$prenom_pere_conjoint];
+                $prenom_grand_pere_conjoint = is_array($prenom_grand_pere_conjoint) ? $prenom_grand_pere_conjoint : [$prenom_grand_pere_conjoint];
+                $surnom_conjoint = is_array($surnom_conjoint) ? $surnom_conjoint : [$surnom_conjoint];
+                $date_naissance_conjoint = is_array($date_naissance_conjoint) ? $date_naissance_conjoint : [$date_naissance_conjoint];
+                $lieu_naissance_conjoint = is_array($lieu_naissance_conjoint) ? $lieu_naissance_conjoint : [$lieu_naissance_conjoint];
+                $nationalite_conjoint = is_array($nationalite_conjoint) ? $nationalite_conjoint : [$nationalite_conjoint];
+                $numero_document_conjoint = is_array($numero_document_conjoint) ? $numero_document_conjoint : [$numero_document_conjoint];
+                $date_document_conjoint = is_array($date_document_conjoint) ? $date_document_conjoint : [$date_document_conjoint];
+                $lieu_document_conjoint = is_array($lieu_document_conjoint) ? $lieu_document_conjoint : [$lieu_document_conjoint];
+                $vendeur_acheteur = is_array($vendeur_acheteur) ? $vendeur_acheteur : [$vendeur_acheteur];
+                $id_demande = is_array($id_demande) ? $id_demande : [$id_demande];
+                $nom_complet_personne = is_array($nom_complet_personne) ? $nom_complet_personne : [$nom_complet_personne];
+                $statut_contractant = is_array($statut_contractant) ? $statut_contractant : [$statut_contractant];
     
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':prenom' => $prenom,
-                    ':numero_document_identite' => $numero_document_identite,
-                    ':nom' => $nom,
-                    ':prenom_pere' => $prenom_pere,
-                    ':date_emission_document' => $date_emission_document,
-                    ':sexe' => $sexe,
-                    ':nationalite' => $nationalite,
-                    ':adresse' => $adresse,
-                    ':profession' => $profession,
-                    ':etat_civil' => $etat_civil,
-                    ':prenom_conjoint' => $prenom_conjoint,
-                    ':nom_conjoint' => $nom_conjoint,
-                    ':prenom_pere_conjoint' => $prenom_pere_conjoint,
-                    ':prenom_grand_pere_conjoint' => $prenom_grand_pere_conjoint,
-                    ':surnom_conjoint' => $surnom_conjoint,
-                    ':date_naissance_conjoint' => $date_naissance_conjoint,
-                    ':lieu_naissance_conjoint' => $lieu_naissance_conjoint,
-                    ':nationalite_conjoint' => $nationalite_conjoint,
-                    ':numero_document_conjoint' => $numero_document_conjoint,
-                    ':date_document_conjoint' => $date_document_conjoint,
-                    ':lieu_document_conjoint' => $lieu_document_conjoint,
-                    ':vendeur_acheteur' => $vendeur_acheteur
-                ]);
+                $success = true;
+                $errors = [];
     
-                return "✅ ";
+                // Loop through each row of data
+                for ($i = 0; $i < count($numero_document_identite); $i++) {
+                    // Skip if no document number for this row
+                    if (empty($numero_document_identite[$i])) {
+                        $errors[] = "Missing numero_document_identite for row " . ($i + 1);
+                        continue;
+                    }
+    
+                    $sql = "INSERT INTO personnes_contracteurs (
+                        prenom, numero_document_identite, nom, prenom_pere, date_emission_document, sexe,
+                        nationalite, adresse, profession, etat_civil, prenom_conjoint, nom_conjoint,
+                        prenom_pere_conjoint, prenom_grand_pere_conjoint, surnom_conjoint,
+                        date_naissance_conjoint, lieu_naissance_conjoint, nationalite_conjoint,
+                        numero_document_conjoint, date_document_conjoint, lieu_document_conjoint,
+                        vendeur_acheteur, id_demande, nom_complet_personne, statut_contractant
+                    ) VALUES (
+                        :prenom, :numero_document_identite, :nom, :prenom_pere, :date_emission_document,
+                        :sexe, :nationalite, :adresse, :profession, :etat_civil, :prenom_conjoint,
+                        :nom_conjoint, :prenom_pere_conjoint, :prenom_grand_pere_conjoint,
+                        :surnom_conjoint, :date_naissance_conjoint, :lieu_naissance_conjoint,
+                        :nationalite_conjoint, :numero_document_conjoint, :date_document_conjoint,
+                        :lieu_document_conjoint, :vendeur_acheteur, :id_demande, :nom_complet_personne,
+                        :statut_contractant
+                    )";
+    
+                    $stmt = $pdo->prepare($sql);
+                    $result = $stmt->execute([
+                        ':prenom' => $prenom[$i] ?? null,
+                        ':numero_document_identite' => $numero_document_identite[$i],
+                        ':nom' => $nom[$i] ?? null,
+                        ':prenom_pere' => $prenom_pere[$i] ?? null,
+                        ':date_emission_document' => $date_emission_document[$i] ?? null,
+                        ':sexe' => $sexe[$i] ?? null,
+                        ':nationalite' => $nationalite[$i] ?? null,
+                        ':adresse' => $adresse[$i] ?? null,
+                        ':profession' => $profession[$i] ?? null,
+                        ':etat_civil' => $etat_civil[$i] ?? null,
+                        ':prenom_conjoint' => $prenom_conjoint[$i] ?? null,
+                        ':nom_conjoint' => $nom_conjoint[$i] ?? null,
+                        ':prenom_pere_conjoint' => $prenom_pere_conjoint[$i] ?? null,
+                        ':prenom_grand_pere_conjoint' => $prenom_grand_pere_conjoint[$i] ?? null,
+                        ':surnom_conjoint' => $surnom_conjoint[$i] ?? null,
+                        ':date_naissance_conjoint' => $date_naissance_conjoint[$i] ?? null,
+                        ':lieu_naissance_conjoint' => $lieu_naissance_conjoint[$i] ?? null,
+                        ':nationalite_conjoint' => $nationalite_conjoint[$i] ?? null,
+                        ':numero_document_conjoint' => $numero_document_conjoint[$i] ?? null,
+                        ':date_document_conjoint' => $date_document_conjoint[$i] ?? null,
+                        ':lieu_document_conjoint' => $lieu_document_conjoint[$i] ?? null,
+                        ':vendeur_acheteur' => $vendeur_acheteur[$i] ?? null,
+                        ':id_demande' => $id_demande[$i] ?? null,
+                        ':nom_complet_personne' => $nom_complet_personne[$i],
+                        ':statut_contractant' => $statut_contractant[$i]
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        $errors[] = "Failed to insert row " . ($i + 1);
+                    }
+                }
+    
+                if ($success && empty($errors)) {
+                    return "✅ Successfully inserted all contract parties";
+                } else {
+                    error_log("Errors in personneContratc: " . implode(", ", $errors));
+                    return "❌ Partial or no data inserted: " . implode(", ", $errors);
+                }
             } catch (PDOException $e) {
-                return "❌";
+                error_log("SQL Error in personneContratc: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
@@ -776,162 +812,251 @@ class ClsConnect {
 
     //القسم الخامس
     //dessin_immobilier1
-    public function insertContractData($pdo) {
+    public function dessin_immobilier1($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                // Vérification que les données existent
-                $nom_droit1 = $_POST['nom_droit1'] ?? null;
-                $sujet_contrat1 = $_POST['sujet_contrat1'] ?? null;
-                $unite1 = $_POST['unite1'] ?? null;
-                $detail_general = $_POST['detail_general'] ?? null;
-                $contenu1 = $_POST['contenu1'] ?? null;
-                $valeur_prix1 = $_POST['valeur_prix1'] ?? null;
-                $dure1 = $_POST['dure1'] ?? null;
-                $surplus1 = $_POST['surplus1'] ?? null;
-
-                // Vérification qu'au moins un champ est rempli
-                if (!$nom_droit1 && !$sujet_contrat1 && !$unite1 && !$detail_general && 
-                    !$contenu1 && !$valeur_prix1 && !$dure1 && !$surplus1) {
-                    return "❌";
+                // Check if inputs are arrays and iterate over them
+                $nom_droit1_array = isset($_POST['nom_droit1']) ? (is_array($_POST['nom_droit1']) ? $_POST['nom_droit1'] : [$_POST['nom_droit1']]) : [];
+                $sujet_contrat1_array = isset($_POST['sujet_contrat1']) ? (is_array($_POST['sujet_contrat1']) ? $_POST['sujet_contrat1'] : [$_POST['sujet_contrat1']]) : [];
+                $unite1_array = isset($_POST['unite1']) ? (is_array($_POST['unite1']) ? $_POST['unite1'] : [$_POST['unite1']]) : [];
+                $detail_general_array = isset($_POST['detail_general']) ? (is_array($_POST['detail_general']) ? $_POST['detail_general'] : [$_POST['detail_general']]) : [];
+                $contenu1_array = isset($_POST['contenu1']) ? (is_array($_POST['contenu1']) ? $_POST['contenu1'] : [$_POST['contenu1']]) : [];
+                $valeur_prix1_array = isset($_POST['valeur_prix1']) ? (is_array($_POST['valeur_prix1']) ? $_POST['valeur_prix1'] : [$_POST['valeur_prix1']]) : [];
+                $dure1_array = isset($_POST['dure1']) ? (is_array($_POST['dure1']) ? $_POST['dure1'] : [$_POST['dure1']]) : [];
+                $surplus1_array = isset($_POST['surplus1']) ? (is_array($_POST['surplus1']) ? $_POST['surplus1'] : [$_POST['surplus1']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($nom_droit1_array) || !isset($nom_droit1_array[0]) || empty(trim($nom_droit1_array[0]))) {
+                    return "❌ No valid data provided";
                 }
-
-                $sql = "INSERT INTO dessin_immobiler1 
+    
+                $sql = "INSERT INTO dessin_immobiler1
                         (nom_droit1, sujet_contrat1, unite1, detail_general, contenu1, valeur_prix1, dure1, surplus1)
-                        VALUES 
+                        VALUES
                         (:nom_droit1, :sujet_contrat1, :unite1, :detail_general, :contenu1, :valeur_prix1, :dure1, :surplus1)";
-                
+               
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':nom_droit1' => $nom_droit1,
-                    ':sujet_contrat1' => $sujet_contrat1,
-                    ':unite1' => $unite1,
-                    ':detail_general' => $detail_general,
-                    ':contenu1' => $contenu1,
-                    ':valeur_prix1' => $valeur_prix1,
-                    ':dure1' => $dure1,
-                    ':surplus1' => $surplus1
-                ]);
-
-                return "✅ ";
+    
+                // Process each row
+                $success = true;
+                foreach ($nom_droit1_array as $index => $nom_droit1) {
+                    // Ensure scalar values
+                    $nom_droit1 = isset($nom_droit1_array[$index]) && is_scalar($nom_droit1_array[$index]) ? $nom_droit1_array[$index] : null;
+                    $sujet_contrat1 = isset($sujet_contrat1_array[$index]) && is_scalar($sujet_contrat1_array[$index]) ? $sujet_contrat1_array[$index] : null;
+                    $unite1 = isset($unite1_array[$index]) && is_scalar($unite1_array[$index]) ? $unite1_array[$index] : null;
+                    $detail_general = isset($detail_general_array[$index]) && is_scalar($detail_general_array[$index]) ? $detail_general_array[$index] : null;
+                    $contenu1 = isset($contenu1_array[$index]) && is_scalar($contenu1_array[$index]) ? $contenu1_array[$index] : null;
+                    $valeur_prix1 = isset($valeur_prix1_array[$index]) && is_scalar($valeur_prix1_array[$index]) ? $valeur_prix1_array[$index] : null;
+                    $dure1 = isset($dure1_array[$index]) && is_scalar($dure1_array[$index]) ? $dure1_array[$index] : null;
+                    $surplus1 = isset($surplus1_array[$index]) && is_scalar($surplus1_array[$index]) ? $surplus1_array[$index] : null;
+    
+                    // Skip if no valid data for this row
+                    if (empty($nom_droit1)) {
+                        error_log("Skipping row $index: nom_droit1 is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':nom_droit1' => $nom_droit1,
+                        ':sujet_contrat1' => $sujet_contrat1,
+                        ':unite1' => $unite1,
+                        ':detail_general' => $detail_general,
+                        ':contenu1' => $contenu1,
+                        ':valeur_prix1' => $valeur_prix1,
+                        ':dure1' => $dure1,
+                        ':surplus1' => $surplus1
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌";
+                error_log("Erreur dans dessin_immobilier1: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
     }
-
-
-
-
-    //perception2
-    public function insertContractData2($pdo) {
+    
+    public function dessin_immobilier2($pdo) {
         if (isset($_POST['submit']) && isset($_POST['date_inscri2'])) {
             try {
-                $sql = "INSERT INTO dessin_immobilers2 
-                        (date_inscri2, lieu_inscri2, doc2, num_inscri2, num_succursale2) 
-                        VALUES 
+                // Check if inputs are arrays and iterate over them
+                $date_inscri2_array = isset($_POST['date_inscri2']) ? (is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'] : [$_POST['date_inscri2']]) : [];
+                $lieu_inscri2_array = isset($_POST['lieu_inscri2']) ? (is_array($_POST['lieu_inscri2']) ? $_POST['lieu_inscri2'] : [$_POST['lieu_inscri2']]) : [];
+                $doc2_array = isset($_POST['doc2']) ? (is_array($_POST['doc2']) ? $_POST['doc2'] : [$_POST['doc2']]) : [];
+                $num_inscri2_array = isset($_POST['num_inscri2']) ? (is_array($_POST['num_inscri2']) ? $_POST['num_inscri2'] : [$_POST['num_inscri2']]) : [];
+                $num_succursale2_array = isset($_POST['num_succursale2']) ? (is_array($_POST['num_succursale2']) ? $_POST['num_succursale2'] : [$_POST['num_succursale2']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($date_inscri2_array) || !isset($date_inscri2_array[0]) || empty(trim($date_inscri2_array[0]))) {
+                    return "❌ No valid date provided";
+                }
+    
+                $sql = "INSERT INTO dessin_immobilers2
+                        (date_inscri2, lieu_inscri2, doc2, num_inscri2, num_succursale2)
+                        VALUES
                         (:date_inscri2, :lieu_inscri2, :doc2, :num_inscri2, :num_succursale2)";
+               
                 $stmt = $pdo->prepare($sql);
     
-                // Gérer les tableaux imbriqués
-                $date_inscri2_array = is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'] : [$_POST['date_inscri2']];
+                // Process each row
+                $success = true;
                 foreach ($date_inscri2_array as $index => $date_inscri2) {
-                    // Extraire la valeur scalaire
-                    $date_inscri2_value = is_array($date_inscri2) ? ($date_inscri2[0] ?? null) : $date_inscri2;
-                    if (empty($date_inscri2_value)) {
-                        error_log("Erreur : date_inscri2 requis pour ligne " . ($index + 1));
+                    // Ensure scalar values
+                    $date_inscri2 = isset($date_inscri2_array[$index]) && is_scalar($date_inscri2_array[$index]) ? $date_inscri2_array[$index] : null;
+                    $lieu_inscri2 = isset($lieu_inscri2_array[$index]) && is_scalar($lieu_inscri2_array[$index]) ? $lieu_inscri2_array[$index] : null;
+                    $doc2 = isset($doc2_array[$index]) && is_scalar($doc2_array[$index]) ? $doc2_array[$index] : null;
+                    $num_inscri2 = isset($num_inscri2_array[$index]) && is_scalar($num_inscri2_array[$index]) ? $num_inscri2_array[$index] : null;
+                    $num_succursale2 = isset($num_succursale2_array[$index]) && is_scalar($num_succursale2_array[$index]) ? $num_succursale2_array[$index] : null;
+    
+                    // Skip if no valid date for this row
+                    if (empty($date_inscri2)) {
+                        error_log("Skipping row $index: date_inscri2 is empty");
                         continue;
                     }
     
-                    // Valider le format de la date (YYYY-MM-DD)
-                    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date_inscri2_value)) {
-                        error_log("Erreur : format de date invalide pour ligne " . ($index + 1) . ": " . $date_inscri2_value);
+                    // Validate date format (YYYY-MM-DD)
+                    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date_inscri2)) {
+                        error_log("Erreur : format de date invalide pour ligne " . ($index + 1) . ": " . $date_inscri2);
                         continue;
                     }
     
-                    $stmt->execute([
-                        ':date_inscri2' => $date_inscri2_value,
-                        ':lieu_inscri2' => is_array($_POST['lieu_inscri2'][$index]) ? ($_POST['lieu_inscri2'][$index][0] ?? null) : ($_POST['lieu_inscri2'][$index] ?? null),
-                        ':doc2' => is_array($_POST['doc2'][$index]) ? ($_POST['doc2'][$index][0] ?? null) : ($_POST['doc2'][$index] ?? null),
-                        ':num_inscri2' => is_array($_POST['num_inscri2'][$index]) ? ($_POST['num_inscri2'][$index][0] ?? null) : ($_POST['num_inscri2'][$index] ?? null),
-                        ':num_succursale2' => is_array($_POST['num_succursale2'][$index]) ? ($_POST['num_succursale2'][$index][0] ?? null) : ($_POST['num_succursale2'][$index] ?? null)
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':date_inscri2' => $date_inscri2,
+                        ':lieu_inscri2' => $lieu_inscri2,
+                        ':doc2' => $doc2,
+                        ':num_inscri2' => $num_inscri2,
+                        ':num_succursale2' => $num_succursale2
                     ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
                 }
     
-                return "✅";
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                error_log("Erreur dans insertContractData2 : " . $e->getMessage());
-                return "❌ Erreur SQL : " . $e->getMessage();
+                error_log("Erreur dans dessin_immobilier2: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
-        error_log("Aucune donnée valide : " . print_r($_POST, true));
         return null;
     }
-
-
     
-
-    //dessin_immobilier3
-    public function insertContractData3($pdo) {
+    public function dessin_immobilier3($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $regime_finance_couple3 = $_POST['regime_finance_couple3'] ?? null;
-                $remarques3 = $_POST['remarques3'] ?? null;
-
-                // Vérification qu'au moins un champ est rempli
-                if (!$regime_finance_couple3 && !$remarques3) {
-                    return "❌";
+                // Check if inputs are arrays and iterate over them
+                $regime_finance_couple3_array = isset($_POST['regime_finance_couple3']) ? (is_array($_POST['regime_finance_couple3']) ? $_POST['regime_finance_couple3'] : [$_POST['regime_finance_couple3']]) : [];
+                $remarques3_array = isset($_POST['remarques3']) ? (is_array($_POST['remarques3']) ? $_POST['remarques3'] : [$_POST['remarques3']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($regime_finance_couple3_array) || !isset($regime_finance_couple3_array[0]) || empty(trim($regime_finance_couple3_array[0]))) {
+                    return "❌ No valid data provided";
                 }
-
+    
                 $sql = "INSERT INTO dessin_immobiler3
                         (regime_finance_couple3, remarques3)
-                        VALUES 
+                        VALUES
                         (:regime_finance_couple3, :remarques3)";
-
+               
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':regime_finance_couple3' => $regime_finance_couple3,
-                    ':remarques3' => $remarques3
-                ]);
-
-                return "✅ ";
+    
+                // Process each row
+                $success = true;
+                foreach ($regime_finance_couple3_array as $index => $regime_finance_couple3) {
+                    // Ensure scalar values
+                    $regime_finance_couple3 = isset($regime_finance_couple3_array[$index]) && is_scalar($regime_finance_couple3_array[$index]) ? $regime_finance_couple3_array[$index] : null;
+                    $remarques3 = isset($remarques3_array[$index]) && is_scalar($remarques3_array[$index]) ? $remarques3_array[$index] : null;
+    
+                    // Skip if no valid data for this row
+                    if (empty($regime_finance_couple3)) {
+                        error_log("Skipping row $index: regime_finance_couple3 is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':regime_finance_couple3' => $regime_finance_couple3,
+                        ':remarques3' => $remarques3
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌ " ;
+                error_log("Erreur dans dessin_immobilier3: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
     }
-
-
-    public function insertContractData4($pdo) {
+    
+    public function dessin_immobilier4($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $valeur_contrat_dinar = $_POST['valeur_contrat_dinar'] ?? null;
-                $prix_ecriture = $_POST['prix_ecriture'] ?? null;
-
-                // Vérification qu'au moins un champ est rempli
-                if (!$valeur_contrat_dinar && !$prix_ecriture) {
-                    return "❌ ";
+                // Check if inputs are arrays and iterate over them
+                $valeur_contrat_dinar_array = isset($_POST['valeur_contrat_dinar']) ? (is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'] : [$_POST['valeur_contrat_dinar']]) : [];
+                $prix_ecriture_array = isset($_POST['prix_ecriture']) ? (is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'] : [$_POST['prix_ecriture']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($valeur_contrat_dinar_array) || !isset($valeur_contrat_dinar_array[0]) || empty(trim($valeur_contrat_dinar_array[0]))) {
+                    return "❌ No valid data provided";
                 }
-
+    
                 $sql = "INSERT INTO dessin_immobilier4
                         (valeur_contrat_dinar, prix_ecriture)
-                        VALUES 
+                        VALUES
                         (:valeur_contrat_dinar, :prix_ecriture)";
-
+               
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':valeur_contrat_dinar' => $valeur_contrat_dinar,
-                    ':prix_ecriture' => $prix_ecriture
-                ]);
-
-                return "✅";
+    
+                // Process each row
+                $success = true;
+                foreach ($valeur_contrat_dinar_array as $index => $valeur_contrat_dinar) {
+                    // Ensure scalar values
+                    $valeur_contrat_dinar = isset($valeur_contrat_dinar_array[$index]) && is_scalar($valeur_contrat_dinar_array[$index]) ? $valeur_contrat_dinar_array[$index] : null;
+                    $prix_ecriture = isset($prix_ecriture_array[$index]) && is_scalar($prix_ecriture_array[$index]) ? $prix_ecriture_array[$index] : null;
+    
+                    // Skip if no valid data for this row
+                    if (empty($valeur_contrat_dinar)) {
+                        error_log("Skipping row $index: valeur_contrat_dinar is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':valeur_contrat_dinar' => $valeur_contrat_dinar,
+                        ':prix_ecriture' => $prix_ecriture
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌";
+                error_log("Erreur dans dessin_immobilier4: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
     }
+    
 
     public function nomGOUV($pdo) {
         if (isset($_POST['submit'])) {
@@ -1076,17 +1201,17 @@ class ClsConnect {
     public function idPersonnes($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                // Vérifier l'existence des clés et convertir les tableaux en valeurs simples
-                $prenom_personne = isset($_POST['prenom_personne']) ? (is_array($_POST['prenom_personne']) ? $_POST['prenom_personne'][0] : $_POST['prenom_personne']) : null;
-                $prenom_pere = isset($_POST['prenom_pere']) ? (is_array($_POST['prenom_pere']) ? $_POST['prenom_pere'][0] : $_POST['prenom_pere']) : null;
-                $prenom_grandpere = isset($_POST['prenom_grandpere']) ? (is_array($_POST['prenom_grandpere']) ? $_POST['prenom_grandpere'][0] : $_POST['prenom_grandpere']) : null;
-                $nom_personne = isset($_POST['nom_personne']) ? (is_array($_POST['nom_personne']) ? $_POST['nom_personne'][0] : $_POST['nom_personne']) : null;
-                $statut = isset($_POST['statut']) ? (is_array($_POST['statut']) ? $_POST['statut'][0] : $_POST['statut']) : null;
-                $signature = isset($_POST['signature']) ? (is_array($_POST['signature']) ? $_POST['signature'][0] : $_POST['signature']) : null;
+                // Check if inputs are arrays and convert scalars to arrays
+                $prenom_personne_array = isset($_POST['prenom_personne']) ? (is_array($_POST['prenom_personne']) ? $_POST['prenom_personne'] : [$_POST['prenom_personne']]) : [];
+                $prenom_pere_array = isset($_POST['prenom_pere']) ? (is_array($_POST['prenom_pere']) ? $_POST['prenom_pere'] : [$_POST['prenom_pere']]) : [];
+                $prenom_grandpere_array = isset($_POST['prenom_grandpere']) ? (is_array($_POST['prenom_grandpere']) ? $_POST['prenom_grandpere'] : [$_POST['prenom_grandpere']]) : [];
+                $nom_personne_array = isset($_POST['nom_personne']) ? (is_array($_POST['nom_personne']) ? $_POST['nom_personne'] : [$_POST['nom_personne']]) : [];
+                $statut_array = isset($_POST['statut']) ? (is_array($_POST['statut']) ? $_POST['statut'] : [$_POST['statut']]) : [];
+                $signature_array = isset($_POST['signature']) ? (is_array($_POST['signature']) ? $_POST['signature'] : [$_POST['signature']]) : [];
     
-                // Vérification que le champ n'est pas vide
-                if (!$statut) {
-                    return "❌ ";
+                // Ensure at least one row has valid data
+                if (empty($statut_array) || !isset($statut_array[0]) || empty(trim($statut_array[0]))) {
+                    return "❌ No valid status provided";
                 }
     
                 $sql = "INSERT INTO IDpersonnes (
@@ -1096,18 +1221,44 @@ class ClsConnect {
                 )";
     
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':prenom_personne' => $prenom_personne,
-                    ':prenom_pere' => $prenom_pere,
-                    ':prenom_grandpere' => $prenom_grandpere,
-                    ':nom_personne' => $nom_personne,
-                    ':statut' => $statut,
-                    ':signature' => $signature
-                ]);
     
-                return "✅";
+                // Process each row
+                $success = true;
+                foreach ($statut_array as $index => $statut) {
+                    // Ensure scalar values
+                    $prenom_personne = isset($prenom_personne_array[$index]) && is_scalar($prenom_personne_array[$index]) ? $prenom_personne_array[$index] : null;
+                    $prenom_pere = isset($prenom_pere_array[$index]) && is_scalar($prenom_pere_array[$index]) ? $prenom_pere_array[$index] : null;
+                    $prenom_grandpere = isset($prenom_grandpere_array[$index]) && is_scalar($prenom_grandpere_array[$index]) ? $prenom_grandpere_array[$index] : null;
+                    $nom_personne = isset($nom_personne_array[$index]) && is_scalar($nom_personne_array[$index]) ? $nom_personne_array[$index] : null;
+                    $statut = isset($statut_array[$index]) && is_scalar($statut_array[$index]) ? $statut_array[$index] : null;
+                    $signature = isset($signature_array[$index]) && is_scalar($signature_array[$index]) ? $signature_array[$index] : null;
+    
+                    // Skip if no valid statut for this row
+                    if (empty($statut)) {
+                        error_log("Skipping row $index: statut is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':prenom_personne' => $prenom_personne,
+                        ':prenom_pere' => $prenom_pere,
+                        ':prenom_grandpere' => $prenom_grandpere,
+                        ':nom_personne' => $nom_personne,
+                        ':statut' => $statut,
+                        ':signature' => $signature
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌";
+                error_log("Erreur dans idPersonnes: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
@@ -1118,48 +1269,72 @@ class ClsConnect {
     public function perception1($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                $id_montant1 = $_POST['id_montant1'] ?? null;
-                $partieabstrait1 = $_POST['partieabstrait1'] ?? null;
-                $montant_obligatoire1 = $_POST['montant_obligatoire1'] ?? null;
-                $montant_paye1 = $_POST['montant_paye1'] ?? null;
-                $num_recu1 = $_POST['num_recu1'] ?? null;
-                $date_payement1 = $_POST['date_payement1'] ?? null;
-
-                // Vérification que le champ n'est pas vide
-                if (!$id_montant1) {
-                    return "❌ ";
+                // Check if inputs are arrays and convert scalars to arrays
+                $id_montant1_array = isset($_POST['id_montant1']) ? (is_array($_POST['id_montant1']) ? $_POST['id_montant1'] : [$_POST['id_montant1']]) : [];
+                $partieabstrait1_array = isset($_POST['partieabstrait1']) ? (is_array($_POST['partieabstrait1']) ? $_POST['partieabstrait1'] : [$_POST['partieabstrait1']]) : [];
+                $montant_obligatoire1_array = isset($_POST['montant_obligatoire1']) ? (is_array($_POST['montant_obligatoire1']) ? $_POST['montant_obligatoire1'] : [$_POST['montant_obligatoire1']]) : [];
+                $montant_paye1_array = isset($_POST['montant_paye1']) ? (is_array($_POST['montant_paye1']) ? $_POST['montant_paye1'] : [$_POST['montant_paye1']]) : [];
+                $num_recu1_array = isset($_POST['num_recu1']) ? (is_array($_POST['num_recu1']) ? $_POST['num_recu1'] : [$_POST['num_recu1']]) : [];
+                $date_payement1_array = isset($_POST['date_payement1']) ? (is_array($_POST['date_payement1']) ? $_POST['date_payement1'] : [$_POST['date_payement1']]) : [];
+    
+                // Ensure at least one row has valid data
+                if (empty($id_montant1_array) || !isset($id_montant1_array[0]) || empty(trim($id_montant1_array[0]))) {
+                    return "❌ No valid ID montant provided";
                 }
-
+    
                 $sql = "INSERT INTO perception1(
                     id_montant1, partieabstrait1, montant_obligatoire1, montant_paye1, num_recu1, date_payement1)
                     VALUES (:id_montant1, :partieabstrait1, :montant_obligatoire1, :montant_paye1, :num_recu1, :date_payement1)";
-
+    
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':id_montant1' => $id_montant1,
-                    ':partieabstrait1' => $partieabstrait1,
-                    ':montant_obligatoire1' => $montant_obligatoire1,
-                    ':montant_paye1' => $montant_paye1,
-                    ':num_recu1' => $num_recu1,
-                    ':date_payement1' => $date_payement1
-
-                ]);
-
-                return "✅ ";
+    
+                // Process each row
+                $success = true;
+                foreach ($id_montant1_array as $index => $id_montant1) {
+                    // Ensure scalar values
+                    $id_montant1 = isset($id_montant1_array[$index]) && is_scalar($id_montant1_array[$index]) ? $id_montant1_array[$index] : null;
+                    $partieabstrait1 = isset($partieabstrait1_array[$index]) && is_scalar($partieabstrait1_array[$index]) ? $partieabstrait1_array[$index] : null;
+                    $montant_obligatoire1 = isset($montant_obligatoire1_array[$index]) && is_scalar($montant_obligatoire1_array[$index]) ? $montant_obligatoire1_array[$index] : null;
+                    $montant_paye1 = isset($montant_paye1_array[$index]) && is_scalar($montant_paye1_array[$index]) ? $montant_paye1_array[$index] : null;
+                    $num_recu1 = isset($num_recu1_array[$index]) && is_scalar($num_recu1_array[$index]) ? $num_recu1_array[$index] : null;
+                    $date_payement1 = isset($date_payement1_array[$index]) && is_scalar($date_payement1_array[$index]) ? $date_payement1_array[$index] : null;
+    
+                    // Skip if no valid id_montant1 for this row
+                    if (empty($id_montant1)) {
+                        error_log("Skipping row $index: id_montant1 is empty");
+                        continue;
+                    }
+    
+                    // Execute the query for this row
+                    $result = $stmt->execute([
+                        ':id_montant1' => $id_montant1,
+                        ':partieabstrait1' => $partieabstrait1,
+                        ':montant_obligatoire1' => $montant_obligatoire1,
+                        ':montant_paye1' => $montant_paye1,
+                        ':num_recu1' => $num_recu1,
+                        ':date_payement1' => $date_payement1
+                    ]);
+    
+                    if (!$result) {
+                        $success = false;
+                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+                    }
+                }
+    
+                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
             } catch (PDOException $e) {
-                return "❌" ;
+                error_log("Erreur dans perception1: " . $e->getMessage());
+                return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
     }
 
-
-
     //perception4
     public function perception4($pdo) {
         if (isset($_POST['submit'])) {
             try {
-                // Récupération des valeurs et conversion en scalaires
+                // Récupération dces valeurs et conversion en scalaires
                 $nom4 = isset($_POST['nom4']) ? (is_array($_POST['nom4']) ? $_POST['nom4'][0] : $_POST['nom4']) : null;
                 $valeur_dinar4 = isset($_POST['valeur_dinar4']) ? (is_array($_POST['valeur_dinar4']) ? $_POST['valeur_dinar4'][0] : $_POST['valeur_dinar4']) : null;
                 $pourcent4 = isset($_POST['pourcent4']) ? (is_array($_POST['pourcent4']) ? $_POST['pourcent4'][0] : $_POST['pourcent4']) : null;
