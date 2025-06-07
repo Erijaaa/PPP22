@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 require_once("connect.php");
 //require_once 'insert_data.php'; 
 $db = new ClsConnect();
+$pdo = $db->getConnection();
 
 if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
     $id_demande = $_GET['id_demande'];
@@ -46,40 +47,79 @@ $statut_contractant = '';
 $notes = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    // Extract POST data, handling arrays
-    $prenom = $_POST['prenom'] ?? [];
-    $numero_document_identite = $_POST['numero_document_identite'] ?? [];
-    $nom = $_POST['nom'] ?? [];
-    $prenom_pere = $_POST['prenom_pere'] ?? [];
-    $date_emission_document = $_POST['date_emission_document'] ?? [];
-    $sexe = $_POST['sexe'] ?? [];
-    $nationalite = $_POST['nationalite'] ?? [];
-    $adresse = $_POST['adresse'] ?? [];
-    $profession = $_POST['profession'] ?? [];
-    $etat_civil = $_POST['etat_civil'] ?? [];
-    $prenom_conjoint = $_POST['prenom_conjoint'] ?? [];
-    $nom_conjoint = $_POST['nom_conjoint'] ?? [];
-    $prenom_pere_conjoint = $_POST['prenom_pere_conjoint'] ?? [];
-    $prenom_grand_pere_conjoint = $_POST['prenom_grand_pere_conjoint'] ?? [];
-    $surnom_conjoint = $_POST['surnom_conjoint'] ?? [];
-    $date_naissance_conjoint = $_POST['date_naissance_conjoint'] ?? [];
-    $lieu_naissance_conjoint = $_POST['lieu_naissance_conjoint'] ?? [];
-    $nationalite_conjoint = $_POST['nationalite_conjoint'] ?? [];
-    $numero_document_conjoint = $_POST['numero_document_conjoint'] ?? [];
-    $date_document_conjoint = $_POST['date_document_conjoint'] ?? [];
-    $lieu_document_conjoint = $_POST['lieu_document_conjoint'] ?? [];
-    $vendeur_acheteur = $_POST['vendeur_acheteur'] ?? [];
-    $nom_complet_personne = $_POST['nom_complet_personne'] ?? [];
-    $statut_contractant = $_POST['statut_contractant'] ?? [];
-    $notes = $_POST['notes'] ?? [];
-    $id_demande_array = $_POST['id_demande'] ?? [$id_demande]; // Use GET id_demande if not in POST
+    try {
+        // Validate required fields
+        if (!isset($_POST['statut_contractant']) || !is_array($_POST['statut_contractant']) || empty($_POST['statut_contractant'][0])) {
+            echo "❌ Le statut du contractant est requis";
+            exit;
+        }
 
-    // Call personneContratc function
-    $personne = $db->personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint,
-      $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, 
-      $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande_array, $nom_complet_personne, $statut_contractant
-    );
-    echo $personne;
+        // Extract POST data, handling arrays and trimming values
+        $prenom = isset($_POST['prenom']) ? array_map('trim', (array)$_POST['prenom']) : [];
+        $numero_document_identite = isset($_POST['numero_document_identite']) ? array_map('trim', (array)$_POST['numero_document_identite']) : [];
+        $nom = isset($_POST['nom']) ? array_map('trim', (array)$_POST['nom']) : [];
+        $prenom_pere = isset($_POST['prenom_pere']) ? array_map('trim', (array)$_POST['prenom_pere']) : [];
+        $date_emission_document = isset($_POST['date_emission_document']) ? array_map('trim', (array)$_POST['date_emission_document']) : [];
+        $sexe = isset($_POST['sexe']) ? array_map('trim', (array)$_POST['sexe']) : [];
+        $nationalite = isset($_POST['nationalite']) ? array_map('trim', (array)$_POST['nationalite']) : [];
+        $adresse = isset($_POST['adresse']) ? array_map('trim', (array)$_POST['adresse']) : [];
+        $profession = isset($_POST['profession']) ? array_map('trim', (array)$_POST['profession']) : [];
+        $etat_civil = isset($_POST['etat_civil']) ? array_map('trim', (array)$_POST['etat_civil']) : [];
+        $prenom_conjoint = isset($_POST['prenom_conjoint']) ? array_map('trim', (array)$_POST['prenom_conjoint']) : [];
+        $nom_conjoint = isset($_POST['nom_conjoint']) ? array_map('trim', (array)$_POST['nom_conjoint']) : [];
+        $prenom_pere_conjoint = isset($_POST['prenom_pere_conjoint']) ? array_map('trim', (array)$_POST['prenom_pere_conjoint']) : [];
+        $prenom_grand_pere_conjoint = isset($_POST['prenom_grand_pere_conjoint']) ? array_map('trim', (array)$_POST['prenom_grand_pere_conjoint']) : [];
+        $surnom_conjoint = isset($_POST['surnom_conjoint']) ? array_map('trim', (array)$_POST['surnom_conjoint']) : [];
+        $date_naissance_conjoint = isset($_POST['date_naissance_conjoint']) ? array_map('trim', (array)$_POST['date_naissance_conjoint']) : [];
+        $lieu_naissance_conjoint = isset($_POST['lieu_naissance_conjoint']) ? array_map('trim', (array)$_POST['lieu_naissance_conjoint']) : [];
+        $nationalite_conjoint = isset($_POST['nationalite_conjoint']) ? array_map('trim', (array)$_POST['nationalite_conjoint']) : [];
+        $numero_document_conjoint = isset($_POST['numero_document_conjoint']) ? array_map('trim', (array)$_POST['numero_document_conjoint']) : [];
+        $date_document_conjoint = isset($_POST['date_document_conjoint']) ? array_map('trim', (array)$_POST['date_document_conjoint']) : [];
+        $lieu_document_conjoint = isset($_POST['lieu_document_conjoint']) ? array_map('trim', (array)$_POST['lieu_document_conjoint']) : [];
+        $vendeur_acheteur = isset($_POST['vendeur_acheteur']) ? array_map('trim', (array)$_POST['vendeur_acheteur']) : [];
+        $nom_complet_personne = isset($_POST['nom_complet_personne']) ? array_map('trim', (array)$_POST['nom_complet_personne']) : [];
+        $statut_contractant = isset($_POST['statut_contractant']) ? array_map('trim', (array)$_POST['statut_contractant']) : [];
+        $notes = isset($_POST['notes']) ? array_map('trim', (array)$_POST['notes']) : [];
+        $id_demande_array = isset($_POST['id_demande']) ? (array)$_POST['id_demande'] : [$id_demande];
+
+        // Call personneContratc function
+        $personne = $db->personneContratc(
+            $pdo,
+            $prenom,
+            $numero_document_identite,
+            $nom,
+            $prenom_pere,
+            $date_emission_document,
+            $sexe,
+            $nationalite,
+            $adresse,
+            $profession,
+            $etat_civil,
+            $prenom_conjoint,
+            $nom_conjoint,
+            $prenom_pere_conjoint,
+            $prenom_grand_pere_conjoint,
+            $surnom_conjoint,
+            $date_naissance_conjoint,
+            $lieu_naissance_conjoint,
+            $nationalite_conjoint,
+            $numero_document_conjoint,
+            $date_document_conjoint,
+            $lieu_document_conjoint,
+            $vendeur_acheteur,
+            $id_demande_array,
+            $nom_complet_personne,
+            $statut_contractant
+        );
+        
+        if ($personne === false) {
+            echo "❌ Erreur lors de la sauvegarde des données";
+        } else {
+            echo $personne;
+        }
+    } catch (Exception $e) {
+        echo "❌ Une erreur est survenue : " . $e->getMessage();
+    }
 }
 
 
@@ -661,7 +701,8 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="nom_conjoint"
-                                      name="nom_conjoint[]"
+                                      name="nom_conjoint"
+                                      required
                                     />
                                   </div>
                                 </div>
@@ -674,7 +715,7 @@ echo $gouv;
                                     <input
                                       type="date"
                                       id="date_naissance_conjoint"
-                                      name="date_naissance_conjoint[]"
+                                      name="date_naissance_conjoint"
                                       required
                                     />
                                   </div>
@@ -685,7 +726,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="lieu_naissance_conjoint"
-                                      name="lieu_naissance_conjoint[]"
+                                      name="lieu_naissance_conjoint"
                                       required
                                     />
                                   </div>
@@ -734,7 +775,8 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="lieu_document_conjoint"
-                                      name="lieu_document_conjoint[]"
+                                      name="lieu_document_conjoint"
+                                      required
                                     />
                                   </div>
                                 </div>
@@ -751,24 +793,31 @@ echo $gouv;
                                 ></textarea>
                               </div>
                             </div> 
-                            <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="hideMessage()"></div>
-                            <form action="verifierContrat.php" method="post" onsubmit="return showMessage();">              
-                              <div class="form-actions">
-                                <button type="submit" name="submit" class="btn-save">حفظ البيانات الشخصية</button>
+                            <div class="form-section">
+                              <div class="form-group">
+                                <label for="statut_contractant">صفة المتعاقد</label>
+                                <select id="statut_contractant" name="statut_contractant" required>
+                                  <option value="">اختر الصفة</option>
+                                  <option value="principal">أصلي</option>
+                                  <option value="mandataire">وكيل</option>
+                                </select>
                               </div>
-                            </form>
+                            </div>
+                            <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="hideMessage()"></div>
+                            
                           </form>
                         </div>  
                       </div> 
                     </div> 
                   </td>
                   <td>
-                  <select name="vendeur_acheteur[]" id="vendeur_acheteur" required>
-                        <option value="vendeur_acheteur">صفة المتعاقد ..</div></option>
+                  <select name="vendeur_acheteur" id="vendeur_acheteur" required>
+                        <option value="">صفة المتعاقد ..</div></option>
                         <option value="vendeur">البائع</option>
                         <option value="acheteur">المشتري</option>
                       </select>               
                   </td>
+                  <input type="hidden" name="nom_complet_personne" id="nom_complet_personne" />
                 </tr>
             </tbody>
           </table>

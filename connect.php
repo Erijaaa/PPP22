@@ -1265,7 +1265,7 @@ class ClsConnect {
     
 
 
-    //القسم السابع
+    //القسم الرابع
     //IDpersonnes
     public function idPersonnes($pdo) {
         if (isset($_POST['submit'])) {
@@ -1278,11 +1278,14 @@ class ClsConnect {
                 $statut_array = isset($_POST['statut']) ? (is_array($_POST['statut']) ? $_POST['statut'] : [$_POST['statut']]) : [];
                 $signature_array = isset($_POST['signature']) ? (is_array($_POST['signature']) ? $_POST['signature'] : [$_POST['signature']]) : [];
     
-                // Ensure at least one row has valid data
-                if (empty($statut_array) || !isset($statut_array[0]) || empty(trim($statut_array[0]))) {
-                    return "❌ No valid status provided";
+                // Validate that we have at least one row of data
+                if (empty($statut_array)) {
+                    return "❌ Aucune donnée n'a été fournie";
                 }
-    
+
+                // Begin transaction
+                $pdo->beginTransaction();
+
                 $sql = "INSERT INTO IDpersonnes (
                     prenom_personne, prenom_pere, prenom_grandpere, nom_personne, statut, signature
                 ) VALUES (
@@ -1292,42 +1295,51 @@ class ClsConnect {
                 $stmt = $pdo->prepare($sql);
     
                 // Process each row
-                $success = true;
+                $insertedRows = 0;
+                $errors = [];
+
                 foreach ($statut_array as $index => $statut) {
-                    // Ensure scalar values
-                    $prenom_personne = isset($prenom_personne_array[$index]) && is_scalar($prenom_personne_array[$index]) ? $prenom_personne_array[$index] : null;
-                    $prenom_pere = isset($prenom_pere_array[$index]) && is_scalar($prenom_pere_array[$index]) ? $prenom_pere_array[$index] : null;
-                    $prenom_grandpere = isset($prenom_grandpere_array[$index]) && is_scalar($prenom_grandpere_array[$index]) ? $prenom_grandpere_array[$index] : null;
-                    $nom_personne = isset($nom_personne_array[$index]) && is_scalar($nom_personne_array[$index]) ? $nom_personne_array[$index] : null;
-                    $statut = isset($statut_array[$index]) && is_scalar($statut_array[$index]) ? $statut_array[$index] : null;
-                    $signature = isset($signature_array[$index]) && is_scalar($signature_array[$index]) ? $signature_array[$index] : null;
-    
-                    // Skip if no valid statut for this row
-                    if (empty($statut)) {
-                        error_log("Skipping row $index: statut is empty");
+                    // Validate required fields
+                    if (empty(trim($statut))) {
+                        $errors[] = "Ligne " . ($index + 1) . ": Le statut est requis";
                         continue;
                     }
-    
-                    // Execute the query for this row
-                    $result = $stmt->execute([
-                        ':prenom_personne' => $prenom_personne,
-                        ':prenom_pere' => $prenom_pere,
-                        ':prenom_grandpere' => $prenom_grandpere,
-                        ':nom_personne' => $nom_personne,
-                        ':statut' => $statut,
-                        ':signature' => $signature
-                    ]);
-    
-                    if (!$result) {
-                        $success = false;
-                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
+
+                    try {
+                        $result = $stmt->execute([
+                            ':prenom_personne' => isset($prenom_personne_array[$index]) ? trim($prenom_personne_array[$index]) : null,
+                            ':prenom_pere' => isset($prenom_pere_array[$index]) ? trim($prenom_pere_array[$index]) : null,
+                            ':prenom_grandpere' => isset($prenom_grandpere_array[$index]) ? trim($prenom_grandpere_array[$index]) : null,
+                            ':nom_personne' => isset($nom_personne_array[$index]) ? trim($nom_personne_array[$index]) : null,
+                            ':statut' => trim($statut),
+                            ':signature' => isset($signature_array[$index]) ? trim($signature_array[$index]) : null
+                        ]);
+
+                        if ($result) {
+                            $insertedRows++;
+                        } else {
+                            $errors[] = "Ligne " . ($index + 1) . ": Échec de l'insertion";
+                        }
+                    } catch (PDOException $e) {
+                        $errors[] = "Ligne " . ($index + 1) . ": " . $e->getMessage();
                     }
                 }
-    
-                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
+
+                // Commit or rollback based on success
+                if (empty($errors)) {
+                    $pdo->commit();
+                    return "✅ $insertedRows ligne(s) insérée(s) avec succès";
+                } else {
+                    $pdo->rollBack();
+                    return "❌ Erreurs lors de la sauvegarde:<br>" . implode("<br>", $errors);
+                }
+
             } catch (PDOException $e) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
                 error_log("Erreur dans idPersonnes: " . $e->getMessage());
-                return "❌ SQL Error: " . $e->getMessage();
+                return "❌ Erreur SQL: " . $e->getMessage();
             }
         }
         return null;
