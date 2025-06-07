@@ -14,13 +14,13 @@ try {
     error_log("Erreur de connexion : " . $e->getMessage());
 }
 
-// Test de la table T_demande
+// Test de la table contrat
 try {
-    $test = $pdo->query('SELECT COUNT(*) FROM "T_demande"');
+    $test = $pdo->query('SELECT COUNT(*) FROM "contrats"');
     $count = $test->fetchColumn();
-    error_log("Nombre de demandes dans la table : " . $count);
+    error_log("Nombre de contrats dans la table : " . $count);
 } catch (PDOException $e) {
-    error_log("Erreur lors de l'accès à la table T_demande : " . $e->getMessage());
+    error_log("Erreur lors de l'accès à la table des contrats : " . $e->getMessage());
 }
 
 // Récupérer le critère de tri
@@ -28,15 +28,12 @@ $sortBy = isset($_GET['sort']) ? $_GET['sort'] : '';
 
 try {
     // Récupération des demandes avec tri
-    $query = 'SELECT * FROM "T_demande"';
+    $query = 'SELECT * FROM "contrats"';
     
     // Ajouter la clause ORDER BY selon le critère
     switch($sortBy) {
         case 'date':
             $query .= ' ORDER BY date_demande DESC';
-            break;
-        case 'type':
-            $query .= ' ORDER BY type_demande DESC';
             break;
         case 'status':
             $query .= ' ORDER BY CASE 
@@ -95,7 +92,7 @@ function getStatusText($etat) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قائمة المطالب</title>
+    <title>قائمة العقود</title>
     <link rel="stylesheet" href="css/pageAdmin.css">
     <style>
         table {
@@ -166,7 +163,6 @@ function getStatusText($etat) {
             <select id="filter" onchange="filterDemandes(this.value)">
                 <option value="">الكل</option>
                 <option value="date" <?php echo $sortBy == 'date' ? 'selected' : ''; ?>>التاريخ</option>
-                <option value="type_demande" <?php echo $sortBy == 'type_demande' ? 'selected' : ''; ?>>نوع الطلب</option>
                 <option value="status" <?php echo $sortBy == 'status' ? 'selected' : ''; ?>>الحالة</option>
             </select>
         </div>
@@ -177,8 +173,6 @@ function getStatusText($etat) {
                 <tr>
                     <th>رقم الطلب</th>
                     <th>تاريخ الطلب</th>
-                    <th>رقم الوصل</th>
-                    <th>نوع الطلب</th>
                     <th>الحالة</th>
                 </tr>
             </thead>
@@ -186,19 +180,19 @@ function getStatusText($etat) {
                 <?php if (!empty($dem)) : ?>
                     <?php foreach ($dem as $demande) : ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($demande['id_demande'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($demande['id'] ?? ''); ?></td>
                             <td><?php echo isset($demande['date_demande']) ? formatDate($demande['date_demande']) : ''; ?></td>
-                            <td><?php echo htmlspecialchars($demande['num_recu'] ?? ''); ?></td>
-                            <td><?php echo isset($demande['type_demande']) ? htmlspecialchars($demande['type_demande']) : ''; ?></td>
                             <td class="<?php echo getStatusClass($demande['etat_demande'] ?? 0); ?>">
                                 <?php echo getStatusText($demande['etat_demande'] ?? 0); ?>
                             </td>
-                
+                            <td>
+                                <button onclick="modifierDemande('<?php echo htmlspecialchars($demande['id_demande']); ?>', '<?php echo htmlspecialchars($demande['num_recu']); ?>')" class="btn-modifier">تعديل</button>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="6" class="no-data">لا توجد مطالب متاحة</td>
+                        <td colspan="6" class="no-data">لا توجد عقود متاحة</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -209,7 +203,7 @@ function getStatusText($etat) {
 
 <script>
 function filterDemandes(value) {
-    window.location.href = 'listeDemAdmin.php?sort=' + value;
+    window.location.href = 'listeContratAdmin.php?sort=' + value;
 }
 
 function modifierDemande(id_demande, num_recu) {
