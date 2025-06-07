@@ -55,8 +55,7 @@ echo $message2;
 $message3 = $db->insertContractData3($pdo);
 echo $message3;
 
-$p= $db->validerPrix($pdo);
-echo $p;
+
 
 $message4 = $db->insertContractData4($pdo);
 echo $message4;
@@ -67,10 +66,10 @@ echo $chapitre;
 $idPER = $db->idPersonnes($pdo);
 echo $idPER;
 
-$revVal = $db->validationRevision($pdo);
-echo $revVal ;
+$p2 = $db->perception2($pdo);
+echo $p2 ;
 
-// Traitement des données avant l'appel à validerPrix
+// Traitement des données avant l'appel à perception3
 $valeur_dinar3 = '';
 $pourcent3 = '';
 $montant_dinar3 = '';
@@ -83,14 +82,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     }
 }
 
-$prix = $db->validerPrix($pdo, $valeur_dinar3, $pourcent3, $montant_dinar3);
-echo $prix;
+$p3 = $db->perception3($pdo, $valeur_dinar3, $pourcent3, $montant_dinar3);
+echo $p3;
+
+
+// Traitement des données avant l'appel à perception2
+$statut2 = '';
+$redacteur2 = '';
+$redaction2 = '';
+$revision2 = "";
+$validationFinal2 = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    if (isset($_POST['statut2']) && isset($_POST['redacteur2']) && isset($_POST['redaction2']) && isset($_POST['revision2']) && isset($_POST['validationFinal2'])) {
+        $statut2 = is_array($_POST['statut2']) ? $_POST['statut2'][0] : $_POST['statut2'];
+        $redacteur2 = is_array($_POST['redacteur2']) ? $_POST['redacteur2'][0] : $_POST['redacteur2'];
+        $redaction2 = is_array($_POST['redaction2']) ? $_POST['redaction2'][0] : $_POST['redaction2'];
+        $revision2 = is_array($_POST['revision2']) ? $_POST['revision2'][0] : $_POST['revision2'];
+        $validationFinal2 = is_array($_POST['validationFinal2']) ? $_POST['validationFinal2'][0] : $_POST['validationFinal2'];
+    }
+}
+
+$p2 = $db->perception2($pdo, $statut2, $redacteur2, $redaction2, $revision2, $validationFinal2);
+echo $p2;
 
 $perc1 = $db->perception1($pdo);
 echo $perc1; 
 
-$perc4 = $db->perception4($pdo);
-echo $perc4;
+$p4 = $db->perception4($pdo);
+echo $p4;
 
 $titre = $db->nomTITRE($pdo);
 echo $titre;

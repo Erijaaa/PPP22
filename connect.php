@@ -871,7 +871,7 @@ class ClsConnect {
 
     
 
-    //perception3
+    //dessin_immobilier3
     public function insertContractData3($pdo) {
         if (isset($_POST['submit'])) {
             try {
@@ -1212,7 +1212,7 @@ class ClsConnect {
 
 
     //perception3
-    public function validerPrix($pdo) {
+    public function perception3($pdo) {
         if (isset($_POST['submit'])) {
             try {
                 // Check if inputs are arrays and convert single values to arrays if necessary
@@ -1269,7 +1269,7 @@ class ClsConnect {
     }
 
     //perception2
-    public function validationRevision($pdo) {
+    public function perception2($pdo) {
         if (isset($_POST['submit'])) {
             try {
                 // Check if inputs are arrays and iterate over them
@@ -1277,27 +1277,28 @@ class ClsConnect {
                 $redacteur2_array = isset($_POST['redacteur2']) ? (is_array($_POST['redacteur2']) ? $_POST['redacteur2'] : [$_POST['redacteur2']]) : [];
                 $redaction2_array = isset($_POST['redaction2']) ? (is_array($_POST['redaction2']) ? $_POST['redaction2'] : [$_POST['redaction2']]) : [];
                 $revision2_array = isset($_POST['revision2']) ? (is_array($_POST['revision2']) ? $_POST['revision2'] : [$_POST['revision2']]) : [];
-                $validation_final2_array = isset($_POST['validation_final2']) ? (is_array($_POST['validation_final2']) ? $_POST['validation_final2'] : [$_POST['validation_final2']]) : [];
+                $validationFinal2_array = isset($_POST['validationFinal2']) ? (is_array($_POST['validationFinal2']) ? $_POST['validationFinal2'] : [$_POST['validationFinal2']]) : [];
+
     
                 // Ensure at least one row has valid data
                 if (empty($statut2_array) || !isset($statut2_array[0]) || empty(trim($statut2_array[0]))) {
-                    error_log("Validation failed: No valid statut2 provided");
                     return "❌ No valid status provided";
                 }
     
-                $sql = "INSERT INTO perception2 (statut2, redacteur2, redaction2, revision2, validation_final2)
-                        VALUES (:statut2, :redacteur2, :redaction2, :revision2, :validation_final2)";
+                $sql = 'INSERT INTO perception2 (statut2, redacteur2, redaction2, revision2, "validationFinal2")
+                        VALUES (:statut2, :redacteur2, :redaction2, :revision2, :validationFinal2)';
+        
                 $stmt = $pdo->prepare($sql);
     
                 // Process each row
                 $success = true;
                 foreach ($statut2_array as $index => $statut2) {
                     // Ensure scalar values
-                    $statut2 = is_scalar($statut2) ? trim($statut2) : null;
-                    $redacteur2 = isset($redacteur2_array[$index]) && is_scalar($redacteur2_array[$index]) ? trim($redacteur2_array[$index]) : null;
-                    $redaction2 = isset($redaction2_array[$index]) && is_scalar($redaction2_array[$index]) ? trim($redaction2_array[$index]) : null;
-                    $revision2 = isset($revision2_array[$index]) && is_scalar($revision2_array[$index]) ? trim($revision2_array[$index]) : null;
-                    $validation_final2 = isset($validation_final2_array[$index]) && is_scalar($validation_final2_array[$index]) ? trim($validation_final2_array[$index]) : null;
+                    $statut2 = isset($statut2_array[$index]) && is_scalar($statut2_array[$index]) ? $statut2_array[$index] : null;
+                    $redacteur2 = isset($redacteur2_array[$index]) && is_scalar($redacteur2_array[$index]) ? $redacteur2_array[$index] : null;
+                    $redaction2 = isset($redaction2_array[$index]) && is_scalar($redaction2_array[$index]) ? $redaction2_array[$index] : null;
+                    $revision2 = isset($revision2_array[$index]) && is_scalar($revision2_array[$index]) ? $revision2_array[$index] : null;
+                    $validationFinal2 = isset($validationFinal2_array[$index]) && is_scalar($validationFinal2_array[$index]) ? $validationFinal2_array[$index] : null;
     
                     // Skip if no valid data for this row
                     if (empty($statut2)) {
@@ -1311,7 +1312,7 @@ class ClsConnect {
                         ':redacteur2' => $redacteur2,
                         ':redaction2' => $redaction2,
                         ':revision2' => $revision2,
-                        ':validation_final2' => $validation_final2
+                        ':validationFinal2' => $validationFinal2
                     ]);
     
                     if (!$result) {
