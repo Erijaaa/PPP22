@@ -1686,6 +1686,108 @@ class ClsConnect {
         }
     }
 
+    //المؤيدات
+    public function getPiecesJointesV() {
+        $sql = "SELECT code_pieces, libile_pieces, date_document, ref_document, date_ref, id_demande 
+                FROM pieces_jointes";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        $stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //أطراف التعاقد
+    public function getPerContracV() {
+        $sql = "SELECT id_demande, nom_complet_personne, statut_contractant
+                FROM personnes_contracteurs";
+
+        $stmt = $this->pdo->prepare($sql); 
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //dessin_immobilier1
+    public function getDI1() {
+        $sql = "SELECT * FROM dessin_immobilier1";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //dessin_immobiliers2
+    public function getDI2() {
+        $sql = "SELECT * FROM dessin_immobiliers2";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //dessin_immobilier3
+    public function getDI3() {
+        $sql = "SELECT * FROM dessin_immobilier3";
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //dessin_immobilier4
+    public function getDI4() {
+        $sql = "SELECT * FROM dessin_immobilier4";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //chapitres juridiques
+    public function getChJ() {
+        $sql = "SELECT * FROM contenue_chapitre";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //perception1
+    public function getPer1() {
+        $sql = "SELECT * FROM perception1";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //perception2
+    public function getPer2() {
+        $sql = "SELECT * FROM perception2";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //perception3
+    public function getPer3() {
+        $sql = "SELECT * FROM perception3";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //perception4
+    public function getPer4() {
+        $sql = "SELECT * FROM perception4";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //somme
+    public function getSomme() {
+        $sql = "SELECT * FROM somme";
+        
+        $stmt = $this->pdo->prepare($sql); 
+        //$stmt->execute(); 
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
 
 

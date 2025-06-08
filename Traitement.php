@@ -972,29 +972,6 @@ echo $gouv;
                 </div>
               </form>
 
-              <form method="POST" action="">
-                <h3>تفاصيل العقار </h3>
-                <table>
-                  <thead>
-                    <tr>
-                      <th> اسم الولاية </th>
-                      <th>  اسم العقار بالكامل  </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><input type="text" name="libile_gouv[]" required /></td>
-                      <td><input type="text" name="gouv_titre[]" required /></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="form-actions">
-                  <button type="submit" name="submit" class="btn-save">حفظ</button>
-                  <button type="button" class="btn-delete">حذف</button>
-                  <button type="button" class="btn-add">إضافة سطر</button>
-                </div>
-              </form>
-
 
               
             </form>          
