@@ -151,23 +151,24 @@ class ClsConnect {
 
 
 
-    public function traitContrat($etat_demande, $etat_contrat) {
+    public function traitContrat($etat_demande = 1, $etat_contrat = 0) {
         try {
-            $sql = "SELECT c.id_demande, c.etat_contrat, d.etat_demande 
-                    FROM public.\"contrat\" c
-                    INNER JOIN public.\"T_demande\" d ON c.id_demande = d.id_demande
-                    WHERE d.etat_demande = :etat_demande AND c.etat_contrat = :etat_contrat";
+            $sql = "SELECT id_demande, id_contrat, etat_contrat
+                    FROM contrats
+                    WHERE etat_demande = :etat_demande AND etat_contrat = :etat_contrat";
+    
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':etat_demande', $etat_demande, PDO::PARAM_INT);
             $stmt->bindParam(':etat_contrat', $etat_contrat, PDO::PARAM_INT);
             $stmt->execute();
-            
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Erreur dans traitContrat : " . $e->getMessage());
             return [];
         }
     }
+    
 
 
     public function getContrat($id_contrat) {

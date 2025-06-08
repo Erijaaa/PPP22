@@ -1,12 +1,36 @@
 <?php 
 require_once 'connect.php';
 
+// Create an instance of ClsConnect
 $connect = new ClsConnect();
 $pdo = $connect->getConnection();
 
-// Récupérer $id_contrat depuis une requête GET, avec une valeur par défaut null
-$id_contrat = isset($_GET['id_contrat']) ? $_GET['id_contrat'] : null;
-$contraT = $connect->getContrat($id_contrat);
+// Call the traitContrat method from ClsConnect
+$resultats = $connect->traitContrat(1, 0);
+
+// Function to get the CSS class for the status
+function getStatusClass($etat) {
+    switch ($etat) {
+        case 1:
+            return 'status-approved';
+        case -1:
+            return 'status-rejected';
+        default:
+            return 'status-pending';
+    }
+}
+
+// Function to display the status text in Arabic
+function getStatusText($etat) {
+    switch ($etat) {
+        case 1:
+            return 'مقبول';
+        case -1:
+            return 'مرفوض';
+        default:
+            return 'في الانتظار';
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,22 +49,21 @@ $contraT = $connect->getContrat($id_contrat);
         <table>
             <thead>
                 <tr>
-                    <th>تاريخ المطلب</th>
+                    <th>تاريخ الإنشاء</th>
                     <th>عدد مطلب التحرير</th>
                     <th>عدد العقد</th>
-                    <th></th>
+                    <th>الحالة</th>
                 </tr>
             </thead>
             <tbody>
-            <?php if (is_array($contraT) && !empty($contraT)) { ?>
-                <?php foreach ($contraT as $cont) { ?>
+            <?php if (is_array($resultats) && !empty($resultats)) { ?>
+                <?php foreach ($resultats as $cont) { ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($cont['date_demande'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($cont['date_creation'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($cont['id_demande'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($cont['id_contrat'] ?? ''); ?></td>
-                        <td>
-                            <!-- Commenté pour éviter les erreurs si non implémenté -->
-                            <!-- <a href="Traitement.php?id_demande=<?php echo urlencode($cont['id_demande'] ?? ''); ?>&num_recu=<?php echo urlencode($cont['num_recu'] ?? ''); ?>">معالجة</a> -->
+                        <td class="<?php echo getStatusClass($cont['etat_contrat'] ?? 0); ?>">
+                            <?php echo getStatusText($cont['etat_contrat'] ?? 0); ?>
                         </td>
                     </tr>
                 <?php } ?>
