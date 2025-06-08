@@ -5,13 +5,58 @@ error_reporting(E_ALL);
 require_once 'connect.php';
 $connect = new ClsConnect();
 $pdo = $connect->getConnection();
-
-// Récupérer les contrats
 $resultats = $connect->traitContratsss();
+// Debug de la connexion
+try {
+    $test = $pdo->query('SELECT 1');
+    error_log("Connexion à la base de données réussie");
+} catch (PDOException $e) {
+    error_log("Erreur de connexion : " . $e->getMessage());
+}
+
+
+// Test de la table T_demande
+try {
+    $test = $pdo->query('SELECT COUNT(*) FROM "T_demande"');
+    $count = $test->fetchColumn();
+    error_log("Nombre de contrats dans la table : " . $count);
+} catch (PDOException $e) {
+    error_log("Erreur lors de l'accès à la table contrats : " . $e->getMessage());
+}
+
+// Récupérer le critère de tri
+$sortBy = isset($_GET['sort']) ? $_GET['sort'] : '';
+
+try {
+    // Récupération des demandes avec tri
+    $query = 'SELECT * FROM "contrats"';
+    
+    // Ajouter la clause ORDER BY selon le critère
+    switch($sortBy) {
+        case 'date_contrat':
+            $query .= ' ORDER BY date_contrat DESC';
+            break;
+        case 'etat_contrat':
+            $query .= ' ORDER BY CASE 
+                        WHEN etat_contrat = 1 THEN 1 
+                        WHEN etat_contrat = 0 THEN 1 
+                        WHEN etat_contrat = -1 THEN -1 
+                        ELSE 1 END';
+            break;
+    }
+    
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+    $dem = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+} catch (Exception $e) {
+    echo "Erreur : " . $e->getMessage();
+    die();
+}
 
 // Fonctions pour l'état
-function getStatusClass($etat) {
-    switch ($etat) {
+function getStatusClass($etat_contrat) {
+    switch ($etat_contrat) {
         case 1:
             return 'status-approved';
         case -1:
@@ -21,8 +66,8 @@ function getStatusClass($etat) {
     }
 }
 
-function getStatusText($etat) {
-    switch ($etat) {
+function getStatusText($etat_contrat) {
+    switch ($etat_contrat) {
         case 1:
             return 'مقبول';
         case -1:
@@ -79,7 +124,6 @@ function getStatusText($etat) {
             font-size: 14px;
             transition: background-color 0.3s;
         }
-
         .btn-modifier:hover {
             background-color: #2980b9;
         }
@@ -105,7 +149,7 @@ function getStatusText($etat) {
         
         <!-- Filtres -->
         <div class="filters" style="margin: 20px;">
-            <label for="filter">قائمة العقود  حسب:</label>
+            <label for="filter">قائمة العقود حسب:</label>
             <select id="filter" onchange="filterContrats(this.value)">
                 <option value="">الكل</option>
                 <option value="date" <?php echo $sortBy == 'date' ? 'selected' : ''; ?>>التاريخ</option>
@@ -115,46 +159,38 @@ function getStatusText($etat) {
 
         <!-- Table des demandes -->
         <table>
-        <thead>
-            <tr>
-                <th>تاريخ التحرير</th>
-                <th>عدد مطلب التحرير</th>
-                <th>عدد العقد</th>
-                <th>الحالة</th>
-                <th>الإجراءات</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (is_array($resultats) && !empty($resultats)) : ?>
-                <?php foreach ($resultats as $resultat) : ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($resultat['date_contrat'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($resultat['id_demande'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($resultat['num_contrat'] ?? ''); ?></td>
-                        <td class="<?php echo getStatusClass($resultat['etat_contrat'] ?? 0); ?>">
-                            <?php echo getStatusText($resultat['etat_contrat'] ?? 0); ?>
-                        </td>
-                        <td>
-                            <button onclick="modifierContrat('<?php echo htmlspecialchars($resultat['id_demande'] ?? ''); ?>', '<?php echo htmlspecialchars($resultat['num_contrat'] ?? ''); ?>')" class="btn-modifier">تعديل</button>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else : ?>
+            <thead>
                 <tr>
-                    <td colspan="5">لا توجد عقود متاحة</td>
+                    <th>تاريخ التحرير</th>
+                    <th>عدد مطلب التحرير</th>
+                    <th>عدد العقد</th>
+                    <th>الحالة</th>
                 </tr>
-            <?php endif; ?>
-        </tbody>
-            </table>
-        </div>
-    </div>        
-<script>
-document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', function(e) {
-        e.preventDefault(); 
-    }
-}
+            </thead>
+            <tbody>
+                <?php if (is_array($resultats)) : ?>
+                    <?php foreach ($resultats as $resultat) : ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($resultat['date_contrat'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($resultat['id_demande'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($resultat['num_contrat'] ?? ''); ?></td>
+                            <td class="<?php echo getStatusClass($resultat['etat_contrat'] ?? 0); ?>">
+                                <?php echo getStatusText($resultat['etat_contrat'] ?? 0); ?>
+                            </td>
+                           
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <tr>
+                        <td colspan="5">لا توجد عقود متاحة</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
+<script>
 document.addEventListener('DOMContentLoaded', function () {
     const menuItems = document.querySelectorAll('.sidebar-menu .menu-item');
     const contentSections = document.querySelectorAll('.content-section');
@@ -178,9 +214,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
 function filterContrats(value) {
     window.location.href = 'listeContratAdmin.php?sort=' + value;
 }
 </script>
 </body>
-</div>
+</html>

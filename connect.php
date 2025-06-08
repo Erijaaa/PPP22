@@ -151,10 +151,10 @@ class ClsConnect {
 
 
     public function traitContratsss() {
-        $sql = "SELECT * FROM public.\"contarts\"";
+        $sql = "SELECT * FROM contrats";
         $stmt = $this->pdo->prepare($sql);
-        //$stmt->bindParam(':type_demande', $type_demande, PDO::PARAM_INT);
-        //$stmt->execute();
+        //$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         
     if ($stmt->rowCount() > 0) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
