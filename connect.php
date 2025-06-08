@@ -170,6 +170,19 @@ class ClsConnect {
     }
 
 
+    public function getContrat($id_contrat) {
+        $sql = "SELECT * FROM contrat WHERE id_demande = :id_demande";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_demande', $id_contrat, PDO::PARAM_INT);
+        //$stmt->execute();
+    
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
+    
 
 
     public function getDemandeById($id_demande) {

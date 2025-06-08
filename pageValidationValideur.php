@@ -240,7 +240,7 @@ $som = $connect->getSomme();
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏢 واجهة إدارة البيانات العقارية</h1>
+            <h1>🏢 واجهة تأكيد البيانات العقارية</h1>
             <span class="header">عدد مطلب التحرير</span>
             <input type="text" class="refresh-btn" name="id_demande" 
             value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />            
