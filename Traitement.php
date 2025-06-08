@@ -667,7 +667,7 @@ echo $gouv;
                                 <div class="form-col">
                                   <div class="form-group">
                                     <label for="prenom_conjoint">إسم الزوج (ة)</label>
-                                    <input type="text" id="prenom_conjoint" name="prenom_conjoint" required/>
+                                    <input type="text" id="prenom_conjoint" name="prenom_conjoint[]" required/>
                                   </div>
                                 </div>
                                 <div class="form-col">
@@ -701,7 +701,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="nom_conjoint"
-                                      name="nom_conjoint"
+                                      name="nom_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -715,7 +715,7 @@ echo $gouv;
                                     <input
                                       type="date"
                                       id="date_naissance_conjoint"
-                                      name="date_naissance_conjoint"
+                                      name="date_naissance_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -726,7 +726,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="lieu_naissance_conjoint"
-                                      name="lieu_naissance_conjoint"
+                                      name="lieu_naissance_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -775,7 +775,7 @@ echo $gouv;
                                     <input
                                       type="text"
                                       id="lieu_document_conjoint"
-                                      name="lieu_document_conjoint"
+                                      name="lieu_document_conjoint[]"
                                       required
                                     />
                                   </div>
@@ -796,7 +796,7 @@ echo $gouv;
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="statut_contractant">صفة المتعاقد</label>
-                                <select id="statut_contractant" name="statut_contractant" required>
+                                <select id="statut_contractant" name="statut_contractant[]" required>
                                   <option value="">اختر الصفة</option>
                                   <option value="principal">أصلي</option>
                                   <option value="mandataire">وكيل</option>
@@ -811,13 +811,13 @@ echo $gouv;
                     </div> 
                   </td>
                   <td>
-                  <select name="vendeur_acheteur" id="vendeur_acheteur" required>
+                  <select name="vendeur_acheteur[]" id="vendeur_acheteur" required>
                         <option value="">صفة المتعاقد ..</div></option>
                         <option value="vendeur">البائع</option>
                         <option value="acheteur">المشتري</option>
                       </select>               
                   </td>
-                  <input type="hidden" name="nom_complet_personne" id="nom_complet_personne" />
+                  <input type="hidden" name="nom_complet_personne[]" id="nom_complet_personne" />
                 </tr>
             </tbody>
           </table>

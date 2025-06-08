@@ -5,8 +5,8 @@ require_once 'connect.php';
 $connect = new ClsConnect();
 $pdo = $connect->getConnection();
 
-// Call the traitContrat method from ClsConnect
-$resultats = $connect->traitContrat(1, 0);
+// Call the traitContrat method with default or specific parameters
+$resultats = $connect->traitContrat(1, 0); // Use default values: etat_demande = 1, etat_contrat = 0
 
 // Function to get the CSS class for the status
 function getStatusClass($etat) {
@@ -49,26 +49,32 @@ function getStatusText($etat) {
         <table>
             <thead>
                 <tr>
-                    <th>تاريخ الإنشاء</th>
+                    <th>تاريخ التحرير</th>
                     <th>عدد مطلب التحرير</th>
                     <th>عدد العقد</th>
                     <th>الحالة</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             <?php if (is_array($resultats) && !empty($resultats)) { ?>
-                <?php foreach ($resultats as $cont) { ?>
+                <?php foreach ($resultats as $resultat) { ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($cont['date_creation'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($cont['id_demande'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($cont['id_contrat'] ?? ''); ?></td>
-                        <td class="<?php echo getStatusClass($cont['etat_contrat'] ?? 0); ?>">
-                            <?php echo getStatusText($cont['etat_contrat'] ?? 0); ?>
+                        <td><?php echo htmlspecialchars($resultat['date_contrat'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($resultat['id_demande'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($resultat['num_contrat'] ?? ''); ?></td>
+                        <td class="<?php echo getStatusClass($resultat['etat_contrat'] ?? 0); ?>">
+                            <?php echo getStatusText($resultat['etat_contrat'] ?? 0); ?>
+                        </td>
+                        <td>
+                            <a href="pageValidationValideur.php?id_demande=<?php echo urlencode($resultat['id_demande']); ?>">تأكيد</a>
                         </td>
                     </tr>
                 <?php } ?>
             <?php } else { ?>
-                <tr><td colspan="4" style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</td></tr>
+                <tr>
+                    <td colspan="5">لا توجد عقود متاحة</td>
+                </tr>
             <?php } ?>
             </tbody>
         </table>

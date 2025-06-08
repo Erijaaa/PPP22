@@ -153,25 +153,30 @@ class ClsConnect {
 
     public function traitContrat($etat_demande = 1, $etat_contrat = 0) {
         try {
-            $sql = "SELECT id_demande, id_contrat, etat_contrat
-                    FROM contrats
-                    WHERE etat_demande = :etat_demande AND etat_contrat = :etat_contrat";
-    
+            $sql = "SELECT c.date_contrat, c.id_demande, c.num_contrat, c.etat_contrat, d.num_recu
+                    FROM contrats c
+                    JOIN public.\"T_demande\" d ON c.id_demande = d.id_demande
+                    WHERE c.etat_demande = :etat_demande AND c.etat_contrat = :etat_contrat";
+                    
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':etat_demande', $etat_demande, PDO::PARAM_INT);
             $stmt->bindParam(':etat_contrat', $etat_contrat, PDO::PARAM_INT);
             $stmt->execute();
     
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                return false;
+            }
         } catch (PDOException $e) {
             error_log("Erreur dans traitContrat : " . $e->getMessage());
-            return [];
+            throw $e;
         }
     }
     
 
 
-    public function getContrat($id_contrat) {
+    /*public function getContrat($id_contrat) {
         $sql = "SELECT * FROM contrat WHERE id_demande = :id_demande";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':id_demande', $id_contrat, PDO::PARAM_INT);
@@ -182,7 +187,7 @@ class ClsConnect {
         } else {
             return false;
         }
-    }
+    }*/
     
 
 
@@ -192,26 +197,26 @@ class ClsConnect {
         $stmt->bindParam(':id_demande', $id_demande, PDO::PARAM_INT);
         $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    } else {
-        return false;
-    }
-    }
-
-
-    public function getidcontract() {
-        $sql = "SELECT nextval('public.next-id-contract')";
-        //return $sql;
-        $stmt = $this->pdo->prepare($sql);
-        //$stmt->execute();
-        if ($stmt->rowCount() > 0) {    
+        if ($stmt->rowCount() > 0) {
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } else {
             return false;
         }
     }
 
+
+    public function getContrat($id_contrat) {
+        $sql = "SELECT * FROM contrats WHERE id_contrat = :id_contrat"; 
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_contrat', $id_contrat, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
 
    
     
@@ -965,9 +970,8 @@ class ClsConnect {
         }
         return null;
     }
-    
     public function dessin_immobilier2($pdo) {
-        if (isset($_POST['submit']) && isset($_POST['date_inscri2'])) {
+        if (isset($_POST['submit'])) {
             try {
                 // Check if inputs are arrays and iterate over them
                 $date_inscri2_array = isset($_POST['date_inscri2']) ? (is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'] : [$_POST['date_inscri2']]) : [];
@@ -978,10 +982,10 @@ class ClsConnect {
     
                 // Ensure at least one row has valid data
                 if (empty($date_inscri2_array) || !isset($date_inscri2_array[0]) || empty(trim($date_inscri2_array[0]))) {
-                    return "❌ No valid date provided";
+                    return "❌ No valid data provided";
                 }
     
-                $sql = "INSERT INTO dessin_immobilers2
+                $sql = "INSERT INTO dessin_immobiliers2
                         (date_inscri2, lieu_inscri2, doc2, num_inscri2, num_succursale2)
                         VALUES
                         (:date_inscri2, :lieu_inscri2, :doc2, :num_inscri2, :num_succursale2)";
@@ -998,15 +1002,9 @@ class ClsConnect {
                     $num_inscri2 = isset($num_inscri2_array[$index]) && is_scalar($num_inscri2_array[$index]) ? $num_inscri2_array[$index] : null;
                     $num_succursale2 = isset($num_succursale2_array[$index]) && is_scalar($num_succursale2_array[$index]) ? $num_succursale2_array[$index] : null;
     
-                    // Skip if no valid date for this row
+                    // Skip if no valid data for this row
                     if (empty($date_inscri2)) {
                         error_log("Skipping row $index: date_inscri2 is empty");
-                        continue;
-                    }
-    
-                    // Validate date format (YYYY-MM-DD)
-                    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date_inscri2)) {
-                        error_log("Erreur : format de date invalide pour ligne " . ($index + 1) . ": " . $date_inscri2);
                         continue;
                     }
     
@@ -1033,6 +1031,7 @@ class ClsConnect {
         }
         return null;
     }
+        
     
     public function dessin_immobilier3($pdo) {
         if (isset($_POST['submit'])) {

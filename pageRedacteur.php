@@ -159,7 +159,7 @@
     <div class="container">
         <h1 class="title">واجهة المحرر</h1>
         <a href="consultation.php" class="button button-1"> قائمة المطالب </a>
-        <a href="listeContrats.php" class="button button-2"> قائمة العقود </a>
+        <a href="listeContrat.php" class="button button-2"> قائمة العقود </a>
     </div>
 
     <script>
