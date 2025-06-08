@@ -897,8 +897,8 @@ echo $gouv;
                 </thead>
                 <tbody>
                   <tr>
-                    <td><input type="text" name="date_inscri2[]"></td>
-                    <td><input type="text" name="lieu_inscri2[]"></td>
+                    <td><input type="date" name="date_inscri2[]"></td>
+                    <td><input type="text" name="[]"></td>
                     <td><input type="text" name="doc2[]"></td>
                     <td><input type="text" name="num_inscri2[]"></td>
                     <td><input type="text" name="num_succursale2[]"></td>

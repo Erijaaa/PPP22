@@ -150,6 +150,18 @@ class ClsConnect {
     }
 
 
+    public function traitContratsss() {
+        $sql = "SELECT * FROM public.\"contarts\"";
+        $stmt = $this->pdo->prepare($sql);
+        //$stmt->bindParam(':type_demande', $type_demande, PDO::PARAM_INT);
+        //$stmt->execute();
+        
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        return false;
+    }
+    }
 
     public function traitContrat($etat_demande = 1, $etat_contrat = 0) {
         try {
@@ -1712,7 +1724,7 @@ class ClsConnect {
     //أطراف التعاقد
     public function getPerContracV() {
         $sql = "SELECT nom_complet_personne, statut_contractant
-                FROM personnes_contracteurs";
+                FROM personnes_contracteurs"; 
 
         $stmt = $this->pdo->prepare($sql); 
         $stmt->execute();
