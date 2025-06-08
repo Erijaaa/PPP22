@@ -1,0 +1,80 @@
+<?php 
+require_once 'connect.php';
+
+// Create an instance of ClsConnect
+$connect = new ClsConnect();
+$pdo = $connect->getConnection();
+
+// Call the traitContrat method with default or specific parameters
+$resultats = $connect->traitContrat(1, 0); // Use default values: etat_demande = 1, etat_contrat = 0
+
+// Function to get the CSS class for the status
+function getStatusClass($etat) {
+    switch ($etat) {
+        case 1:
+            return 'status-approved';
+        case -1:
+            return 'status-rejected';
+        default:
+            return 'status-pending';
+    }
+}
+
+// Function to display the status text in Arabic
+function getStatusText($etat) {
+    switch ($etat) {
+        case 1:
+            return 'مقبول';
+        case -1:
+            return 'مرفوض';
+        default:
+            return 'في الانتظار';
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة العقود</title>
+    <link rel="stylesheet" href="css/consultation.css">
+</head> 
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>قائمة العقود</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>تاريخ التحرير</th>
+                    <th>عدد مطلب التحرير</th>
+                    <th>عدد العقد</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if (is_array($resultats) && !empty($resultats)) { ?>
+                <?php foreach ($resultats as $resultat) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($resultat['date_contrat'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($resultat['id_demande'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($resultat['num_contrat'] ?? ''); ?></td>
+                        <td class="<?php echo getStatusClass($resultat['etat_contrat'] ?? 0); ?>">
+                            <?php echo getStatusText($resultat['etat_contrat'] ?? 0); ?>
+                        </td>
+            
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr>
+                    <td colspan="5">لا توجد عقود متاحة</td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
