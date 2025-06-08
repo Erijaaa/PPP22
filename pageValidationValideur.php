@@ -301,10 +301,8 @@ $som = $connect->getSomme();
                                     <?php $compteur = 1; ?>
                                     <?php foreach ($PC as $pc): ?>
                                     <tr>
-                                        <td><?php echo $compteur++; ?></td>
-                                        <td><input type="text" name="nom_complet_personne[]" value="<?php echo htmlspecialchars($pc['nom_complet_personne']); ?>" /></td>
-                                        <td><input type="text" name="statut_contractant[]" value="<?php echo htmlspecialchars($pc['statut_contractant']); ?>" /></td>
-
+                                        <td><input type="text" name="nom_complet_personne[]" value="<?php echo htmlspecialchars($pc['nom_complet_personne'] ?? ''); ?>" /></td>
+                                        <td><input type="text" name="statut_contractant[]" value="<?php echo isset($pc['statut_contractant']) && $pc['statut_contractant'] !== null ? htmlspecialchars($pc['statut_contractant']) : ''; ?>" /></td>
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -316,8 +314,8 @@ $som = $connect->getSomme();
                         
         
             
-            <!-- البيانات المتعلقة بموضوع التعاقد -->
-            <div class="table-section">
+                <!-- البيانات المتعلقة بموضوع التعاقد -->
+                <div class="table-section">
                     <div class="table-title">🏠 البيانات المتعلقة بموضوع التعاقد ومراجع انجراره بالرسم العقاري</div>
                     <?php if (!empty($PC)): ?>                        
                         <table class="data-table">
@@ -335,18 +333,18 @@ $som = $connect->getSomme();
                             </thead>
                             <tbody>
                                 <?php $compteur = 1; ?>
-                                <?php foreach ($DI1 as $di1): ?>
+                                <?php foreach ($ID1 as $di1): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
-                                    <td><input type="text" name="nom_droit1[]" value="<?php echo htmlspecialchars($di1['nom_droit1']); ?>" /></td>
-                                    <td><input type="text" name="sujet_contrat1[]" value="<?php echo htmlspecialchars($di1['sujet_contrat1']); ?>" /></td>
-                                    <td><input type="text" name="unite1[]" value="<?php echo htmlspecialchars($di1['unite1']); ?>" /></td>
-                                    <td><input type="text" name="detail_general[]" value="<?php echo htmlspecialchars($di1['detail_general']); ?>" /></td>
-                                    <td><input type="text" name="contenu1[]" value="<?php echo htmlspecialchars($di1['contenu1']); ?>" /></td>
-                                    <td><input type="number" step="0.01" name="valeur_prix1[]" value="<?php echo htmlspecialchars($di1['valeur_prix1']); ?>" /></td>
-                                    <td><input type="text" name="dure1[]" value="<?php echo htmlspecialchars($di1['dure1']); ?>" /></td>
-                                    <td><input type="text" name="surplus1[]" value="<?php echo htmlspecialchars($di1['surplus1']); ?>" /></td>
-                                    <input type="number" name="id_demande[]" value="<?php echo htmlspecialchars($di1['id_demande']); ?>" />
+                                    <td><input type="text" name="nom_droit1[]" value="<?php echo htmlspecialchars($di1['nom_droit1'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="sujet_contrat1[]" value="<?php echo htmlspecialchars($di1['sujet_contrat1'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="unite1[]" value="<?php echo htmlspecialchars($di1['unite1'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="detail_general[]" value="<?php echo htmlspecialchars($di1['detail_general'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="contenu1[]" value="<?php echo htmlspecialchars($di1['contenu1'] ?? ''); ?>" /></td>
+                                    <td><input type="number" step="0.01" name="valeur_prix1[]" value="<?php echo isset($di1['valeur_prix1']) && $di1['valeur_prix1'] !== null ? htmlspecialchars($di1['valeur_prix1']) : ''; ?>" /></td>
+                                    <td><input type="text" name="dure1[]" value="<?php echo htmlspecialchars($di1['dure1'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="surplus1[]" value="<?php echo htmlspecialchars($di1['surplus1'] ?? ''); ?>" /></td>
+                                    <input type="hidden" name="id_demande[]" value="<?php echo isset($di1['id_demande']) && $di1['id_demande'] !== null ? htmlspecialchars($di1['id_demande']) : ''; ?>" />
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -357,24 +355,25 @@ $som = $connect->getSomme();
                 </div>
 
         
-                <!--  بيانات تتعلق بمراجع انجرار الترسيم -->
+                <!-- بيانات تتعلق بمراجع انجرار الترسيم -->
                 <div class="table-section">
                     <div class="table-title">📝 بيانات تتعلق بمراجع انجرار الترسيم</div>
-                    <?php 
-                    if (!empty($PC)): ?>
+
+                    <?php if (!empty($PC)): ?>
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>التاريخ</th>
-                                    <th>الإيداع</th>
-                                    <th>المجلد</th>
-                                    <th>العدد</th>
-                                    <th>ع.الفرعي</th>
+                                    <th>ع ر</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>مكان الإيداع</th>
+                                    <th>رقم المجلد</th>
+                                    <th>عدد التسجيل</th>
+                                    <th>الفرعي</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $compteur = 1; ?>
-                                <?php foreach ($DI2 as $di2): ?>
+                                <?php foreach ($ID2 as $di2): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
                                     <td><input type="text" name="date_inscri2[]" value="<?php echo htmlspecialchars($di2['date_inscri2']); ?>" /></td>
@@ -382,6 +381,7 @@ $som = $connect->getSomme();
                                     <td><input type="text" name="doc2[]" value="<?php echo htmlspecialchars($di2['doc2']); ?>" /></td>
                                     <td><input type="text" name="num_inscri2[]" value="<?php echo htmlspecialchars($di2['num_inscri2']); ?>" /></td>
                                     <td><input type="text" name="num_succursale2[]" value="<?php echo htmlspecialchars($di2['num_succursale2']); ?>" /></td>
+                                    <input type="hidden" name="id_demande2[]" value="<?php echo htmlspecialchars($di2['id_demande2']); ?>" />
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -390,6 +390,7 @@ $som = $connect->getSomme();
                         <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
                     <?php endif; ?>
                 </div>
+
 
                 <!--  البيانات الأخرى المتعلقة بالحق -->
                 <div class="table-section">
@@ -405,7 +406,7 @@ $som = $connect->getSomme();
                             </thead>
                             <tbody>
                                 <?php $compteur = 1; ?>
-                                <?php foreach ($DI3 as $di3): ?>
+                                <?php foreach ($ID3 as $di3): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
                                     <td><input type="text" name="regime_finance_couple3[]" value="<?php echo htmlspecialchars($di3['regime_finance_couple3']); ?>" /></td>
@@ -498,13 +499,12 @@ $som = $connect->getSomme();
                                 <?php $compteur = 1; ?>
                                 <?php foreach ($PC as $pc): ?>
                                 <tr>
-                                    <td><?php echo $compteur++; ?></td>
-                                    <td><input type="text" name="prenom_personne[]" value="<?php echo htmlspecialchars($pc['prenom_personne']); ?>" /></td>
-                                    <td><input type="text" name="prenom_pere[]" value="<?php echo htmlspecialchars($pc['prenom_pere']); ?>" /></td>
-                                    <td><input type="text" name="prenom_grandpere[]" value="<?php echo htmlspecialchars($pc['prenom_grandpere']); ?>" /></td>
-                                    <td><input type="text" name="nom_personne[]" value="<?php echo htmlspecialchars($pc['nom_personne']); ?>" /></td>
-                                    <td><input type="text" name="statut[]" value="<?php echo htmlspecialchars($pc['statut']); ?>" /></td>
-                                    <td><input type="text" name="signature[]" value="<?php echo htmlspecialchars($pc['signature']); ?>" /></td>
+                                    <td><input type="text" name="prenom_personne[]" value="<?php echo isset($pc['prenom_personne']) && $pc['prenom_personne'] !== null ? htmlspecialchars($pc['prenom_personne']) : ''; ?>" /></td>
+                                    <td><input type="text" name="prenom_pere[]" value="<?php echo isset($pc['prenom_pere']) && $pc['prenom_pere'] !== null ? htmlspecialchars($pc['prenom_pere']) : ''; ?>" /></td>
+                                    <td><input type="text" name="prenom_grandpere[]" value="<?php echo isset($pc['prenom_grandpere']) && $pc['prenom_grandpere'] !== null ? htmlspecialchars($pc['prenom_grandpere']) : ''; ?>" /></td>
+                                    <td><input type="text" name="nom_personne[]" value="<?php echo isset($pc['nom_personne']) && $pc['nom_personne'] !== null ? htmlspecialchars($pc['nom_personne']) : ''; ?>" /></td>
+                                    <td><input type="text" name="statut[]" value="<?php echo isset($pc['statut']) && $pc['statut'] !== null ? htmlspecialchars($pc['statut']) : ''; ?>" /></td>
+                                    <td><input type="text" name="signature[]" value="<?php echo isset($pc['signature']) && $pc['signature'] !== null ? htmlspecialchars($pc['signature']) : ''; ?>" /></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>

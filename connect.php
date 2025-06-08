@@ -1698,7 +1698,7 @@ class ClsConnect {
 
     //أطراف التعاقد
     public function getPerContracV() {
-        $sql = "SELECT id_demande, nom_complet_personne, statut_contractant
+        $sql = "SELECT nom_complet_personne, statut_contractant
                 FROM personnes_contracteurs";
 
         $stmt = $this->pdo->prepare($sql); 
