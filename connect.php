@@ -827,7 +827,7 @@ class ClsConnect {
                 $id_demande = is_array($id_demande) ? $id_demande : [$id_demande];
                 $nom_complet_personne = is_array($nom_complet_personne) ? $nom_complet_personne : [$nom_complet_personne];
                 $statut_contractant = is_array($statut_contractant) ? $statut_contractant : [$statut_contractant];
-                $role = is_array($role) ? $role : <div 1role=""></div>;
+                $role = is_array($role) ? $role : [$role];
     
                 $success = true;
                 $errors = [];
@@ -841,12 +841,7 @@ class ClsConnect {
                     }
     
                     $sql = "INSERT INTO personnes_contracteurs (
-                        prenom, numero_document_identite, nom, prenom_pere, date_emission_document, sexe,
-                        nationalite, adresse, profession, etat_civil, prenom_conjoint, nom_conjoint,
-                        prenom_pere_conjoint, prenom_grand_pere_conjoint, surnom_conjoint,
-                        date_naissance_conjoint, lieu_naissance_conjoint, nationalite_conjoint,
-                        numero_document_conjoint, date_document_conjoint, lieu_document_conjoint,
-                        vendeur_acheteur, id_demande, nom_complet_personne, statut_contractant, role
+                        prenom, numero_document_identite, nom, prenom_pere, date_emission_document, sexe, nationalite, adresse, profession, etat_civil, nom_conjoint, prenom_pere_conjoint, date_naissance_conjoint, lieu_naissance_conjoint, nationalite_conjoint, numero_document_conjoint, date_document_conjoint, lieu_document_conjoint, prenom_grand_pere_conjoint, prenom_conjoint, role, id_demande, nom_complet_personne, statut_contractant
                     ) VALUES (
                         :prenom, :numero_document_identite, :nom, :prenom_pere, :date_emission_document,
                         :sexe, :nationalite, :adresse, :profession, :etat_civil, :prenom_conjoint,
@@ -854,7 +849,7 @@ class ClsConnect {
                         :surnom_conjoint, :date_naissance_conjoint, :lieu_naissance_conjoint,
                         :nationalite_conjoint, :numero_document_conjoint, :date_document_conjoint,
                         :lieu_document_conjoint, :vendeur_acheteur, :id_demande, :nom_complet_personne,
-                        :statut_contractant , :role 
+                        :statut_contractant ,:role 
                     )";
     
                     $stmt = $pdo->prepare($sql);
@@ -883,7 +878,8 @@ class ClsConnect {
                         ':vendeur_acheteur' => $vendeur_acheteur[$i] ?? null,
                         ':id_demande' => $id_demande[$i] ?? null,
                         ':nom_complet_personne' => $nom_complet_personne[$i],
-                        ':statut_contractant' => $statut_contractant[$i]
+                        ':statut_contractant' => $statut_contractant[$i],
+                        ':role' => $role[$i] 
                     ]);
     
                     if (!$result) {
@@ -1712,6 +1708,14 @@ class ClsConnect {
         }
     }
 
+
+
+
+
+
+
+
+    //PARTIE VALIDATION DES DONNEES
     //المؤيدات
     public function getPiecesJointesV() {
         $sql = "SELECT code_pieces, libile_pieces, date_document, ref_document, date_ref, id_demande 
@@ -1734,52 +1738,95 @@ class ClsConnect {
 
     //dessin_immobilier1
     public function getDI1() {
-        $sql = "SELECT * FROM dessin_immobilier1";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT nom_droit1, sujet_contrat1, unite1, detail_general, contenu1, valeur_prix1, dure1, surplus1, id_demande FROM public.dessin_immobiler1';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getDI1 : " . count($result));
+            error_log("Données dans getDI1 : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getDI1 : " . $e->getMessage());
+            return [];
+        }
     }
 
     //dessin_immobiliers2
     public function getDI2() {
-        $sql = "SELECT * FROM dessin_immobiliers2";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT date_inscri2, lieu_inscri2, doc2, num_inscri2, num_succursale2, id_demande FROM public.dessin_immobilers2';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getDI2 : " . count($result));
+            error_log("Données dans getDI2 : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getDI2 : " . $e->getMessage());
+            return [];
+        }
     }
     //dessin_immobilier3
     public function getDI3() {
-        $sql = "SELECT * FROM dessin_immobilier3";
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT regime_finance_couple3, remarques3, id_demande FROM public.dessin_immobiler3';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getDI3 : " . count($result));
+            error_log("Données dans getDI3 : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getDI3 : " . $e->getMessage());
+            return [];
+        }
     }
     //dessin_immobilier4
     public function getDI4() {
-        $sql = "SELECT * FROM dessin_immobilier4";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT valeur_contrat_dinar, prix_ecriture, id_demande FROM public.dessin_immobilier4';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getDI4 : " . count($result));
+            error_log("Données dans getDI4 : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getDI4 : " . $e->getMessage());
+            return [];
+        }
     }
 
     //chapitres juridiques
     public function getChJ() {
-        $sql = "SELECT * FROM contenue_chapitre";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT contenue_chapitre FROM public.chapitres_juridiques';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getChJ : " . count($result));
+            error_log("Données dans getChJ : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getChJ : " . $e->getMessage());
+            return [];
+        }
     }
     //perception1
     public function getPer1() {
-        $sql = "SELECT * FROM perception1";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT id_montant1, partieabstrait1, montant_obligatoire1, montant_paye1, num_recu1, date_payement1 FROM public.perception1';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getPer1 : " . count($result));
+            error_log("Données dans getPer1 : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getPer1 : " . $e->getMessage());
+            return [];
+        }
     }
     //perception2
     public function getPer2() {
@@ -1799,12 +1846,12 @@ class ClsConnect {
     //perception3
     public function getPer3() {
         try {
-            $sql = "SELECT * FROM perception3";
+            $sql = 'SELECT valeur_dinar3, pourcent3, montant_dinar3, signature3 FROM public.perecption3';
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("Nombre de résultats dans getPer3 : " . count($result)); // Log du nombre de lignes
-            error_log("Données dans getPer3 : " . print_r($result, true)); // Log des données
+            error_log("Nombre de résultats dans getPer3 : " . count($result));
+            error_log("Données dans getPer3 : " . print_r($result, true));
             return $result;
         } catch (PDOException $e) {
             error_log("Erreur dans getPer3 : " . $e->getMessage());
@@ -1828,11 +1875,32 @@ class ClsConnect {
     }
     //somme
     public function getSomme() {
-        $sql = "SELECT * FROM somme";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = 'SELECT somme_prix_obligatoire, somme_prix_paye FROM public.somme';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getSomme : " . count($result));
+            error_log("Données dans getSomme : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getSomme : " . $e->getMessage());
+            return [];
+        }
+    }
+    public function getIDpersonne() {
+        try {
+            $sql = 'SELECT prenom_personne, prenom_pere, prenom_grandpere, nom_personne, statut, signature FROM public."IDpersonnes"';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getIDpersonne : " . count($result));
+            error_log("Données dans getIDpersonne : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getIDpersonne : " . $e->getMessage());
+            return [];
+        }
     }
 
 }
