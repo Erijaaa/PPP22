@@ -1,20 +1,236 @@
 <?php
 
-require_once 'connect.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once("connect.php");
 $connect = new ClsConnect();
-$pj = $connect->getPiecesJointesV(); 
-$ID1 = $connect->getDI1();
-$ID2 = $connect->getDI2();
-$ID3 = $connect->getDI3();
-$ID4 = $connect->getDI4();
-$chj = $connect->getChJ();
-$PC = $connect->getPerContracV();
-$Per1 = $connect->getPer1();
-$Per2 = $connect->getPer2();
-$Per3 = $connect->getPer3();
-$Per4 = $connect->getPer4();
-$som = $connect->getSomme();
-$IDpersonne = $connect->getIDpersonne();
+$pdo = $connect->getConnection();
+
+// Get id_demande from URL
+$id_demande = isset($_GET['id_demande']) && is_numeric($_GET['id_demande']) ? (int)$_GET['id_demande'] : null;
+
+// Fetch demand details if id_demande is provided
+$demande = $id_demande ? $connect->getValidationById($id_demande) : false;
+
+// Fetch all demande IDs for dropdown
+//$demande = $connect->getAllDemandeIds();
+
+// Initialize variables
+$pieces_jointes = [];
+$pj = [];
+
+if ($id_demande) {
+    try {
+        // Fetch pieces_jointes
+        $sql = "SELECT * FROM pieces_jointes WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $pieces_jointes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pj = $pieces_jointes;
+        // No print or echo here
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $pj = [];
+    }
+} else {
+    // No echo unless intentional
+    $pj = [];
+}
+
+$PC = []; // Initialiser
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM personnes_contracteurs WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $PC = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $PC = [];
+    }
+} else {
+    $PC = [];
+}
+
+$ID1 = [];
+
+if ($id_demande) {
+    try {
+        $connect = new ClsConnect();
+        $ID1 = $connect->getDI1($id_demande); // Pass $id_demande here
+    } catch (Exception $e) {
+        error_log("Error fetching ID1: " . $e->getMessage());
+        $ID1 = [];
+    }
+} else {
+    $ID1 = [];
+}
+
+
+$ID2 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM dessin_immobilers2 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $ID2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $ID2 = [];
+    }
+} else {
+    $ID2 = [];
+}
+
+$ID3 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM dessin_immobiler3 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $ID3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $ID3 = [];
+    }
+} else {
+    $ID3 = [];
+}
+
+$ID4 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM dessin_immobilier4 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $ID4 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $ID4 = [];
+    }
+} else {
+    $ID4 = [];
+}
+
+$chj = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM chapitres_juridiques WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $chj = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $chj = [];
+    }
+} else {
+    $chj = [];
+}
+
+
+$IDpersonne = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM personnes_contracteurs WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $IDpersonne = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $IDpersonne = [];
+    }
+} else {
+    $IDpersonne = [];
+}
+
+$Per1 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM perception1 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $Per1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $Per1 = [];
+    }
+} else {
+    $Per1 = [];
+}
+
+$som = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM somme WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $somme_totale = $stmt->fetch(PDO::FETCH_ASSOC);
+        $som = $somme_totale ? [$somme_totale] : [];
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        $som = [];
+    }
+} else {
+    $som = [];
+}
+
+
+$Per2 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM perception2 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $Per2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Erreur lors de la récupération des données de confirmation : " . $e->getMessage();
+        $Per2 = [];
+    }
+}
+
+
+$Per3 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM perecption3 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $Per3 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Erreur lors de la récupération des données de la perception3 : " . $e->getMessage();
+        $Per3 = [];
+    }
+}
+
+$Per4 = [];
+
+if ($id_demande) {
+    try {
+        $sql = "SELECT * FROM perception4 WHERE id_demande = :id_demande";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id_demande' => $id_demande]);
+        $Per4 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        echo "Erreur lors de la récupération des données de perception4 : " . $e->getMessage();
+        $Per4 = [];
+    }
+}
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -241,9 +457,10 @@ $IDpersonne = $connect->getIDpersonne();
     <div class="container">
         <div class="header">
             <h1>🏢 واجهة تأكيد البيانات العقارية</h1>
-            <span class="header">عدد مطلب التحرير</span>
-            <input type="text" class="refresh-btn" name="id_demande" 
-            value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />            
+            <div class="header">
+                <span>عدد مطلب التحرير</span>
+                <input type="text" class="search-input" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />           
+            </div>
         </div>
 
         <div class="vertical-layout">
@@ -310,6 +527,7 @@ $IDpersonne = $connect->getIDpersonne();
                     <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
                 <?php endif; ?>
             </div>
+
         
             
                 <!-- البيانات المتعلقة بموضوع التعاقد -->
@@ -319,7 +537,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>عدد الحق</th>
                                     <th>موضوع التعاقد</th>
                                     <th>الوحدة</th>
@@ -359,11 +577,11 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>تاريخ التسجيل</th>
-                                    <th>مكان الإيداع</th>
-                                    <th>رقم المجلد</th>
-                                    <th>عدد التسجيل</th>
+                                    <th></th>
+                                    <th>التاريخ </th>
+                                    <th> الإيداع</th>
+                                    <th> المجلد</th>
+                                    <th>العدد </th>
                                     <th>ع الفرعي</th>
                                 </tr>
                             </thead>
@@ -386,6 +604,7 @@ $IDpersonne = $connect->getIDpersonne();
                     <?php endif; ?>
                 </div>
 
+
                 <!--  البيانات الأخرى المتعلقة بالحق -->
                 <div class="table-section">
                     <div class="table-title">📝 البيانات الأخرى المتعلقة بالحق</div>
@@ -393,7 +612,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>النظام المالي للزواج</th>
                                     <th>ملاحظات أخرى</th>
                                 </tr>
@@ -414,6 +633,7 @@ $IDpersonne = $connect->getIDpersonne();
                     <?php endif; ?>
                 </div>
 
+
                 <!--  المبلغ الجملي لموضوع التعاقد -->
                 <div class="table-section">
                     <div class="table-title">📝 المبلغ الجملي لموضوع التعاقد</div>
@@ -421,10 +641,9 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>المبلغ بلسان القلم</th>
                                     <th>قيمة موضوع التعاقد بالدينار</th>
-                                    <th>عدد المطلب</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -434,7 +653,6 @@ $IDpersonne = $connect->getIDpersonne();
                                     <td><?php echo $compteur++; ?></td>
                                     <td><?php echo htmlspecialchars($immobilier['prix_ecriture'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($immobilier['valeur_contrat_dinar'] ?? ''); ?></td>
-                                    <td><?php echo htmlspecialchars($immobilier['id_demande'] ?? ''); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -453,7 +671,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>المحتوى</th>
                                 </tr>
                             </thead>
@@ -472,6 +690,7 @@ $IDpersonne = $connect->getIDpersonne();
                     <?php endif; ?>
                 </div>
 
+
                 <!-- IDPersonnes -->
                 <div class="table-section">
                     <div class="table-title">📝 امضاءات الأطراف و التعريف بها</div>
@@ -479,10 +698,9 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>الاسم</th>
                                     <th>اسم الأب</th>
-                                    <th>اسم الجد</th>
                                     <th>اللقب</th>
                                     <th>الصفة</th>
                                     <th>الامضاءات</th>
@@ -493,11 +711,10 @@ $IDpersonne = $connect->getIDpersonne();
                                 <?php foreach ($IDpersonne as $personne): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
-                                    <td><?php echo htmlspecialchars($personne['prenom_personne'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($personne['prenom'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($personne['prenom_pere'] ?? ''); ?></td>
-                                    <td><?php echo htmlspecialchars($personne['prenom_grandpere'] ?? ''); ?></td>
-                                    <td><?php echo htmlspecialchars($personne['nom_personne'] ?? ''); ?></td>
-                                    <td><?php echo htmlspecialchars($personne['statut'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($personne['nom'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($personne['role'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($personne['signature'] ?? ''); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -516,7 +733,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>معرف المعلوم</th>
                                     <th>الجهة المستخلصة</th>
                                     <th>المبلغ المستوجب</th>
@@ -552,7 +769,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>مجموع المبلغ المستوجب</th>
                                     <th>مجموع المبلغ المستخلص</th>
                                 </tr>
@@ -579,7 +796,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>القيمة بالدينار</th>
                                     <th>النسبة</th>
                                     <th>المبلغ بالدينار</th>
@@ -611,7 +828,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>الصفة</th>
                                     <th>التلقي</th>
                                     <th>التحرير</th>
@@ -644,7 +861,7 @@ $IDpersonne = $connect->getIDpersonne();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th></th>
                                     <th>التسمية</th>
                                     <th>القيمة بالدينار</th>
                                     <th>النسبة</th>
@@ -678,10 +895,7 @@ $IDpersonne = $connect->getIDpersonne();
 
         <!-- Boutons d'action -->
         <div class="action-buttons">
-            <form method="POST" style="display: inline;">
-                <input type="hidden" name="action" value="print_contract">
-                <button type="submit" class="action-btn print-btn">🖨️ طباعة العقد</button>
-            </form>
+            <button type="button" class="action-btn print-btn" onclick="printContract('<?php echo htmlspecialchars($demande['id_demande'] ?? ''); ?>')">🖨️ طباعة العقد</button>
             
             <form method="POST" style="display: inline;">
                 <input type="hidden" name="action" value="object_contract">
@@ -689,5 +903,37 @@ $IDpersonne = $connect->getIDpersonne();
             </form>
         </div>
     </div>
+<script>
+function printContract(idDemande) {
+            if (!idDemande) {
+                alert('رقم المطلب غير متوفر');
+                return;
+            }
+            //const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'generate_pdf.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.responseType = 'blob';
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const blob = new Blob([xhr.response], { type: 'application/pdf' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `lettre_contrat_${new Date().toISOString().replace(/[:.]/g, '-')}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    alert('تم إنشاء العقد بنجاح!');
+                } else {
+                    alert('خطأ أثناء إنشاء العقد: ' + xhr.statusText);
+                }
+            };
+            xhr.onerror = function () {
+                alert('خطأ في الاتصال بالخادم');
+            };
+            xhr.send('id_demande=' + encodeURIComponent(idDemande));
+        }
+</script>
 </body>
 </html>

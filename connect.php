@@ -215,6 +215,19 @@ class ClsConnect {
             return false;
         }
     }
+    
+    public function getValidationById($id_demande) {
+        $sql = "SELECT * FROM public.\"T_demande\" WHERE id_demande = :id_demande";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_demande', $id_demande, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
 
 
     public function getContrat($id_contrat) {
@@ -792,7 +805,36 @@ class ClsConnect {
 
     //القسم الرابع
     //وثيقة الهوية
-    public function personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande, $nom_complet_personne, $role, $statut_contractant) {
+    public function personneContratc(
+        $pdo,
+        $prenom,
+        $numero_document_identite,
+        $nom,
+        $prenom_pere,
+        $date_emission_document,
+        $sexe,
+        $nationalite,
+        $adresse,
+        $profession,
+        $etat_civil,
+        $prenom_conjoint,
+        $nom_conjoint,
+        $prenom_pere_conjoint,
+        $prenom_grand_pere_conjoint,
+        $surnom_conjoint,
+        $date_naissance_conjoint,
+        $lieu_naissance_conjoint,
+        $nationalite_conjoint,
+        $numero_document_conjoint,
+        $date_document_conjoint,
+        $lieu_document_conjoint,
+        $vendeur_acheteur,
+        $id_demande_array,
+        $nom_complet_personne,
+        $statut_contractant,
+        $notes,
+        $role
+    ) {            
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             try {
                 // Check if required fields are provided
@@ -1094,52 +1136,41 @@ class ClsConnect {
         }
         return null;
     }
-    
-    public function dessin_immobilier4($pdo) {
-        if (isset($_POST['submit'])) {
+    public function dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture, $id_demande, $statut_contractant) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             try {
-                // Check if inputs are arrays and iterate over them
-                $valeur_contrat_dinar_array = isset($_POST['valeur_contrat_dinar']) ? (is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'] : [$_POST['valeur_contrat_dinar']]) : [];
-                $prix_ecriture_array = isset($_POST['prix_ecriture']) ? (is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'] : [$_POST['prix_ecriture']]) : [];
-    
-                // Ensure at least one row has valid data
-                if (empty($valeur_contrat_dinar_array) || !isset($valeur_contrat_dinar_array[0]) || empty(trim($valeur_contrat_dinar_array[0]))) {
+                // Validate input
+                if (empty(trim($valeur_contrat_dinar))) {
+                    error_log("No valid data provided: valeur_contrat_dinar is empty");
                     return "❌ No valid data provided";
                 }
     
-                $sql = "INSERT INTO dessin_immobilier4
-                        (valeur_contrat_dinar, prix_ecriture)
-                        VALUES
-                        (:valeur_contrat_dinar, :prix_ecriture)";
-               
-                $stmt = $pdo->prepare($sql);
-    
-                // Process each row
-                $success = true;
-                foreach ($valeur_contrat_dinar_array as $index => $valeur_contrat_dinar) {
-                    // Ensure scalar values
-                    $valeur_contrat_dinar = isset($valeur_contrat_dinar_array[$index]) && is_scalar($valeur_contrat_dinar_array[$index]) ? $valeur_contrat_dinar_array[$index] : null;
-                    $prix_ecriture = isset($prix_ecriture_array[$index]) && is_scalar($prix_ecriture_array[$index]) ? $prix_ecriture_array[$index] : null;
-    
-                    // Skip if no valid data for this row
-                    if (empty($valeur_contrat_dinar)) {
-                        error_log("Skipping row $index: valeur_contrat_dinar is empty");
-                        continue;
-                    }
-    
-                    // Execute the query for this row
-                    $result = $stmt->execute([
-                        ':valeur_contrat_dinar' => $valeur_contrat_dinar,
-                        ':prix_ecriture' => $prix_ecriture
-                    ]);
-    
-                    if (!$result) {
-                        $success = false;
-                        error_log("Failed to insert row $index: " . print_r($stmt->errorInfo(), true));
-                    }
+                if (empty(trim($statut_contractant))) {
+                    error_log("Statut contractant is empty");
+                    return "❌ Le statut du contractant est requis";
                 }
     
-                return $success ? "✅ Successfully inserted rows" : "❌ Failed to insert some rows";
+                $sql = "INSERT INTO public.dessin_immobilier4 (valeur_contrat_dinar, prix_ecriture, id_demande, statut_contractant) 
+                        VALUES (:valeur_contrat_dinar, :prix_ecriture, :id_demande, :statut_contractant)";
+                $stmt = $pdo->prepare($sql);
+    
+                // Log parameters for debugging
+                error_log("Inserting: valeur_contrat_dinar=$valeur_contrat_dinar, prix_ecriture=$prix_ecriture, id_demande=$id_demande, statut_contractant=$statut_contractant");
+    
+                // Execute the query
+                $result = $stmt->execute([
+                    ':valeur_contrat_dinar' => $valeur_contrat_dinar,
+                    ':prix_ecriture' => $prix_ecriture,
+                    ':id_demande' => $id_demande,
+                    ':statut_contractant' => $statut_contractant
+                ]);
+    
+                if (!$result) {
+                    error_log("Failed to insert: " . print_r($stmt->errorInfo(), true));
+                    return "❌ Failed to insert row";
+                }
+    
+                return "✅ Successfully inserted row";
             } catch (PDOException $e) {
                 error_log("Erreur dans dessin_immobilier4: " . $e->getMessage());
                 return "❌ SQL Error: " . $e->getMessage();
@@ -1147,6 +1178,8 @@ class ClsConnect {
         }
         return null;
     }
+    
+   
     
 
     public function nomGOUV($pdo) {
@@ -1717,18 +1750,25 @@ class ClsConnect {
 
     //PARTIE VALIDATION DES DONNEES
     //المؤيدات
-    public function getPiecesJointesV() {
-        $sql = "SELECT code_pieces, libile_pieces, date_document, ref_document, date_ref, id_demande 
-                FROM pieces_jointes";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        $stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    function getPiecesJointesByDemandeV($id_demande) {
+        try {
+            $sql = "SELECT * FROM pieces_jointes WHERE id_demande = :id_demande";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id_demande' => $id_demande]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database error in getPiecesJointesByDemande: " . $e->getMessage());
+            return [];
+        }
     }
+
+
+
+        
 
     //أطراف التعاقد
     public function getPerContracV() {
-        $sql = "SELECT nom_complet_personne, statut_contractant
+        $sql = "SELECT nom_complet_personne, role
                 FROM personnes_contracteurs"; 
 
         $stmt = $this->pdo->prepare($sql); 
@@ -1737,14 +1777,14 @@ class ClsConnect {
     }
 
     //dessin_immobilier1
-    public function getDI1() {
+    public function getDI1($id_demande) {
         try {
-            $sql = 'SELECT nom_droit1, sujet_contrat1, unite1, detail_general, contenu1, valeur_prix1, dure1, surplus1, id_demande FROM public.dessin_immobiler1';
+            $sql = 'SELECT nom_droit1, sujet_contrat1, unite1, detail_general, contenu1, valeur_prix1, dure1, surplus1 
+                    FROM public.dessin_immobiler1 WHERE id_demande = :id_demande';
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([':id_demande' => $id_demande]);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("Nombre de résultats dans getDI1 : " . count($result));
-            error_log("Données dans getDI1 : " . print_r($result, true));
             return $result;
         } catch (PDOException $e) {
             error_log("Erreur dans getDI1 : " . $e->getMessage());
@@ -1828,6 +1868,20 @@ class ClsConnect {
             return [];
         }
     }
+
+    public function getPerceptionById($id_demande) {
+        $sql = "SELECT * FROM perceptions WHERE id_demande = :id_demande";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_demande', $id_demande, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            return [];
+        }
+    }
+    
     //perception2
     public function getPer2() {
         try {
@@ -1860,7 +1914,7 @@ class ClsConnect {
     }
     //perception4
     public function getPer4() {
-        try {
+       try {
             $sql = "SELECT * FROM perception4";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();

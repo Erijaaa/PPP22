@@ -19,6 +19,8 @@ if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
 }
 
 
+
+
 // Initialize variables for personneContratc
 $prenom = '';
 $numero_document_identite = '';
@@ -84,33 +86,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 
         // Call personneContratc function
         $personne = $db->personneContratc(
-            $pdo,
-            $prenom,
-            $numero_document_identite,
-            $nom,
-            $prenom_pere,
-            $date_emission_document,
-            $sexe,
-            $nationalite,
-            $adresse,
-            $profession,
-            $etat_civil,
-            $prenom_conjoint,
-            $nom_conjoint,
-            $prenom_pere_conjoint,
-            $prenom_grand_pere_conjoint,
-            $surnom_conjoint,
-            $date_naissance_conjoint,
-            $lieu_naissance_conjoint,
-            $nationalite_conjoint,
-            $numero_document_conjoint,
-            $date_document_conjoint,
-            $lieu_document_conjoint,
-            $vendeur_acheteur,
-            $id_demande_array,
-            $nom_complet_personne,
-            $statut_contractant
-        );
+          $pdo,
+          $prenom, // [trimmed values]
+          $numero_document_identite, // [trimmed values]
+          $nom, // [trimmed values]
+          $prenom_pere, // [trimmed values]
+          $date_emission_document, // [trimmed values]
+          $sexe, // [trimmed values]
+          $nationalite, // [trimmed values]
+          $adresse, // [trimmed values]
+          $profession, // [trimmed values]
+          $etat_civil, // [trimmed values]
+          $prenom_conjoint, // [trimmed values]
+          $nom_conjoint, // [trimmed values]
+          $prenom_pere_conjoint, // [trimmed values]
+          $prenom_grand_pere_conjoint, // [trimmed values]
+          $surnom_conjoint, // [trimmed values]
+          $date_naissance_conjoint, // [trimmed values]
+          $lieu_naissance_conjoint, // [trimmed values]
+          $nationalite_conjoint, // [trimmed values]
+          $numero_document_conjoint, // [trimmed values]
+          $date_document_conjoint, // [trimmed values]
+          $lieu_document_conjoint, // [trimmed values]
+          $vendeur_acheteur, // [trimmed values]
+          $id_demande_array, // [trimmed values]
+          $nom_complet_personne, // [trimmed values]
+          $statut_contractant, // [trimmed values]
+          $notes // Ajoutez $notes si requis
+      );
         
         if ($personne === false) {
             echo "❌ Erreur lors de la sauvegarde des données";
@@ -147,7 +150,7 @@ $sujetContrat = $db->getSubject($id_demande);
 
 // Initialize variables for dessin_immobilier1
 
-$nom_droit1 = '';
+/*$nom_droit1 = '';
 $sujet_contrat1 = '';
 $unite1 = '';
 $detail_general = '';
@@ -209,17 +212,28 @@ echo $dessin3;
 // Initialize variables for dessin_immobilier4
 $valeur_contrat_dinar = '';
 $prix_ecriture = '';
+$statut_contractant = 'approved'; // Default value, adjust to valid status
+$id_demande = null; // Default to NULL, assuming nullable
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     if (isset($_POST['valeur_contrat_dinar']) && isset($_POST['prix_ecriture'])) {
         $valeur_contrat_dinar = is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'][0] : $_POST['valeur_contrat_dinar'];
         $prix_ecriture = is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'][0] : $_POST['prix_ecriture'];
     }
-}
-$dessin4 = $db->dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture);
-echo $dessin4;
 
-$chapitre = $db->insertChapitres($pdo); 
+    // Log input parameters
+    error_log("Calling dessin_immobilier4: valeur_contrat_dinar=$valeur_contrat_dinar, prix_ecriture=$prix_ecriture, id_demande=$id_demande, statut_contractant=$statut_contractant");
+}
+
+$dessin4 = $db->dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture, $id_demande, $statut_contractant);
+echo "<p>$dessin4</p>";
+/*if (strpos($dessin4, "✅") === 0) {
+    // Redirect to display page on success
+    header("Location: pageValidationValideur.php"); // Adjust to your display page
+    exit;
+}*/
+
+/*$chapitre = $db->insertChapitres($pdo); 
 echo $chapitre;
 
 $prenom_personne = '';
@@ -319,16 +333,204 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
   } else {
       echo "❌ Missing required POST fields";
   }
-}
+}*/
 
-$p4 = $db->perception4($pdo);
+/*$p4 = $db->perception4($pdo);
 echo $p4;
 
 $titre = $db->nomTITRE($pdo);
 echo $titre;
 
 $gouv = $db->nomGOUV($pdo);
-echo $gouv;
+echo $gouv;*/
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once("connect.php");
+$db = new ClsConnect();
+$pdo = $db->getConnection();
+
+if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
+    $id_demande = $_GET['id_demande'];
+    $num_recu = $_GET['num_recu'];
+    $demande = $db->getDemandeById($id_demande);
+} else {
+    echo "Paramètres manquants dans l'URL.";
+    exit;
+}
+
+// Initialisation des variables globales (facultatif, peut être mis à jour dans le bloc POST)
+$id_demande = isset($_GET['id_demande']) ? intval($_GET['id_demande']) : 0;
+$sujetducontrat = $db->getSujetContrat($id_demande);
+$anneecontrat = $db->getAnneeContrat($id_demande);
+$numcontrat = $db->getNumContrat($id_demande);
+$pieces_jointes = $db->getPiecesJointesByDemande($id_demande);
+$agent = $db->getAgent($id_demande);
+$deposant = $db->getDeposant($id_demande);
+$sujetContrat = $db->getSubject($id_demande);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
+    try {
+        $pdo->beginTransaction();
+
+        // Récupérer et valider les données de base
+        $id_demande = isset($_POST['id_demande']) ? intval($_POST['id_demande']) : 0;
+        $num_contrat = isset($_POST['num_contrat']) ? htmlspecialchars($_POST['num_contrat']) : ($numcontrat['num_contrat'] ?? '');
+        $date_contrat = date('Y-m-d');
+
+        // 1. General Data
+        $annee_contrat = isset($_POST['annee_contrat']) ? trim($_POST['annee_contrat']) : '';
+        $date_demande = isset($_POST['date_demande']) ? trim($_POST['date_demande']) : '';
+        $sujet_contrat = isset($_POST['sujet_contrat']) ? trim($_POST['sujet_contrat']) : '';
+        $prenom_deposant = isset($_POST['prenom_deposant']) ? trim($_POST['prenom_deposant']) : '';
+        $nom_deposant = isset($_POST['nom_deposant']) ? trim($_POST['nom_deposant']) : '';
+
+        // 2. Documents (pièces jointes)
+        $libile_pieces = isset($_POST['libile_pieces']) ? array_map('trim', (array)$_POST['libile_pieces']) : [];
+        $date_document = isset($_POST['date_document']) ? array_map('trim', (array)$_POST['date_document']) : [];
+        $ref_document = isset($_POST['ref_document']) ? array_map('trim', (array)$_POST['ref_document']) : [];
+        $date_ref = isset($_POST['date_ref']) ? array_map('trim', (array)$_POST['date_ref']) : [];
+        $code_pieces = isset($_POST['code_pieces']) ? array_map('trim', (array)$_POST['code_pieces']) : [];
+
+        // 3. Contract Parties
+        $prenom = isset($_POST['prenom']) ? array_map('trim', (array)$_POST['prenom']) : [];
+        $numero_document_identite = isset($_POST['numero_document_identite']) ? array_map('trim', (array)$_POST['numero_document_identite']) : [];
+        $nom = isset($_POST['nom']) ? array_map('trim', (array)$_POST['nom']) : [];
+        $prenom_pere = isset($_POST['prenom_pere']) ? array_map('trim', (array)$_POST['prenom_pere']) : [];
+        $date_emission_document = isset($_POST['date_emission_document']) ? array_map('trim', (array)$_POST['date_emission_document']) : [];
+        $sexe = isset($_POST['sexe']) ? array_map('trim', (array)$_POST['sexe']) : [];
+        $nationalite = isset($_POST['nationalite']) ? array_map('trim', (array)$_POST['nationalite']) : [];
+        $adresse = isset($_POST['adresse']) ? array_map('trim', (array)$_POST['adresse']) : [];
+        $profession = isset($_POST['profession']) ? array_map('trim', (array)$_POST['profession']) : [];
+        $etat_civil = isset($_POST['etat_civil']) ? array_map('trim', (array)$_POST['etat_civil']) : [];
+        $prenom_conjoint = isset($_POST['prenom_conjoint']) ? array_map('trim', (array)$_POST['prenom_conjoint']) : [];
+        $nom_conjoint = isset($_POST['nom_conjoint']) ? array_map('trim', (array)$_POST['nom_conjoint']) : [];
+        $prenom_pere_conjoint = isset($_POST['prenom_pere_conjoint']) ? array_map('trim', (array)$_POST['prenom_pere_conjoint']) : [];
+        $prenom_grand_pere_conjoint = isset($_POST['prenom_grand_pere_conjoint']) ? array_map('trim', (array)$_POST['prenom_grand_pere_conjoint']) : [];
+        $surnom_conjoint = isset($_POST['surnom_conjoint']) ? array_map('trim', (array)$_POST['surnom_conjoint']) : [];
+        $date_naissance_conjoint = isset($_POST['date_naissance_conjoint']) ? array_map('trim', (array)$_POST['date_naissance_conjoint']) : [];
+        $lieu_naissance_conjoint = isset($_POST['lieu_naissance_conjoint']) ? array_map('trim', (array)$_POST['lieu_naissance_conjoint']) : [];
+        $nationalite_conjoint = isset($_POST['nationalite_conjoint']) ? array_map('trim', (array)$_POST['nationalite_conjoint']) : [];
+        $numero_document_conjoint = isset($_POST['numero_document_conjoint']) ? array_map('trim', (array)$_POST['numero_document_conjoint']) : [];
+        $date_document_conjoint = isset($_POST['date_document_conjoint']) ? array_map('trim', (array)$_POST['date_document_conjoint']) : [];
+        $lieu_document_conjoint = isset($_POST['lieu_document_conjoint']) ? array_map('trim', (array)$_POST['lieu_document_conjoint']) : [];
+        $vendeur_acheteur = isset($_POST['vendeur_acheteur']) ? array_map('trim', (array)$_POST['vendeur_acheteur']) : [];
+        $nom_complet_personne = isset($_POST['nom_complet_personne']) ? array_map('trim', (array)$_POST['nom_complet_personne']) : [];
+        $statut_contractant = isset($_POST['statut_contractant']) ? array_map('trim', (array)$_POST['statut_contractant']) : [];
+        $notes = isset($_POST['notes']) ? array_map('trim', (array)$_POST['notes']) : [];
+        $id_demande_array = isset($_POST['id_demande']) ? (array)$_POST['id_demande'] : [$id_demande];
+
+        // 4. Property Burdens (dessin_immobilier1)
+        $nom_droit1 = isset($_POST['nom_droit1']) ? array_map('trim', (array)$_POST['nom_droit1']) : [];
+        $sujet_contrat1 = isset($_POST['sujet_contrat1']) ? array_map('trim', (array)$_POST['sujet_contrat1']) : [];
+        $unite1 = isset($_POST['unite1']) ? array_map('trim', (array)$_POST['unite1']) : [];
+        $detail_general = isset($_POST['detail_general']) ? array_map('trim', (array)$_POST['detail_general']) : [];
+        $contenu1 = isset($_POST['contenu1']) ? array_map('trim', (array)$_POST['contenu1']) : [];
+        $valeur_prix1 = isset($_POST['valeur_prix1']) ? array_map('trim', (array)$_POST['valeur_prix1']) : [];
+        $dure1 = isset($_POST['dure1']) ? array_map('trim', (array)$_POST['dure1']) : [];
+        $surplus1 = isset($_POST['surplus1']) ? array_map('trim', (array)$_POST['surplus1']) : [];
+
+        // 5. Autres sections (dessin_immobilier2, dessin_immobilier3, etc.)
+        $date_inscri2 = isset($_POST['date_inscri2']) ? (is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'][0] : $_POST['date_inscri2']) : '';
+        $lieu_inscri2 = isset($_POST['lieu_inscri2']) ? (is_array($_POST['lieu_inscri2']) ? $_POST['lieu_inscri2'][0] : $_POST['lieu_inscri2']) : '';
+        $doc2 = isset($_POST['doc2']) ? (is_array($_POST['doc2']) ? $_POST['doc2'][0] : $_POST['doc2']) : '';
+        $num_inscri2 = isset($_POST['num_inscri2']) ? (is_array($_POST['num_inscri2']) ? $_POST['num_inscri2'][0] : $_POST['num_inscri2']) : '';
+        $num_succursale2 = isset($_POST['num_succursale2']) ? (is_array($_POST['num_succursale2']) ? $_POST['num_succursale2'][0] : $_POST['num_succursale2']) : '';
+
+        $regime_finance_couple3 = isset($_POST['regime_finance_couple3']) ? (is_array($_POST['regime_finance_couple3']) ? $_POST['regime_finance_couple3'][0] : $_POST['regime_finance_couple3']) : '';
+        $remarques3 = isset($_POST['remarques3']) ? (is_array($_POST['remarques3']) ? $_POST['remarques3'][0] : $_POST['remarques3']) : '';
+
+        $valeur_contrat_dinar = isset($_POST['valeur_contrat_dinar']) ? (is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'][0] : $_POST['valeur_contrat_dinar']) : '';
+        $prix_ecriture = isset($_POST['prix_ecriture']) ? (is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'][0] : $_POST['prix_ecriture']) : '';
+
+        $statut2 = isset($_POST['statut2']) ? (is_array($_POST['statut2']) ? $_POST['statut2'][0] : $_POST['statut2']) : '';
+        $redacteur2 = isset($_POST['redacteur2']) ? (is_array($_POST['redacteur2']) ? $_POST['redacteur2'][0] : $_POST['redacteur2']) : '';
+        $redaction2 = isset($_POST['redaction2']) ? (is_array($_POST['redaction2']) ? $_POST['redaction2'][0] : $_POST['redaction2']) : '';
+        $revision2 = isset($_POST['revision2']) ? (is_array($_POST['revision2']) ? $_POST['revision2'][0] : $_POST['revision2']) : '';
+        $validationFinal2 = isset($_POST['validationFinal2']) ? (is_array($_POST['validationFinal2']) ? $_POST['validationFinal2'][0] : $_POST['validationFinal2']) : '';
+
+        $valeur_dinar3 = isset($_POST['valeur_dinar3']) ? (is_array($_POST['valeur_dinar3']) ? $_POST['valeur_dinar3'][0] : $_POST['valeur_dinar3']) : '';
+        $pourcent3 = isset($_POST['pourcent3']) ? (is_array($_POST['pourcent3']) ? $_POST['pourcent3'][0] : $_POST['pourcent3']) : '';
+        $montant_dinar3 = isset($_POST['montant_dinar3']) ? (is_array($_POST['montant_dinar3']) ? $_POST['montant_dinar3'][0] : $_POST['montant_dinar3']) : '';
+
+        $prenom_personne = isset($_POST['prenom_personne']) ? (is_array($_POST['prenom_personne']) ? $_POST['prenom_personne'][0] : $_POST['prenom_personne']) : '';
+        $prenom_pere = isset($_POST['prenom_pere']) ? (is_array($_POST['prenom_pere']) ? $_POST['prenom_pere'][0] : $_POST['prenom_pere']) : '';
+        $prenom_grandpere = isset($_POST['prenom_grandpere']) ? (is_array($_POST['prenom_grandpere']) ? $_POST['prenom_grandpere'][0] : $_POST['prenom_grandpere']) : '';
+        $nom_personne = isset($_POST['nom_personne']) ? (is_array($_POST['nom_personne']) ? $_POST['nom_personne'][0] : $_POST['nom_personne']) : '';
+        $statut = isset($_POST['statut']) ? (is_array($_POST['statut']) ? $_POST['statut'][0] : $_POST['statut']) : '';
+        $signature = isset($_POST['signature']) ? (is_array($_POST['signature']) ? $_POST['signature'][0] : $_POST['signature']) : '';
+
+        $id_montant1 = isset($_POST['id_montant1']) ? (is_array($_POST['id_montant1']) ? $_POST['id_montant1'][0] : $_POST['id_montant1']) : '';
+        $partieabstrait1 = isset($_POST['partieabstrait1']) ? (is_array($_POST['partieabstrait1']) ? $_POST['partieabstrait1'][0] : $_POST['partieabstrait1']) : '';
+        $montant_obligatoire1 = isset($_POST['montant_obligatoire1']) ? (is_array($_POST['montant_obligatoire1']) ? $_POST['montant_obligatoire1'][0] : $_POST['montant_obligatoire1']) : '';
+        $montant_paye1 = isset($_POST['montant_paye1']) ? (is_array($_POST['montant_paye1']) ? $_POST['montant_paye1'][0] : $_POST['montant_paye1']) : '';
+        $num_recu1 = isset($_POST['num_recu1']) ? (is_array($_POST['num_recu1']) ? $_POST['num_recu1'][0] : $_POST['num_recu1']) : '';
+        $date_payement1 = isset($_POST['date_payement1']) ? (is_array($_POST['date_payement1']) ? $_POST['date_payement1'][0] : $_POST['date_payement1']) : '';
+
+        // 6. Contract Terms
+        $contenue_chapitre = isset($_POST['contenue_chapitre']) ? trim($_POST['contenue_chapitre']) : '';
+
+        // Appels aux fonctions de sauvegarde
+        $personne = $db->personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande_array, $nom_complet_personne, $statut_contractant, $notes);
+        if ($personne === false) throw new Exception("Erreur personneContratc");
+
+        $dessin1 = $db->dessin_immobilier1($pdo, $nom_droit1[0] ?? '', $sujet_contrat1[0] ?? '', $unite1[0] ?? '', $detail_general[0] ?? '', $contenu1[0] ?? '', $valeur_prix1[0] ?? '', $dure1[0] ?? '', $surplus1[0] ?? '');
+        if ($dessin1 === false) throw new Exception("Erreur dessin_immobilier1");
+
+        $dessin2 = $db->dessin_immobilier2($pdo, $date_inscri2, $lieu_inscri2, $doc2, $num_inscri2, $num_succursale2);
+        if ($dessin2 === false) throw new Exception("Erreur dessin_immobilier2");
+
+        $dessin3 = $db->dessin_immobilier3($pdo, $regime_finance_couple3, $remarques3);
+        if ($dessin3 === false) throw new Exception("Erreur dessin_immobilier3");
+
+        $dessin4 = $db->dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture, $id_demande, $statut_contractant);
+        if ($dessin4 === false) throw new Exception("Erreur dessin_immobilier4");
+
+        $p1 = $db->perception1($pdo, $id_montant1, $partieabstrait1, $montant_obligatoire1, $montant_paye1, $num_recu1, $date_payement1);
+        if ($p1 === false) throw new Exception("Erreur perception1");
+
+        $p2 = $db->perception2($pdo, $statut2, $redacteur2, $redaction2, $revision2, $validationFinal2);
+        if ($p2 === false) throw new Exception("Erreur perception2");
+
+        $p3 = $db->perception3($pdo, $valeur_dinar3, $pourcent3, $montant_dinar3);
+        if ($p3 === false) throw new Exception("Erreur perception3");
+
+        $personne1 = $db->idPersonnes($pdo, $prenom_personne, $prenom_pere, $prenom_grandpere, $nom_personne, $statut, $signature);
+        if ($personne1 === false) throw new Exception("Erreur idPersonnes");
+
+        $chapitre = $db->insertChapitres($pdo, $contenue_chapitre);
+        if ($chapitre === false) throw new Exception("Erreur insertChapitres");
+
+        // Mettre à jour l'état de la demande (une seule fois)
+        $updateStmt = $pdo->prepare("UPDATE T_demande SET etat_demande = 1 WHERE id_demande = :id_demande");
+        error_log("Executing query: " . $updateStmt->queryString); 
+        $updateStmt->execute(['id_demande' => $id_demande]);
+        if ($updateStmt->rowCount() === 0) {
+            throw new Exception("Aucune ligne mise à jour pour id_demande = $id_demande. Vérifiez l'existence de la table t_demande.");
+        }
+
+        // Sauvegarde des pièces jointes
+        foreach ($libile_pieces as $index => $libile) {
+            $stmt = $pdo->prepare("INSERT INTO pieces_jointes (id_demande, libile_pieces, date_document, ref_document, date_ref, code_pieces) VALUES (:id_demande, :libile_pieces, :date_document, :ref_document, :date_ref, :code_pieces)");
+            $stmt->execute([$id_demande, $libile, $date_document[$index] ?? '', $ref_document[$index] ?? '', $date_ref[$index] ?? '', $code_pieces[$index] ?? '']);
+        }
+        
+
+        $pdo->commit();
+        header("Location: listeContrat.php?id_demande=" . urlencode($id_demande) . "&num_contrat=" . urlencode($num_contrat) . "&date_contrat=" . urlencode($date_contrat));
+        exit;
+
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo "❌ Erreur lors de la sauvegarde des données : " . htmlspecialchars($e->getMessage());
+        if ($e instanceof PDOException) {
+            error_log("SQL Error: " . print_r($e->errorInfo, true));
+        }
+    }
+}
+
 
 ?> 
 
@@ -358,7 +560,7 @@ echo $gouv;
 
        <!-- General Data Section -->
       <div id="general-data-content" class="main-content active">
-      <form action="save_contract.php" method="POST">
+        <form action="save_contract.php" method="POST">
                 <div class="top-bar">
                   <div class="search-form">
                     <span>عدد مطلب التحرير</span>
@@ -436,10 +638,10 @@ echo $gouv;
                 </div>
                   <div class="final-text"> موضوع هذا الصك و  أشعرت الأطراف بالحالة القانونية الواردة به (بها) و المضمنة صلب هذا العقد و بعدم وجود مانع التحرير<br/></div>
                   </div>
-              </form>
-            </div>
+        </form>
+      </div>
             <!-- Documents Section -->
-            <div id="documents-content" class="main-content">
+      <div id="documents-content" class="main-content">
             <div class="top-bar">
                   <div class="search-form">
                     <span>عدد مطلب التحرير</span>
@@ -497,10 +699,10 @@ echo $gouv;
                   </tbody>
               </table>
               </form>
-            </div>
+      </div>
       <!-- Contract Parties Section -->
       <div id="contract-parties-content" class="main-content">
-      <div class="top-bar">
+        <div class="top-bar">
                   <div class="search-form">
                     <span>عدد مطلب التحرير</span>
                     <input type="text" class="search-input" name="id_demande" 
@@ -784,15 +986,11 @@ echo $gouv;
                             </div>
 
                             <div class="form-section">
-                              <div class="form-group">
-                                <label for="notes">ملاحظات</label>
-                                <textarea
-                                  id="notes"
-                                  name="notes[]"
-                                  class="notes-area"
-                                ></textarea>
-                              </div>
-                            </div> 
+                                <div class="form-group">
+                                    <label for="notes">ملاحظات</label>
+                                    <textarea id="notes" name="notes[]"></textarea>
+                                </div>
+                            </div>
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="statut_contractant">صفة المتعاقد</label>
@@ -823,7 +1021,6 @@ echo $gouv;
           </table>
           </form>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
@@ -876,7 +1073,6 @@ echo $gouv;
                   </tbody>
               </table>
               <div class="form-actions">
-                <button type="submit" name="submit" class="btn-save">حفظ</button>
                 <button type="button" class="btn-delete">حذف</button>
                 <button type="button" class="btn-add">إضافة سطر</button>
               </div>
@@ -906,7 +1102,6 @@ echo $gouv;
                 </tbody>
               </table>
               <div class="form-actions">
-                <button type="submit" name="submit" class="btn-save">حفظ</button>
                 <button type="button" class="btn-delete">حذف</button>
                 <button type="button" class="btn-add">إضافة سطر</button>
               </div>
@@ -935,42 +1130,42 @@ echo $gouv;
                     </tr>
                   </tbody>
                 </table>
-                <div class="form-actions">
-                  <button type="submit" name="submit" class="btn-save">حفظ</button>
-                </div>
+                
                 </form>
-                <div class="form-actions">
-                  <button type="submit" name="submit" class="btn-save">حفظ</button>
+                <div cass="form-actions">
                   <button type="button" class="btn-delete">حذف</button>
                   <button type="button" class="btn-add">إضافة سطر</button>
                 </div>          
               </form> 
 
-
-
+              
 
               <form method="POST" action="">
                 <h3>المبلغ الجملي لموضوع التعاقد</h3>
                 <table>
-                  <thead>
-                    <tr>
-                      <th> قيمة موضوع التعاقد بالدينار</th>
-                      <th>  المبلغ بلسان القلم</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><input type="text" name="valeur_contrat_dinar[]" required /></td>
-                      <td><input type="text" name="prix_ecriture[]" required /></td>
-                    </tr>
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th>قيمة موضوع التعاقد بالدينار</th>
+                            <th>المبلغ بلسان القلم</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name="valeur_contrat_dinar[]" required /></td>
+                            <td><input type="text" name="prix_ecriture[]" required /></td>
+                        </tr>
+                    </tbody>
                 </table>
                 <div class="form-actions">
-                  <button type="submit" name="submit" class="btn-save">حفظ</button>
-                  <button type="button" class="btn-delete">حذف</button>
-                  <button type="button" class="btn-add">إضافة سطر</button>
+                    <button type="button" class="btn-delete">حذف</button>
+                    <button type="button" class="btn-add">إضافة سطر</button>
                 </div>
               </form>
+
+
+
+
+              
 
 
               
@@ -1002,9 +1197,6 @@ echo $gouv;
             style="width: 80%; height: 50%; border-radius: 10px"
             required
           ></textarea>
-          <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
-          </div>
         </form>
       </div>
 
@@ -1054,7 +1246,6 @@ echo $gouv;
             </tbody>
           </table>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
@@ -1089,7 +1280,6 @@ echo $gouv;
             </tbody>
           </table>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
@@ -1116,7 +1306,6 @@ echo $gouv;
             </tbody>
           </table>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
@@ -1149,7 +1338,6 @@ echo $gouv;
             </tbody>
           </table>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
@@ -1180,7 +1368,6 @@ echo $gouv;
             </tbody>
           </table>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
@@ -1211,14 +1398,14 @@ echo $gouv;
             </tbody>
           </table>
           <div class="form-actions">
-            <button type="submit" name="submit" class="btn-save">حفظ</button>
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
           </div>
-        </form>
+          <button type="submit" name="save_all_data">حفظ البيانات</button>     
       </div>
     </div>
   </div>
   <script src="script/script.js"></script>
   </body>
 </html>
+

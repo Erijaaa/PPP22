@@ -861,3 +861,31 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+// insertion
+document.addEventListener("DOMContentLoaded", function () {
+  // Ajout de lignes
+  document.querySelectorAll(".btn-add").forEach((button) => {
+    button.addEventListener("click", function () {
+      const table =
+        this.closest(".form-actions").previousElementSibling.querySelector(
+          "tbody"
+        );
+      const newRow = table.rows[0].cloneNode(true);
+      newRow.querySelectorAll("input").forEach((input) => (input.value = ""));
+      table.appendChild(newRow);
+    });
+  });
+
+  // Suppression de lignes
+  document.querySelectorAll(".btn-delete").forEach((button) => {
+    button.addEventListener("click", function () {
+      const table =
+        this.closest(".form-actions").previousElementSibling.querySelector(
+          "tbody"
+        );
+      if (table.rows.length > 1) {
+        table.deleteRow(table.rows.length - 1);
+      }
+    });
+  });
+});
