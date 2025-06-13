@@ -177,7 +177,6 @@ function getStatusText($etat_contrat) {
                             <td class="<?php echo getStatusClass($resultat['etat_contrat'] ?? 0); ?>">
                                 <?php echo getStatusText($resultat['etat_contrat'] ?? 0); ?>
                             </td>
-                           
                         </tr>
                     <?php endforeach; ?>
                 <?php else : ?>

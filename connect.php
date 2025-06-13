@@ -792,12 +792,12 @@ class ClsConnect {
 
     //القسم الرابع
     //وثيقة الهوية
-    public function personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande, $nom_complet_personne, $statut_contractant) {
+    public function personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande, $nom_complet_personne, $role, $statut_contractant) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             try {
                 // Check if required fields are provided
-                if (!$numero_document_identite || !$id_demande || !$nom_complet_personne || !$statut_contractant) {
-                    error_log("Missing required fields: numero_document_identite, id_demande, nom_complet_personne, or statut_contractant");
+                if (!$numero_document_identite || !$id_demande || !$nom_complet_personne || !$role) {
+                    error_log("Missing required fields: numero_document_identite, id_demande, nom_complet_personne, or role");
                     return "❌ Missing required data";
                 }
     
@@ -827,6 +827,7 @@ class ClsConnect {
                 $id_demande = is_array($id_demande) ? $id_demande : [$id_demande];
                 $nom_complet_personne = is_array($nom_complet_personne) ? $nom_complet_personne : [$nom_complet_personne];
                 $statut_contractant = is_array($statut_contractant) ? $statut_contractant : [$statut_contractant];
+                $role = is_array($role) ? $role : <div 1role=""></div>;
     
                 $success = true;
                 $errors = [];
@@ -845,7 +846,7 @@ class ClsConnect {
                         prenom_pere_conjoint, prenom_grand_pere_conjoint, surnom_conjoint,
                         date_naissance_conjoint, lieu_naissance_conjoint, nationalite_conjoint,
                         numero_document_conjoint, date_document_conjoint, lieu_document_conjoint,
-                        vendeur_acheteur, id_demande, nom_complet_personne, statut_contractant
+                        vendeur_acheteur, id_demande, nom_complet_personne, statut_contractant, role
                     ) VALUES (
                         :prenom, :numero_document_identite, :nom, :prenom_pere, :date_emission_document,
                         :sexe, :nationalite, :adresse, :profession, :etat_civil, :prenom_conjoint,
@@ -853,7 +854,7 @@ class ClsConnect {
                         :surnom_conjoint, :date_naissance_conjoint, :lieu_naissance_conjoint,
                         :nationalite_conjoint, :numero_document_conjoint, :date_document_conjoint,
                         :lieu_document_conjoint, :vendeur_acheteur, :id_demande, :nom_complet_personne,
-                        :statut_contractant
+                        :statut_contractant , :role 
                     )";
     
                     $stmt = $pdo->prepare($sql);
@@ -1782,27 +1783,48 @@ class ClsConnect {
     }
     //perception2
     public function getPer2() {
-        $sql = "SELECT * FROM perception2";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM perception2";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getPer2 : " . count($result)); // Log du nombre de lignes
+            error_log("Données dans getPer2 : " . print_r($result, true)); // Log des données
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getPer2 : " . $e->getMessage());
+            return [];
+        }
     }
     //perception3
     public function getPer3() {
-        $sql = "SELECT * FROM perception3";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM perception3";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getPer3 : " . count($result)); // Log du nombre de lignes
+            error_log("Données dans getPer3 : " . print_r($result, true)); // Log des données
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getPer3 : " . $e->getMessage());
+            return [];
+        }
     }
     //perception4
     public function getPer4() {
-        $sql = "SELECT * FROM perception4";
-        
-        $stmt = $this->pdo->prepare($sql); 
-        //$stmt->execute(); 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM perception4";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Nombre de résultats dans getPer4 : " . count($result));
+            error_log("Données dans getPer4 : " . print_r($result, true));
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Erreur dans getPer4 : " . $e->getMessage());
+            return [];
+        }
     }
     //somme
     public function getSomme() {

@@ -252,8 +252,7 @@ $som = $connect->getSomme();
                 <!-- البيانات المتعلقة بالمؤيدات --> 
                 <div class="table-section">
                     <div class="table-title">📋 البيانات المتعلقة بالمؤيدات</div>
-
-                    <?php if (!empty($PC)): ?>
+                    <?php if (!empty($pj)): ?>
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -270,12 +269,11 @@ $som = $connect->getSomme();
                                 <?php foreach ($pj as $ligne): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
-                                    <td><input type="text" name="libile_pieces[]" value="<?php echo htmlspecialchars($ligne['libile_pieces']); ?>" /></td>
-                                    <td><input type="text" name="date_document[]" value="<?php echo htmlspecialchars($ligne['date_document']); ?>" /></td>
-                                    <td><input type="text" name="ref_document[]" value="<?php echo htmlspecialchars($ligne['ref_document']); ?>" /></td>
-                                    <td><input type="text" name="date_ref[]" value="<?php echo htmlspecialchars($ligne['date_ref']); ?>" /></td>
-                                    <td><input type="text" name="code_pieces[]" value="<?php echo htmlspecialchars($ligne['code_pieces']); ?>" /></td>
-                                    <input type="hidden" name="id_demande[]" value="<?php echo htmlspecialchars($ligne['id_demande']); ?>" />
+                                    <td><?php echo htmlspecialchars($ligne['libile_pieces'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($ligne['date_document'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($ligne['ref_document'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($ligne['date_ref'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($ligne['code_pieces'] ?? ''); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -287,31 +285,31 @@ $som = $connect->getSomme();
             </div>
             <!-- personnes contracteurs -->
             <div class="table-section">
-            <div class="table-title">البيانات المتعلقة بأطراف التعاقد</div>
-                        <?php 
-                        if (!empty($PC)): ?>
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th> الاسم الثلاثي بالكامل</th>
-                                        <th> الصفة</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $compteur = 1; ?>
-                                    <?php foreach ($PC as $pc): ?>
-                                    <tr>
-                                        <td><input type="text" name="nom_complet_personne[]" value="<?php echo htmlspecialchars($pc['nom_complet_personne'] ?? ''); ?>" /></td>
-                                        <td><input type="text" name="statut_contractant[]" value="<?php echo isset($pc['statut_contractant']) && $pc['statut_contractant'] !== null ? htmlspecialchars($pc['statut_contractant']) : ''; ?>" /></td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        <?php else: ?>
-                            <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
-                        <?php endif; ?>
-                    </div>
-                        
+                <div class="table-title">البيانات المتعلقة بأطراف التعاقد</div>
+                <?php if (!empty($PC)): ?>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>الاسم الثلاثي بالكامل</th>
+                                <th>الصفة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $compteur = 1; ?>
+                            <?php foreach ($PC as $pc): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($compteur++); ?></td>
+                                <td><?php echo htmlspecialchars($pc['nom_complet_personne'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($pc['role'] ?? ''); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
+                <?php endif; ?>
+            </div>
         
             
                 <!-- البيانات المتعلقة بموضوع التعاقد -->
@@ -579,54 +577,18 @@ $som = $connect->getSomme();
                         <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
                     <?php endif; ?>
                 </div>
-
-                <!-- perception2 -->
-                <div class="table-section">
-                    <div class="table-title">📝البيانات المتعلقة بتأكيد العقد</div>
-                    <?php 
-                    if (!empty($PC)): ?>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>  الصفة</th>
-                                    <th>   التلقي</th>
-                                    <th> التحرير </th>
-                                    <th> المراجعة </th>
-                                    <th>  المصادقة النهائية</th>
-                                
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $compteur = 1; ?>
-                                <?php foreach ($Per2 as $p2): ?>
-                                <tr>
-                                    <td><?php echo $compteur++; ?></td>
-                                    <td><input type="text" name="statut2[]" value="<?php echo htmlspecialchars($p2['statut2']); ?>" /></td>
-                                    <td><input type="text" name="redacteur2[]" value="<?php echo htmlspecialchars($p2['redacteur2']); ?>" /></td>
-                                    <td><input type="text" name="redaction2[]" value="<?php echo htmlspecialchars($p2['redaction2']); ?>" /></td>
-                                    <td><input type="text" name="revision2[]" value="<?php echo htmlspecialchars($p2['revision2']); ?>" /></td>
-                                    <td><input type="text" name="validationFinal2[]" value="<?php echo htmlspecialchars($p2['validationFinal2']); ?>" /></td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php else: ?>
-                        <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
-                    <?php endif; ?>
-                </div>
                 <!-- perception3 -->
                 <div class="table-section">
-                    <div class="table-title"> 📝البيانات المتعلقة بتسجيل العقد لدى القباضة المالية و استخلاص معلوم ادارة الملكية العقارية</div>
-                    <?php 
-                    if (!empty($PC)): ?>
+                    <div class="table-title">📝البيانات المتعلقة بتسجيل العقد لدى القباضة المالية و استخلاص معلوم ادارة الملكية العقارية</div>
+                    <?php if (!empty($Per3)): ?>
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>  القيمة بالدينار</th>
-                                    <th>   النسبة</th>
-                                    <th> المبلغ بالدينار </th>
-                                    <th> ختم قابض التسجيل و امضاؤه </th>
-                                
+                                    <th>#</th> <!-- Pour le compteur -->
+                                    <th>القيمة بالدينار</th>
+                                    <th>النسبة</th>
+                                    <th>المبلغ بالدينار</th>
+                                    <th>ختم قابض التسجيل و امضاؤه</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -634,10 +596,10 @@ $som = $connect->getSomme();
                                 <?php foreach ($Per3 as $p3): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
-                                    <td><input type="text" name="valeur_dinar3[]" value="<?php echo htmlspecialchars($p3['valeur_dinar3']); ?>" /></td>
-                                    <td><input type="text" name="pourcent3[]" value="<?php echo htmlspecialchars($p3['pourcent3']); ?>" /></td>
-                                    <td><input type="text" name="montant_dinar3[]" value="<?php echo htmlspecialchars($p3['montant_dinar3']); ?>" /></td>
-                                    <td><input type="text" name="signature3[]" value="<?php echo htmlspecialchars($p3['signature3']); ?>" /></td>
+                                    <td><input type="text" name="valeur_dinar3[]" value="<?php echo htmlspecialchars($p3['valeur_dinar3'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="pourcent3[]" value="<?php echo htmlspecialchars($p3['pourcent3'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="montant_dinar3[]" value="<?php echo htmlspecialchars($p3['montant_dinar3'] ?? ''); ?>" /></td>
+                                    <td><input type="text" name="signature3[]" value="<?php echo htmlspecialchars($p3['signature3'] ?? ''); ?>" /></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -647,19 +609,51 @@ $som = $connect->getSomme();
                     <?php endif; ?>
                 </div>
 
-                <!-- perception4 -->
+                <!-- perception2 -->
                 <div class="table-section">
-                    <div class="table-title"> 📝البيانات المتعلقة بتصفية معاليم الخدمات الراجعة لادارة الملكية العقارية</div>
-                    <?php 
-                    if (!empty($PC)): ?>
+                    <div class="table-title">📝البيانات المتعلقة بتأكيد العقد</div>
+                    <?php if (!empty($Per2)): ?>
                         <table class="data-table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
+                                    <th>الصفة</th>
+                                    <th>التلقي</th>
+                                    <th>التحرير</th>
+                                    <th>المراجعة</th>
+                                    <th>المصادقة النهائية</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $compteur = 1; ?>
+                                <?php foreach ($Per2 as $p2): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($compteur++); ?></td>
+                                    <td><?php echo htmlspecialchars($p2['statut2'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p2['redacteur2'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p2['redaction2'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p2['revision2'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p2['validation_final2'] ?? ''); ?></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
+                    <?php endif; ?>
+                </div>
+                <!-- perception4 -->
+                <div class="table-section">
+                    <div class="table-title">📝البيانات المتعلقة بتصفية معاليم الخدمات الراجعة لادارة الملكية العقارية</div>
+                    <?php if (!empty($Per4)): ?>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
                                     <th>التسمية</th>
-                                    <th>   القيمة بالدينار</th>
-                                    <th>  النسبة </th>
-                                    <th> الميلغ بالدينار</th>
-                                
+                                    <th>القيمة بالدينار</th>
+                                    <th>النسبة</th>
+                                    <th>الميلغ بالدينار</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -667,10 +661,10 @@ $som = $connect->getSomme();
                                 <?php foreach ($Per4 as $p4): ?>
                                 <tr>
                                     <td><?php echo $compteur++; ?></td>
-                                    <td><input type="text" name="nom4[]" value="<?php echo htmlspecialchars($p4['nom4']); ?>" /></td>
-                                    <td><input type="text" name="valeur_dinar4[]" value="<?php echo htmlspecialchars($p4['valeur_dinar4']); ?>" /></td>
-                                    <td><input type="text" name="pourcent4[]" value="<?php echo htmlspecialchars($p4['pourcent4']); ?>" /></td>
-                                    <td><input type="text" name="montant_dinar4[]" value="<?php echo htmlspecialchars($p4['montant_dinar4']); ?>" /></td>
+                                    <td><?php echo htmlspecialchars($p4['nom4'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p4['valeur_dinar4'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p4['pourcent4'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($p4['montant_dinar4'] ?? ''); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -679,8 +673,6 @@ $som = $connect->getSomme();
                         <p style="text-align: center; color: #666; padding: 20px;">لا توجد بيانات متاحة</p>
                     <?php endif; ?>
                 </div>
-
-
 
                 
 
