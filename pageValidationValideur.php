@@ -228,6 +228,14 @@ if ($id_demande) {
     }
 }
 
+$id = $_POST['id_demande'] ?? null;
+
+
+if (isset($_POST['id_demande'])) {
+    echo htmlspecialchars($_POST['id_demande']);
+} else {
+    echo '';
+}
 
 
 
@@ -895,7 +903,13 @@ if ($id_demande) {
 
         <!-- Boutons d'action -->
         <div class="action-buttons">
-            <button type="button" class="action-btn print-btn" onclick="printContract('<?php echo htmlspecialchars($demande['id_demande'] ?? ''); ?>')">🖨️ طباعة العقد</button>
+        <form method="POST" action="PFEEEEEEEEEEEEE/generate_pdf.php" target="_blank">
+            <input type="hidden" name="id_demande" value="<?php echo htmlspecialchars($contrat['id_demande'] ?? ''); ?>">
+            <button type="submit" class="action-btn print-btn">🖨️ طباعة العقد</button>
+        </form>
+
+
+
             
             <form method="POST" style="display: inline;">
                 <input type="hidden" name="action" value="object_contract">

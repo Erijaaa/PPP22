@@ -58,7 +58,7 @@ if not resultats:
     sys.exit(1)
 
 # ✅ Chemin PDF (nom fixe par ID)
-chemin_pdf = f"C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/lettre_contrat_{id_demande}.pdf"
+chemin_pdf = f"C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\generate_pdf.php"
 
 # ✅ Créer le canvas PDF
 c = canvas.Canvas(chemin_pdf, pagesize=A4)

@@ -1,11 +1,18 @@
 <?php
-file_put_contents('debug.txt', print_r($_POST, true));
+// 1. Récupérer l'id_demande depuis POST
+$id = $_POST['id_demande'] ?? null;
 
-// Exécuter le script Python
+if (!$id) {
+    die("Erreur : id_demande manquant.");
+}
+
+// 2. Construire la commande sécurisée
 $commande = escapeshellcmd("python3 C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py " . escapeshellarg($id));
+
+// 3. Exécuter la commande
 $output = shell_exec($commande);
 
-// Chemin vers le PDF généré
+// 4. Gérer le PDF généré (exemple)
 $pdfFile = "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/lettre_contrat_$id.pdf";
 
 if (file_exists($pdfFile)) {
@@ -18,3 +25,5 @@ if (file_exists($pdfFile)) {
     echo "خطأ : لم يتم العثور على العقد.";
 }
 ?>
+
+

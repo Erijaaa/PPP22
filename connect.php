@@ -1957,6 +1957,23 @@ class ClsConnect {
         }
     }
 
+    function getContratInfo($id_demande) {
+        // Connexion à la BDD
+        $conn = new PDO("pgsql:host=localhost;dbname=pfe_bdd", "postgres", "pfe");
+    
+        $stmt = $conn->prepare("
+            SELECT num_contrat, date_demande 
+            FROM contrats c 
+            JOIN T_demande dem ON c.id_demande = dem.id_demande 
+            WHERE c.id_demande = :id_demande
+        ");
+        $stmt->execute([':id_demande' => $id_demande]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        return $result ?: null;
+    }
+    
+
 }
 
 
