@@ -574,7 +574,8 @@ class ClsConnect {
                 return "❌ Champs manquants";
             }
     
-            $allowed_post_values = [1,2]; 
+            // Validate post value against allowed values
+            $allowed_post_values = [1, 2]; // Matches the form and updated database constraint
             if (!in_array($post, $allowed_post_values)) {
                 error_log("Invalid post value: $post. Allowed values: " . implode(', ', $allowed_post_values));
                 return "❌ Erreur : Valeur invalide pour le champ 'post'. Valeurs autorisées : " . implode(', ', $allowed_post_values);
@@ -620,6 +621,94 @@ class ClsConnect {
             return "✅ Utilisateur inséré avec succès";
         } catch (PDOException $e) {
             error_log("Erreur dans ajouterUser: " . $e->getMessage());
+            return "❌ Erreur SQL : " . $e->getMessage();
+        }
+    }
+
+
+    //update user
+    public function updateUser($pdo) {
+        try {
+            $original_cin_user = $_POST['original_cin_user'] ?? null;
+            $nom_prenom_user = $_POST['nom_prenom_user'] ?? null;
+            $cin_user = $_POST['cin_user'] ?? null;
+            $email_user = $_POST['email_user'] ?? null;
+            $adresse_user = $_POST['adresse_user'] ?? null;
+            $telephone_user = $_POST['telephone_user'] ?? null;
+            $date_naissance_user = $_POST['date_naissance_user'] ?? null;
+            $password_user = $_POST['password_user'] ?? null;
+            $post = $_POST['post'] ?? null;
+
+            $missing_fields = [];
+            if (empty($original_cin_user)) $missing_fields[] = 'original_cin_user';
+            if (empty($nom_prenom_user)) $missing_fields[] = 'nom_prenom_user';
+            if (empty($cin_user)) $missing_fields[] = 'cin_user';
+            if (empty($email_user)) $missing_fields[] = 'email_user';
+            if (empty($adresse_user)) $missing_fields[] = 'adresse_user';
+            if (empty($telephone_user)) $missing_fields[] = 'telephone_user';
+            if (empty($date_naissance_user)) $missing_fields[] = 'date_naissance_user';
+            if (empty($post)) $missing_fields[] = 'post';
+
+            if (!empty($missing_fields)) {
+                error_log("Missing fields in updateUser: " . implode(', ', $missing_fields));
+                return "❌ Champs manquants: " . implode(', ', $missing_fields);
+            }
+
+            $allowed_post_values = [1, 2];
+            if (!in_array($post, $allowed_post_values)) {
+                error_log("Invalid post value: $post. Allowed values: " . implode(', ', $allowed_post_values));
+                return "❌ Valeur invalide pour le champ 'post'. Valeurs autorisées : " . implode(', ', $allowed_post_values);
+            }
+
+            // Check if cin_user exists in the database
+            $checkSql = "SELECT COUNT(*) FROM public.users WHERE cin_user = :cin_user";
+            $checkStmt = $pdo->prepare($checkSql);
+            $checkStmt->execute([':cin_user' => $cin_user]);
+            $cinCount = $checkStmt->fetchColumn();
+            error_log("Checking cin_user: $cin_user, count: $cinCount, original_cin_user: $original_cin_user");
+
+            if ($cinCount > 0 && $cin_user !== $original_cin_user) {
+                error_log("cin_user already exists: $cin_user");
+                return "❌ Le CIN existe déjà, aucune modification effectuée";
+            }
+
+            $sql = "UPDATE public.users SET
+                    nom_prenom_user = :nom_prenom_user,
+                    cin_user = :cin_user,
+                    email_user = :email_user,
+                    adresse_user = :adresse_user,
+                    telephone_user = :telephone_user,
+                    date_naissance_user = :date_naissance_user,
+                    post = :post";
+            $params = [
+                ':nom_prenom_user' => $nom_prenom_user,
+                ':cin_user' => $cin_user,
+                ':email_user' => $email_user,
+                ':adresse_user' => $adresse_user,
+                ':telephone_user' => $telephone_user,
+                ':date_naissance_user' => $date_naissance_user,
+                ':post' => $post,
+                ':original_cin_user' => $original_cin_user
+            ];
+
+            if (!empty($password_user)) {
+                $sql .= ", password_user = :password_user";
+                $params[':password_user'] = $password_user; // Consider hashing
+            }
+
+            $sql .= " WHERE cin_user = :original_cin_user";
+
+            $stmt = $pdo->prepare($sql);
+            $result = $stmt->execute($params);
+
+            if (!$result) {
+                error_log("Failed to update user: " . print_r($stmt->errorInfo(), true));
+                return "❌ Échec de la mise à jour";
+            }
+
+            return "✅ Utilisateur mis à jour avec succès";
+        } catch (PDOException $e) {
+            error_log("Erreur dans updateUser: " . $e->getMessage());
             return "❌ Erreur SQL : " . $e->getMessage();
         }
     }

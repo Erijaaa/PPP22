@@ -150,7 +150,7 @@ function getStatusText($etat) {
         <ul class="sidebar-menu">
             <li><a href="pageAdmin.php" class="menu-item" data-section="agents">👥 إدارة الوكلاء</a></li>
             <li><a href="listeDemAdmin.php" class="menu-item active" data-section="requests">📋 قائمة المطالب</a></li>
-            <li><a href="#" class="menu-item" data-section="contracts">📄 قائمة العقود</a></li>
+            <li><a href="listeContratAdmin.php" class="menu-item" data-section="contracts">📄 قائمة العقود</a></li>
         </ul>
     </div>
 
