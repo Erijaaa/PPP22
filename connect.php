@@ -2126,6 +2126,34 @@ class ClsConnect {
     
         return $result ?: null;
     }
+
+  
+    public function insertTextRefus($pdo) {
+        if (isset($_POST['submit'])) {
+            try {
+                $text_refus = $_POST['text_refus'] ?? null;
+    
+                if (!$text_refus || trim($text_refus) === '') {
+                    return "❌ Texte vide";
+                }
+    
+                $sql = "INSERT INTO public.text_refus(text_refus) VALUES (:text_refus)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':text_refus' => $text_refus
+                ]);
+    
+                return "✅ Enregistrement réussi";
+            } catch (PDOException $e) {
+                return "❌ Erreur BDD : " . $e->getMessage();
+            }
+        }
+        return null;
+    }
+    
+    
+    
+
     
 
 }

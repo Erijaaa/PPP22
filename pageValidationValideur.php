@@ -237,6 +237,8 @@ if (isset($_POST['id_demande'])) {
     echo '';
 }
 
+$resultat = $connect->insertTextRefus($pdo);
+if ($resultat) echo "<p>$resultat</p>";
 
 
 ?>
@@ -994,21 +996,77 @@ if (isset($_POST['id_demande'])) {
         <!-- Boutons d'action -->
         <div class="action-buttons">
             <?php if (!empty($id_demande)): ?>
-                <form id="printContractForm" method="POST" action="/PFE_erij/PFEEEEEEEEEEEEE/generate_pdf.php" target="_blank">
+                <form id="printContractForm" method="POST" style="display: inline;" action="/PFE_erij/PFEEEEEEEEEEEEE/generate_pdf.php" target="_blank">
                     <input type="hidden" name="id_demande" value="<?php echo htmlspecialchars($id_demande); ?>">
                     <button type="submit" class="action-btn print-btn" onclick="return validateForm()">🖨️ طباعة العقد</button>
                 </form>
             <?php else: ?>
                 <p style="color: red;">Erreur : ID de demande non sélectionné.</p>
             <?php endif; ?>
-            <div class="container">
-                <a href="#" class="button button-2" onclick="openModal()">نص الاعتراض</a>
-                <!-- Modal code unchanged -->
+            <div class="container" style="display: inline;">
+                <a href="#" class="action-btn object-btn" onclick="openModal()"> ⚠️ اعتراض على العقد </a>
+
+                <div class="modal-overlay" id="modalOverlay" style="display: none;">
+                    <form method="POST" action="">
+                        <div class="modal">
+                            <button class="close-btn" title="إغلاق" onclick="closeModal()">×</button>
+                            <div class="modal-header">نص الاعتراض</div>
+                            <div class="modal-body">
+                                <div class="textarea-group">
+                                    <textarea id="objectionText" name="text_refus" placeholder="اكتب نص الاعتراض هنا..."></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary" name="submit">ارسال النص</button>
+                        </div>
+                    </form>
+                </div>
             </div>
+
+
+
+
+
         </div>
         
     </div>
 <script>
+function openModal() {
+    document.getElementById('modalOverlay').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+
+function submitObjection() {
+    const text = document.getElementById('objectionText').value.trim();
+    if (!text) {
+        alert('يرجى كتابة نص الاعتراض قبل الإرسال.');
+        return;
+    }
+
+    fetch('save_text_refus.php', {  // <-- fichier PHP qui contient la fonction
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text_refus: text })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('تم حفظ نص الاعتراض بنجاح!');
+            closeModal();
+            document.getElementById('objectionText').value = '';
+        } else {
+            alert('حدث خطأ: ' + (data.message || 'خطأ غير معروف'));
+        }
+    })
+    .catch(err => {
+        alert('خطأ في الاتصال بالخادم.');
+        console.error(err);
+    });
+}
+
+
     function validateForm() {
     const idDemande = document.querySelector('input[name="id_demande"]').value;
     if (!idDemande || isNaN(idDemande)) {
