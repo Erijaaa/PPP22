@@ -73,6 +73,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         .delete-btn {
             background-color: #e74c3c;
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: inline-block;
         }
         .edit-btn {
             background-color: #ffc107;
@@ -199,8 +205,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?= htmlspecialchars($user['post']) ?></td>
                                 <td class="actions">
                                     <button class="edit-btn" onclick="showEditForm(this, <?= htmlspecialchars(json_encode($user)) ?>)">تعديل</button>
-                                    <?php if (($user['cin_user'] ?? null) != ($_SESSION['cin_user'] ?? null)): ?>
-                                        <a class="delete-btn" href="?delete=<?= urlencode($user['cin_user'] ?? '') ?>" onclick="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">حذف</a>
+                                    <?php if (($user['cin_user'] ?? null) !== ($_SESSION['cin_user'] ?? null)): ?>
+                                        <button class="delete-btn" onclick="deleteRow(this); return confirm('هل أنت متأكد من حذف هذا المستخدم من القائمة؟')">حذف</button>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -320,6 +326,17 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     function clearForm() {
         document.getElementById('agentForm').reset();
+    }
+
+    function deleteRow(button) {
+        if (confirm('هل أنت متأكد من حذف هذا المستخدم من القائمة؟')) {
+            const row = button.closest('tr');
+            const nextRow = row.nextElementSibling; // The edit form row
+            row.remove();
+            if (nextRow && nextRow.classList.contains('edit-form-row')) {
+                nextRow.remove(); // Remove the associated edit form row
+            }
+        }
     }
     </script>
 </body>
