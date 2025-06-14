@@ -554,7 +554,7 @@ class ClsConnect {
 
 
     //ajouter un nouveau user par l'admin
-    public function ajoterUser($pdo) {
+    public function ajouterUser($pdo) {
         try {
             // Retrieve and validate input data
             $nom_prenom_user = $_POST['nom_prenom_user'] ?? null;
@@ -570,11 +570,28 @@ class ClsConnect {
             if (empty($nom_prenom_user) || empty($cin_user) || empty($email_user) || 
                 empty($adresse_user) || empty($telephone_user) || empty($date_naissance_user) || 
                 empty($password_user) || empty($post)) {
-                error_log("Missing required fields in insertUser");
+                error_log("Missing required fields in ajouterUser");
                 return "❌ Champs manquants";
             }
     
-            // Prepare SQL query
+            $allowed_post_values = [1,2]; 
+            if (!in_array($post, $allowed_post_values)) {
+                error_log("Invalid post value: $post. Allowed values: " . implode(', ', $allowed_post_values));
+                return "❌ Erreur : Valeur invalide pour le champ 'post'. Valeurs autorisées : " . implode(', ', $allowed_post_values);
+            }
+    
+            // Check if cin_user already exists
+            $checkSql = "SELECT COUNT(*) FROM public.users WHERE cin_user = :cin_user";
+            $checkStmt = $pdo->prepare($checkSql);
+            $checkStmt->execute([':cin_user' => $cin_user]);
+            $cinCount = $checkStmt->fetchColumn();
+    
+            if ($cinCount > 0) {
+                error_log("Duplicate cin_user detected: " . $cin_user);
+                return "❌ Erreur : Le CIN existe déjà dans la base de données";
+            }
+    
+            // Prepare SQL query for insertion
             $sql = "INSERT INTO public.users(
                     nom_prenom_user, cin_user, email_user, adresse_user, telephone_user, 
                     date_naissance_user, password_user, post)
@@ -602,7 +619,7 @@ class ClsConnect {
     
             return "✅ Utilisateur inséré avec succès";
         } catch (PDOException $e) {
-            error_log("Erreur dans insertUser: " . $e->getMessage());
+            error_log("Erreur dans ajouterUser: " . $e->getMessage());
             return "❌ Erreur SQL : " . $e->getMessage();
         }
     }

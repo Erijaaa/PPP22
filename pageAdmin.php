@@ -42,7 +42,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    $result = $db->ajoterUser($pdo);
+    $result = $db->ajouterUser($pdo);
     echo "<div style='padding: 10px; font-weight: bold;'>";
     if ($result === "✅") {
         echo "<span style='color: green;'>✅ Données enregistrées avec succès</span>";
