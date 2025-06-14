@@ -1,9 +1,16 @@
 <?php
 require_once 'connect.php';
-
 $connect = new ClsConnect();
 $pdo = $connect->getConnection();
+
+$resultat = $connect->insertTextRefusR($pdo);
+
+if ($resultat) {
+    echo "<script>alert('".$resultat."');</script>";
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -249,80 +256,73 @@ $pdo = $connect->getConnection();
         <h1 class="title">تأكيد العقد</h1>
         <a href="listeContratValideur.php" class="button button-1">حفظ العقد</a>
         <a href="#" class="button button-2" onclick="openModal()">نص الاعتراض</a>
-        <div class="modal-overlay" id="modalOverlay">
-            <div class="modal">
-                <button class="close-btn" title="إغلاق" onclick="closeModal()">×</button>
-                <div class="modal-header">نص الاعتراض</div>
-                <div class="modal-body">
-                    <div class="textarea-group">
-                        <textarea id="objectionText" placeholder="اكتب نص الاعتراض هنا..."></textarea>
+
+        <div class="modal-overlay" id="modalOverlay" style="display: none;">
+            <form method="POST" action="">
+                <div class="modal">
+                    <button class="close-btn" type="button" onclick="closeModal()">×</button>
+                    <div class="modal-header">نص الاعتراض</div>
+                    <div class="modal-body">
+                        <div class="textarea-group">
+                            <textarea id="objectionText" name="text_refus" placeholder="اكتب نص الاعتراض هنا..." required></textarea>
+                        </div>
                     </div>
+                    <button type="submit" class="btn-primary" name="submit">ارسال النص</button>
                 </div>
-                <button class="btn-primary" onclick="submitObjection()">ارسال النص</button>
-            </div>
+            </form>
         </div>
     </div>
+        <script>
+            function openModal() {
+                document.getElementById('modalOverlay').style.display = 'flex';
+            }
 
-    <script>
-        // Effet ripple sur les boutons
-        document.querySelectorAll('.button, .btn-primary').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.style.position = 'absolute';
-                ripple.style.borderRadius = '50%';
-                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
-                ripple.style.transform = 'scale(0)';
-                ripple.style.animation = 'ripple 0.6s linear';
-                ripple.style.pointerEvents = 'none';
-                
-                this.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
+            function closeModal() {
+                document.getElementById('modalOverlay').style.display = 'none';
+                document.getElementById('objectionText').value = '';
+            }
+
+            // Effet ripple sur les boutons
+            document.querySelectorAll('.button, .btn-primary').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.position = 'absolute';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                    ripple.style.transform = 'scale(0)';
+                    ripple.style.animation = 'ripple 0.6s linear';
+                    ripple.style.pointerEvents = 'none';
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
             });
-        });
 
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
                 }
-            }
-        `;
-        document.head.appendChild(style);
+            `;
+            document.head.appendChild(style);
+        </script>
 
-        // Ouvrir le modal
-        function openModal() {
-            document.getElementById('modalOverlay').style.display = 'flex';
-        }
 
-        // Fermer le modal
-        function closeModal() {
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.getElementById('objectionText').value = '';
-        }
 
-        // Soumettre le texte
-        function submitObjection() {
-            const objectionText = document.getElementById('objectionText').value;
-            if (objectionText.trim() === '') {
-                alert('يرجى كتابة نص الاعتراض قبل الإرسال.');
-                return;
-            }
-            console.log('Texte envoyé :', objectionText);
-            closeModal();
-        }
-    </script>
+    
 </body>
 </html>

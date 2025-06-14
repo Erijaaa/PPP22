@@ -1003,6 +1003,8 @@ if ($resultat) echo "<p>$resultat</p>";
             <?php else: ?>
                 <p style="color: red;">Erreur : ID de demande non sélectionné.</p>
             <?php endif; ?>
+
+            
             <div class="container" style="display: inline;">
                 <a href="#" class="action-btn object-btn" onclick="openModal()"> ⚠️ اعتراض على العقد </a>
 
