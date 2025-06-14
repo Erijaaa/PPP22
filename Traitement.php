@@ -18,6 +18,14 @@ if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
     exit;
 }
 
+/*
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    echo "Formulaire reçu<br>";
+    echo "ID DEMANDE : " . htmlspecialchars($_POST['id_demande']);
+} else {
+    echo "Aucune donnée reçue.";
+}*/
+
 
 
 
@@ -1396,16 +1404,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                 <td><input type="text" name="montant_dinar4[]" required/></td>
               </tr>
             </tbody>
-          </table>
-          <div class="form-actions">
-            <button type="button" class="btn-delete">حذف</button>
-            <button type="button" class="btn-add">إضافة سطر</button>
+            </table>
+              <form method="post" action="verifierContrat.php" id="contractForm">
+              <input type="hidden" name="id_demande" value="<?php echo htmlspecialchars($id_demande); ?>">
+              <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                حفظ البيانات
+                </button>
+              </div>
+            </div>
           </div>
-          <button type="submit" name="save_all_data">حفظ البيانات</button>     
+          
+        </div>
       </div>
-    </div>
-  </div>
-  <script src="script/script.js"></script>
-  </body>
+</div>
+<script src="script/script.js"></script>
+</body>
 </html>
-
