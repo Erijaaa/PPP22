@@ -57,8 +57,8 @@ if not resultats:
     print(f"Aucun contrat trouvé pour id_demande={id_demande}")
     sys.exit(1)
 
-# ✅ Chemin PDF (nom fixe par ID)
-chemin_pdf = f"C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\generate_pdf.php"
+# ✅ Chemin PDF (nom unique par ID)
+chemin_pdf = f"C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_{id_demande}.pdf"
 
 # ✅ Créer le canvas PDF
 c = canvas.Canvas(chemin_pdf, pagesize=A4)

@@ -150,7 +150,7 @@ function getStatusText($etat_contrat) {
         <!-- Filtres -->
         <div class="filters" style="margin: 20px;">
             <label for="filter">قائمة العقود حسب:</label>
-            <select id="filter" onchange="filterContrats(this.value)">
+            <select id="filter" onchange="filterDemandes(this.value)">
                 <option value="">الكل</option>
                 <option value="date" <?php echo $sortBy == 'date' ? 'selected' : ''; ?>>التاريخ</option>
                 <option value="status" <?php echo $sortBy == 'status' ? 'selected' : ''; ?>>الحالة</option>
@@ -190,6 +190,9 @@ function getStatusText($etat_contrat) {
 </div>
 
 <script>
+    function filterDemandes(value) {
+    window.location.href = 'listeContratAdmin.php?sort=' + value;
+}
 document.addEventListener('DOMContentLoaded', function () {
     const menuItems = document.querySelectorAll('.sidebar-menu .menu-item');
     const contentSections = document.querySelectorAll('.content-section');

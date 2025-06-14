@@ -1,0 +1,47 @@
+Script started: 2025-06-13 22:21:17
+id_demande: 24
+Command: python "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py" "24" 2>&1
+Python Error: Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+Script started: 2025-06-13 22:57:09
+id_demande: 24
+DB Error: SQLSTATE[HY093]: Invalid parameter number: :id_demande
+Script started: 2025-06-13 22:59:04
+id_demande: 24
+SQL Query: SELECT num_contrat FROM contrats WHERE id_demande = :id_demande
+Command: python "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py" "24" 2>&1
+Python Error: Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+Script started: 2025-06-13 23:01:30
+id_demande: 24
+SQL Query: SELECT num_contrat FROM contrats WHERE id_demande = :id_demande
+Database query succeeded: num_contrat=103
+Command: python "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py" "24" 2>&1
+Python exec returned: code=1, output=Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+Python Error: Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+

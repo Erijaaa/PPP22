@@ -1,5 +1,6 @@
 <?php
 require_once 'connect.php';
+
 $connect = new ClsConnect();             // Création de l'objet ClsConnect
 $pdo = $connect->getConnection();        // Récupération de la connexion PDO
 
@@ -28,29 +29,13 @@ $sql = "
         telephone,
         'valideur' AS role
     FROM valideur
-    UNION
-    SELECT 
-        nom_prenom_user AS nom,
-        '' AS prenom,
-        cin_user AS identification_number,
-        password_user AS password,
-        post,
-        email_user AS email,
-        adresse_user AS adresse,
-        telephone_user AS telephone,
-        'user' AS role
-    FROM users
 ";
 
+
 $stmt = $pdo->prepare($sql);
-//$stmt->execute();
+$stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$message = '';
-$nouv_user = $connect->ajouterUser($pdo);
-if ($nouv_user) {
-    $message = $nouv_user;
-}
 ?>
 
 
@@ -126,25 +111,6 @@ if ($nouv_user) {
         flex-direction: column;
         flex: 1 1 200px;
         }
-
-        .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
     </style>
 </head>
 <body>
@@ -172,55 +138,53 @@ if ($nouv_user) {
             <h2>إدارة الوكلاء</h2>
 
             <!-- Form -->
-            <form method="POST" action="">
+            <div class="form-container">
                 <form id="agentForm">
-                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
-                    <label for="post">عدد الصلاحية</label>
-                    <select name="post" id="post" required>
-                        <option value="">-- اختر --</option>
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
-                </div>
-
-                    <div class="form-group">
-                        <label>الاسم و اللقب</label>
-                        <input type="text" name="nom_prenom_user" required>
+                    <div class="form-group" style="display: flex; align-items: center">
+                        <label for="post">عدد الصلاحية</label>
+                        <select>
+                            <option value="">-- --</option>
+                            <option value="un">1</option>
+                            <option value="deux">2</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>رقم التعريف</label>
-                        <input type="text" name="cin_user" required>
+                        <label for="agentName">الاسم و اللقب</label>
+                        <input type="text" id="agentName" name="agentName" required>
                     </div>
                     <div class="form-group">
-                        <label>البريد الإلكتروني</label>
-                        <input type="email" name="email_user" required>
+                        <label for="cin">رقم التعريف</label>
+                        <input type="text" id="cin" name="cin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="agentEmail">البريد الإلكتروني</label>
+                        <input type="email" id="agentEmail" name="agentEmail" required>
                     </div>
 
 
                     <div class="form-group">
-                        <label> العنوان </label>
-                        <input type="text" name="adresse_user" required>
+                        <label for="agentAdresse"> العنوان </label>
+                        <input type="text" id="agentAdresse" name="agentAdresse" required>
                     </div>
 
 
                     <div class="form-group">
-                        <label> رقم الهاتف</label>
-                        <input type="text" name="telephone_user" required>
+                        <label for="agentTele"> رقم الهاتف</label>
+                        <input type="text" id="agentTele" name="agentTele" required>
                     </div>
 
 
                     <div class="form-group">
-                        <label> تاريخ الولادة</label>
-                        <input type="date" name="date_naissance_user" required>
+                        <label for="agentNaissance"> تاريخ الولادة</label>
+                        <input type="date" id="agentNaissance" name="agentNaissance" required>
                     </div>
 
                     <div class="form-group">
-                        <label>كلمة المرور</label>
-                        <input type="text" name="password_user" required>
+                        <label for="password">كلمة المرور</label>
+                        <input type="text" id="password" name="password" required>
                     </div>
                     <div class="form-actions">
-                        <button type="submit" name="submit" class="btn btn-primary">إضافة</button>
+                        <button type="submit" class="btn btn-primary">إضافة</button>
                         <button type="button" class="btn btn-secondary" onclick="clearForm()">إلغاء</button>
                     </div>
                 </form>
@@ -249,7 +213,7 @@ if ($nouv_user) {
                                 <td class="actions">
                                     <button class="edit-btn" onclick="showEditForm(this, <?= htmlspecialchars(json_encode($user)) ?>)">تعديل</button>
                                     <?php if (($user['id'] ?? null) != ($_SESSION['user_id'] ?? null)): ?>
-                                        <a class="delete-btn" href="?delete=<?= urlencode($user['email'] ?? '') ?>&role=<?= urlencode($user['role'] ?? '') ?>" onclick="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">حذف</a>
+                                        <a class="delete-btn" href="?delete=<?= urlencode($user['id'] ?? '') ?>" onclick="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">حذف</a>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -257,41 +221,37 @@ if ($nouv_user) {
                             <!-- Ligne masquée contenant le formulaire -->
                             <tr class="edit-form-row" style="display: none;">
                                 <td colspan="5">
-                                    <form class="edit-user-form" method="POST" action="update_user.php">
-                                        <input type="hidden" name="old_email" value="<?= htmlspecialchars($user['email']) ?>">
-                                        <input type="hidden" name="role" value="<?= htmlspecialchars($user['role']) ?>">
+                                    <form class="edit-user-form">
                                         <div class="form-group">
                                             <label>الاسم و اللقب</label>
-                                            <input type="text" name="agentName" required>
+                                            <input type="text" name="agentName">
                                         </div>
                                         <div class="form-group">
                                             <label>رقم التعريف</label>
-                                            <input type="text" name="cin" required>
+                                            <input type="text" name="cin">
                                         </div>
                                         <div class="form-group">
                                             <label>البريد الإلكتروني</label>
-                                            <input type="email" name="agentEmail" required>
+                                            <input type="email" name="agentEmail">
                                         </div>
                                         <div class="form-group">
                                             <label>العنوان</label>
-                                            <input type="text" name="agentAdresse" required>
+                                            <input type="text" name="agentAdresse">
                                         </div>
                                         <div class="form-group">
                                             <label>رقم الهاتف</label>
-                                            <input type="text" name="agentTele" required>
+                                            <input type="number" name="agentTele">
                                         </div>
                                         <div class="form-group">
                                             <label>تاريخ الولادة</label>
-                                            <input type="date" name="agentNaissance" required>
+                                            <input type="date" name="agentNaissance">
                                         </div>
                                         <div class="form-group">
                                             <label>كلمة المرور</label>
-                                            <input type="password" name="password" placeholder="اتركه فارغًا إذا لم تكن تريد تغييره">
+                                            <input type="text" name="password">
                                         </div>
-                                        <div class="form-actions">
-                                            <button type="submit" class="save-btn">حفظ</button>
-                                            <button type="button" class="cancel-btn" onclick="hideEditForm(this)">إلغاء</button>
-                                        </div>
+                                        <button type="submit" class="save-btn">تم الحفظ</button>
+                                        <button type="button" class="cancel-btn" onclick="hideEditForm(this)">إلغاء</button>
                                     </form>
                                 </td>
                             </tr>
@@ -306,35 +266,6 @@ if ($nouv_user) {
         </div>
     </div>
         <div>
-            <!-- Requests Management Section -->
-            <div id="requests-content" class="content-section">
-                <h2>قائمة المطالب</h2>
-                <table border="1" style="width: 100%; text-align: center;">
-                    <thead>
-                        <tr>
-                            <th>رقم الطلب</th>
-                            <th>تاريخ الطلب</th>
-                            <th>رقم الوصل</th>
-                            <th>نوع الطلب</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $stmt = $pdo->query("SELECT * FROM T_demandes ");
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row['id_demande']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['date_demande']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['num_recu']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['type_demande']) . "</td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-
-
             <!-- Contracts Management Section -->
             <div id="contracts-content" class="content-section">
                 <h2>قائمة العقود</h2>

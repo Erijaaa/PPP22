@@ -459,6 +459,96 @@ if (isset($_POST['id_demande'])) {
                 font-size: 2em;
             }
         }
+        .button-2 {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.button-2:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(250, 112, 154, 0.4);
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 400px;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+.modal-header {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.textarea-group textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    resize: none;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 18px 30px;
+    margin: 20px 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(250, 112, 154, 0.4);
+}
+
     </style>
 </head>
 <body>
@@ -903,19 +993,31 @@ if (isset($_POST['id_demande'])) {
 
         <!-- Boutons d'action -->
         <div class="action-buttons">
-        <form method="POST" action="PFEEEEEEEEEEEEE/generate_pdf.php" target="_blank">
-            <input type="hidden" name="id_demande" value="<?php echo htmlspecialchars($contrat['id_demande'] ?? ''); ?>">
-            <button type="submit" class="action-btn print-btn">🖨️ طباعة العقد</button>
-        </form>
-
-
-
-            
-            <form method="POST" style="display: inline;">
-                <input type="hidden" name="action" value="object_contract">
-                <button type="submit" class="action-btn object-btn">⚠️ اعتراض على العقد</button>
-            </form>
+            <?php if ($id_demande): ?>
+                <form method="POST" action="/PFE_erij/PFEEEEEEEEEEEEE/generate_pdf.php" target="_blank">
+                    <input type="hidden" name="id_demande" value="<?php echo htmlspecialchars($id_demande); ?>">
+                    <button type="submit" class="action-btn print-btn">🖨️ طباعة العقد</button>
+                </form>
+            <?php else: ?>
+                <p style="color: red;">Erreur : ID de demande non sélectionné.</p>
+            <?php endif; ?>
+            <div class="container">
+                <a href="" class="button button-2" onclick="openModal()">نص الاعتراض</a>
+                <div class="modal-overlay" id="modalOverlay">
+                    <div class="modal">
+                        <button class="close-btn" title="إغلاق" onclick="closeModal()">×</button>
+                        <div class="modal-header">نص الاعتراض</div>
+                        <div class="modal-body">
+                            <div class="textarea-group">
+                                <textarea id="objectionText" placeholder="اكتب نص الاعتراض هنا..."></textarea>
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="submitObjection()">ارسال النص</button>
+                    </div>
+                </div>
+            </div>
         </div>
+        
     </div>
 <script>
 function printContract(idDemande) {
@@ -947,6 +1049,29 @@ function printContract(idDemande) {
                 alert('خطأ في الاتصال بالخادم');
             };
             xhr.send('id_demande=' + encodeURIComponent(idDemande));
+        }
+
+        
+        // Ouvrir le modal
+        function openModal() {
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        // Fermer le modal
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('objectionText').value = '';
+        }
+
+        // Soumettre le texte
+        function submitObjection() {
+            const objectionText = document.getElementById('objectionText').value;
+            if (objectionText.trim() === '') {
+                alert('يرجى كتابة نص الاعتراض قبل الإرسال.');
+                return;
+            }
+            console.log('Texte envoyé :', objectionText);
+            closeModal();
         }
 </script>
 </body>
