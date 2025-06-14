@@ -45,3 +45,49 @@ LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
                                                    ^
 HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
 
+Script started: 2025-06-14 13:18:18
+id_demande: 24
+Executing command: python "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py" "24" 2>&1
+Python exec returned: code=1, output=Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+PDF Generation Error: Python script failed: Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+Fatal Error: Python script failed: Traceback (most recent call last):
+  File "C:\wamp64\www\PFE_erij\PFEEEEEEEEEEEEE\app.py", line 36, in <module>
+    cursor.execute("""
+psycopg2.errors.UndefinedColumn: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:     JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                   ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+generate_pdf.php started: 2025-06-14 13:23:06
+id_demande: 24
+Contract found: num_contrat=103
+Executing command: python "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py" "24" 2>&1
+Python exec returned: code=1, output=Erreur de requête SQL : ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:         JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                       ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+PDF Generation Error: Python script failed: Erreur de requête SQL : ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:         JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                       ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+Error: Python script failed: Erreur de requête SQL : ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:         JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                       ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+

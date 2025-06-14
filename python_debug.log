@@ -1,0 +1,67 @@
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query error: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:         JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                       ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+app.py started: ['app.py']
+Font loaded successfully
+Error: id_demande not provided
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query error: ERREUR:  la colonne r.id_demande n'existe pas
+LINE 16:         JOIN "redacteur" r ON di.id_demande = r.id_demande
+                                                       ^
+HINT:  Peut-être que vous souhaitiez référencer la colonne « c.id_demande ».
+
+app.py started: ['c:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py']
+Font loaded successfully
+Error: id_demande not provided
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query error: ERREUR:  erreur de syntaxe sur ou près de « ON »
+LINE 12:         FROM "T_demande" dem ON c.id_demande = dem.id_demand...
+                                      ^
+
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query error: ERREUR:  erreur de syntaxe sur ou près de « ON »
+LINE 12:         FROM "T_demande" dem ON dem.id_demande = dem.id_dema...
+                                      ^
+
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query error: ERREUR:  erreur de syntaxe sur ou près de « ON »
+LINE 12:         FROM "T_demande" dem ON c.id_demande = dem.id_demand...
+                                      ^
+
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query error: ERREUR:  erreur de syntaxe sur ou près de « : »
+LINE 17:     WHERE c.id_demande = :id_demande
+                                  ^
+
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '24']
+Font loaded successfully
+id_demande: 24
+Database connection established
+Query executed successfully
+PDF path: C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_24.pdf
+PDF canvas created
+PDF content filled
+PDF generated successfully at: C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_24.pdf
+Save error: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+Database connection closed

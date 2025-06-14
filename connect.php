@@ -1842,6 +1842,67 @@ class ClsConnect {
 
 
     //PARTIE VALIDATION DES DONNEES
+    public function getContratDetailsById($id_demande) {
+        $sql = "
+            SELECT 
+                c.num_contrat,
+                c.sujet_contrat,
+                dem.date_demande,
+                di.valeur_prix1,
+                di.contenu1,
+                di.detail_general,
+                tg.libile_gouv,
+                r.nom_redacteur,
+                r.prenom_redacteur
+            FROM public.\"contrats\" c
+            JOIN public.\"T_demande\" dem ON c.id_demande = dem.id_demande
+            JOIN public.\"dessin_immobiler1\" di ON c.id_demande = di.id_demande
+            JOIN public.\"T_gouv\" tg ON di.id_demande = tg.id_demande
+            JOIN public.\"redacteur\" r ON c.id_redacteur = r.id_redacteur
+            WHERE c.id_demande = :id_demande
+        ";
+    
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_demande', $id_demande, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        if ($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            return false;
+        }
+    }
+    
+     // New function to generate PDF by calling app.py
+     public function generateContractPDF($id_demande) {
+        $logFile = 'C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/debug.log';
+        try {
+            $python_script = 'C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py';
+            $python_exec = 'python'; // Adjust path if needed, e.g., 'C:/Python39/python.exe'
+            $id_demande_escaped = escapeshellarg($id_demande);
+            $command = "$python_exec " . escapeshellarg($python_script) . " $id_demande_escaped 2>&1";
+            file_put_contents($logFile, "Executing command: $command\n", FILE_APPEND);
+
+            $output = [];
+            $return_var = 0;
+            exec($command, $output, $return_var);
+            file_put_contents($logFile, "Python exec returned: code=$return_var, output=" . implode("\n", $output) . "\n", FILE_APPEND);
+
+            if ($return_var !== 0) {
+                throw new Exception("Python script failed: " . implode("\n", $output));
+            }
+
+            $pdf_path = "C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_{$id_demande}.pdf";
+            if (!file_exists($pdf_path)) {
+                throw new Exception("PDF file not generated at $pdf_path");
+            }
+
+            return $pdf_path;
+        } catch (Exception $e) {
+            file_put_contents($logFile, "PDF Generation Error: " . $e->getMessage() . "\n", FILE_APPEND);
+            throw $e;
+        }
+    }
     //المؤيدات
     function getPiecesJointesByDemandeV($id_demande) {
         try {
