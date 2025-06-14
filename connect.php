@@ -554,72 +554,59 @@ class ClsConnect {
 
 
     //ajouter un nouveau user par l'admin
-    public function ajouterUser($pdo) {
-        if (isset($_POST['submit'])) {
-            try {
-                // Récupération des valeurs sous forme de tableau (même pour un seul utilisateur)
-                $post_array = isset($_POST['post']) ? (is_array($_POST['post']) ? $_POST['post'] : [$_POST['post']]) : [];
-                $nom_prenom_user_array = isset($_POST['nom_prenom_user']) ? (is_array($_POST['nom_prenom_user']) ? $_POST['nom_prenom_user'] : [$_POST['nom_prenom_user']]) : [];
-                $cin_user_array = isset($_POST['cin_user']) ? (is_array($_POST['cin_user']) ? $_POST['cin_user'] : [$_POST['cin_user']]) : [];
-                $email_user_array = isset($_POST['email_user']) ? (is_array($_POST['email_user']) ? $_POST['email_user'] : [$_POST['email_user']]) : [];
-                $adresse_user_array = isset($_POST['adresse_user']) ? (is_array($_POST['adresse_user']) ? $_POST['adresse_user'] : [$_POST['adresse_user']]) : [];
-                $telephone_user_array = isset($_POST['telephone_user']) ? (is_array($_POST['telephone_user']) ? $_POST['telephone_user'] : [$_POST['telephone_user']]) : [];
-                $date_naissance_user_array = isset($_POST['date_naissance_user']) ? (is_array($_POST['date_naissance_user']) ? $_POST['date_naissance_user'] : [$_POST['date_naissance_user']]) : [];
-                $password_user_array = isset($_POST['password_user']) ? (is_array($_POST['password_user']) ? $_POST['password_user'] : [$_POST['password_user']]) : [];
+    public function ajoterUser($pdo) {
+        try {
+            // Retrieve and validate input data
+            $nom_prenom_user = $_POST['nom_prenom_user'] ?? null;
+            $cin_user = $_POST['cin_user'] ?? null;
+            $email_user = $_POST['email_user'] ?? null;
+            $adresse_user = $_POST['adresse_user'] ?? null;
+            $telephone_user = $_POST['telephone_user'] ?? null;
+            $date_naissance_user = $_POST['date_naissance_user'] ?? null;
+            $password_user = $_POST['password_user'] ?? null;
+            $post = $_POST['post'] ?? null;
     
-                if (empty($cin_user_array) || !isset($cin_user_array[0]) || empty(trim($cin_user_array[0]))) {
-                    return "❌ رقم التعريف مطلوب";
-                }
-    
-                $sql = "INSERT INTO users(
-                    nom_prenom_user, cin_user, email_user, adresse_user, telephone_user, date_naissance_user, password_user, post)
-                    VALUES (:nom_prenom_user, :cin_user, :email_user, :adresse_user, :telephone_user, :date_naissance_user, :password_user, :post)";
-                $stmt = $pdo->prepare($sql);
-    
-                $success = true;
-    
-                foreach ($cin_user_array as $index => $cin_user) {
-                    $cin_user = trim($cin_user);
-                    if (empty($cin_user)) {
-                        continue;
-                    }
-    
-                    // Vérification si le CIN existe déjà
-                    $check_sql = "SELECT cin_user FROM users WHERE cin_user = :cin_user";
-                    $check_stmt = $pdo->prepare($check_sql);
-                    $check_stmt->execute([':cin_user' => $cin_user]);
-                    if ($check_stmt->rowCount() > 0) {
-                        $success = false;
-                        error_log("❌ رقم التعريف موجود بالفعل pour l'index $index");
-                        continue;
-                    }
-    
-                    // Insertion
-                    $result = $stmt->execute([
-                        ':post' => $post_array[$index] ?? null,
-                        ':nom_prenom_user' => $nom_prenom_user_array[$index] ?? null,
-                        ':cin_user' => $cin_user,
-                        ':email_user' => $email_user_array[$index] ?? null,
-                        ':adresse_user' => $adresse_user_array[$index] ?? null,
-                        ':telephone_user' => $telephone_user_array[$index] ?? null,
-                        ':date_naissance_user' => $date_naissance_user_array[$index] ?? null,
-                        ':password_user' => $password_user_array[$index] ?? null,
-                    ]);
-    
-                    if (!$result) {
-                        $success = false;
-                        error_log("Erreur d'insertion utilisateur à l'index $index: " . print_r($stmt->errorInfo(), true));
-                    }
-                }
-    
-                return $success ? "✅ تمت إضافة المستخدمين بنجاح" : "❌ بعض المستخدمين لم يتم إدراجهم";
-            } catch (PDOException $e) {
-                error_log("❌ خطأ في إضافة المستخدم: " . $e->getMessage());
-                return "❌ خطأ في إضافة المستخدم: " . $e->getMessage();
+            // Check for missing fields
+            if (empty($nom_prenom_user) || empty($cin_user) || empty($email_user) || 
+                empty($adresse_user) || empty($telephone_user) || empty($date_naissance_user) || 
+                empty($password_user) || empty($post)) {
+                error_log("Missing required fields in insertUser");
+                return "❌ Champs manquants";
             }
+    
+            // Prepare SQL query
+            $sql = "INSERT INTO public.users(
+                    nom_prenom_user, cin_user, email_user, adresse_user, telephone_user, 
+                    date_naissance_user, password_user, post)
+                    VALUES (:nom_prenom_user, :cin_user, :email_user, :adresse_user, 
+                            :telephone_user, :date_naissance_user, :password_user, :post)";
+    
+            $stmt = $pdo->prepare($sql);
+    
+            // Execute with correct parameter binding
+            $result = $stmt->execute([
+                ':nom_prenom_user' => $nom_prenom_user,
+                ':cin_user' => $cin_user,
+                ':email_user' => $email_user,
+                ':adresse_user' => $adresse_user,
+                ':telephone_user' => $telephone_user,
+                ':date_naissance_user' => $date_naissance_user,
+                ':password_user' => $password_user,
+                ':post' => $post
+            ]);
+    
+            if (!$result) {
+                error_log("Failed to insert user: " . print_r($stmt->errorInfo(), true));
+                return "❌ Échec de l'insertion";
+            }
+    
+            return "✅ Utilisateur inséré avec succès";
+        } catch (PDOException $e) {
+            error_log("Erreur dans insertUser: " . $e->getMessage());
+            return "❌ Erreur SQL : " . $e->getMessage();
         }
-        return null;
     }
+    
     
     // Méthodes pour les demandes
     public function getDemandesByType($type, $id_redacteur = null) {

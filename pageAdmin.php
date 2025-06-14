@@ -1,8 +1,12 @@
 <?php
-require_once 'connect.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$connect = new ClsConnect();             // Création de l'objet ClsConnect
-$pdo = $connect->getConnection();        // Récupération de la connexion PDO
+require_once("connect.php");
+//require_once 'insert_data.php'; 
+$db = new ClsConnect();
+$pdo = $db->getConnection();
 
 // Exécution de la requête pour obtenir tous les utilisateurs
 $sql = "
@@ -35,6 +39,20 @@ $sql = "
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    $result = $db->ajoterUser($pdo);
+    echo "<div style='padding: 10px; font-weight: bold;'>";
+    if ($result === "✅") {
+        echo "<span style='color: green;'>✅ Données enregistrées avec succès</span>";
+    } else {
+        echo "<span style='color: red;'>❌ Erreur : $result</span>";
+    }
+    echo "</div>";
+}
+
+//$ajoutUser = $db->ajoterUser($pdo);
 
 ?>
 
@@ -139,53 +157,54 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <!-- Form -->
             <div class="form-container">
-                <form id="agentForm">
+                <form id="agentForm" method="POST" action="">
                     <div class="form-group" style="display: flex; align-items: center">
-                        <label for="post">عدد الصلاحية</label>
-                        <select>
-                            <option value="">-- --</option>
-                            <option value="un">1</option>
-                            <option value="deux">2</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="agentName">الاسم و اللقب</label>
-                        <input type="text" id="agentName" name="agentName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cin">رقم التعريف</label>
-                        <input type="text" id="cin" name="cin" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="agentEmail">البريد الإلكتروني</label>
-                        <input type="email" id="agentEmail" name="agentEmail" required>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="agentAdresse"> العنوان </label>
-                        <input type="text" id="agentAdresse" name="agentAdresse" required>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="agentTele"> رقم الهاتف</label>
-                        <input type="text" id="agentTele" name="agentTele" required>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="agentNaissance"> تاريخ الولادة</label>
-                        <input type="date" id="agentNaissance" name="agentNaissance" required>
+                    <label for="post">عدد الصلاحية</label>
+                    <select name="post" required>
+                        <option value="">-- --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="password">كلمة المرور</label>
-                        <input type="text" id="password" name="password" required>
+                    <label for="agentName">الاسم و اللقب</label>
+                    <input type="text" id="agentName" name="nom_prenom_user" required>
                     </div>
+
+                    <div class="form-group">
+                    <label for="cin">رقم التعريف</label>
+                    <input type="text" id="cin" name="cin_user" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="agentEmail">البريد الإلكتروني</label>
+                    <input type="email" id="agentEmail" name="email_user" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="agentAdresse">العنوان</label>
+                    <input type="text" id="agentAdresse" name="adresse_user" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="agentTele">رقم الهاتف</label>
+                    <input type="text" id="agentTele" name="telephone_user" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="agentNaissance">تاريخ الولادة</label>
+                    <input type="date" id="agentNaissance" name="date_naissance_user" required>
+                    </div>
+
+                    <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="text" id="password" name="password_user" required>
+                    </div>
+
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">إضافة</button>
-                        <button type="button" class="btn btn-secondary" onclick="clearForm()">إلغاء</button>
+                    <button type="submit" name="submit" class="btn btn-primary">إضافة</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">إلغاء</button>
                     </div>
                 </form>
             </div>
