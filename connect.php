@@ -2174,6 +2174,7 @@ class ClsConnect {
     }
 
 
+    //inserer un text refus
     public function insertTextRefusR($pdo) {
         if (isset($_POST['submit'])) {
             try {
@@ -2200,13 +2201,10 @@ class ClsConnect {
     //insertion d'une nouvelle liggne 
     function insererNouvelleLigneEtChangerEtat($pdo, $id_demande) {
         try {
-            // 1. Insérer la ligne dans la table "contrats" (ou autre nom)
             $stmt = $pdo->prepare("INSERT INTO contrats (id_demande, date_redaction, nb_demande_redaction, nb_acte, etat)
                                    VALUES (:id_demande, CURRENT_DATE, 0, 0, 'في الانتظار')");
             $stmt->bindParam(':id_demande', $id_demande);
             $stmt->execute();
-    
-            // 2. Mettre à jour la table "demandes" pour changer l'état
             $update = $pdo->prepare("UPDATE demandes SET etat_demande = 1 WHERE id_demande = :id_demande");
             $update->bindParam(':id_demande', $id_demande);
             $update->execute();

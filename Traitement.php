@@ -885,30 +885,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
           <input type="hidden" name="id_demande" value="<?php echo isset($demande['id_demande']) ? htmlspecialchars($demande['id_demande']) : ''; ?>" />
           <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
           
-          <h3>البيانات المتعلقة بتسجيل العقد لدى القباضة المالية و استخلاص معلوم ادارة الملكية العقارية</h3>
-          <table class="documents-table">
+          <h3>البيانات المتعلقة بتسجيل العقد لدى القباضة المالية</h3>
+
+          <table id="enregistrementTable" class="documents-table">
             <thead>
               <tr>
-                <th> القيمة بالدينار</th>
-                <th>  النسبة</th>
-                <th>  المبلغ بالدينار</th>
-                <th>ختم قابض التسجيل و امضاؤه</th>
+                <th>القيمة بالدينار</th>
+                <th>النسبة</th>
+                <th>المبلغ بالدينار</th>
+                <th>ختم قابض التسجيل</th>
+                <th>حذف</th>
               </tr>
             </thead>
             <tbody>
+              <!-- ligne modèle, cachée -->
+              <tr class="row-template" style="display: none;">
+                <td><input type="text" name="valeur_dinar3[]" /></td>
+                <td><input type="text" name="pourcent3[]" /></td>
+                <td><input type="text" name="montant_dinar3[]" /></td>
+                <td><input type="text" name="signature3[]" /></td>
+                <td><button type="button" class="btn-delete">حذف</button></td>
+              </tr>
+
               <tr>
-                <td><input type="text" name="valeur_dinar3[]" required/></td>
-                <td><input type="text" name="pourcent3[]" required/></td>
-                <td><input type="text" name="montant_dinar3[]" required/></td>
-                <td><input type="text" name="signature3[]" required/></td>
+                <td><input type="text" name="valeur_dinar3[]" /></td>
+                <td><input type="text" name="pourcent3[]" /></td>
+                <td><input type="text" name="montant_dinar3[]" /></td>
+                <td><input type="text" name="signature3[]" /></td>
+                <td><button type="button" class="btn-delete">حذف</button></td>
               </tr>
             </tbody>
+
           </table>
+
           <div class="form-actions">
-            <button type="button" class="btn-delete">حذف</button>
-            <button type="button" class="btn-add">إضافة سطر</button>
+            <button type="button" class="btn-add" data-table="enregistrementTable">➕ إضافة سطر</button>
           </div>
-        </form>
+
+
+
 
         <!-- Property Services Form -->
         <form method="POST" action="" class="extraction-form">
@@ -916,24 +931,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
           <input type="hidden" name="num_contrat" value="<?= $numcontrat ? htmlspecialchars($numcontrat['num_contrat']) : '' ?>" />
           
           <h3>البيانات المتعلقة بتصفية معاليم الخدمات الراجعة لادارة الملكية العقارية</h3>
-          <table class="documents-table">
-            <thead>
-              <tr>
-                <th>  التسمية</th>
-                <th>  القيمة بالدينار</th>
-                <th> النسبة</th>
-                <th> المبلغ بالدينار</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><input type="text" name="nom4[]" required/></td>
-                <td><input type="text" name="valeur_dinar4[]" required/></td>
-                <td><input type="text" name="pourcent4[]" required/></td>
-                <td><input type="text" name="montant_dinar4[]" required/></td>
-              </tr>
-            </tbody>
+            <table id="documentsTable" class="documents-table">
+              <thead>
+                <tr>
+                  <th>التسمية</th>
+                  <th>القيمة بالدينار</th>
+                  <th>النسبة</th>
+                  <th>المبلغ بالدينار</th>
+                  <th>حذف</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" name="nom4[]" required /></td>
+                  <td><input type="text" name="valeur_dinar4[]" required /></td>
+                  <td><input type="text" name="pourcent4[]" required /></td>
+                  <td><input type="text" name="montant_dinar4[]" required /></td>
+                  <td><button type="button" class="btn-delete">حذف</button></td>
+                </tr>
+              </tbody>
             </table>
+
+            <div class="form-actions">
+              <button type="button" class="btn-add" data-table="documentsTable">➕ إضافة سطر</button>
+            </div>
+
             <a href="verifierContrat.php" class="save-button">
                 حفظ البيانات
                 <span class="icon">💾</span>
