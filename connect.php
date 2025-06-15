@@ -2173,8 +2173,26 @@ class ClsConnect {
         return null;
     }
 
+    public function afficherTextRefus($pdo) {
+        try {
+            $sql = "SELECT * FROM text_refus"; 
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+    
+            $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            if (empty($resultats)) {
+                return "❌ Aucun texte de refus trouvé.";
+            }
+    
+            return $resultats;
+        } catch (PDOException $e) {
+            return "❌ Erreur BDD : " . $e->getMessage();
+        }
+    }
+    
 
-    //inserer un text refus
+
     public function insertTextRefusR($pdo) {
         if (isset($_POST['submit'])) {
             try {
@@ -2197,6 +2215,10 @@ class ClsConnect {
         }
         return null;
     }
+    
+
+   
+    
 
     //insertion d'une nouvelle liggne 
     function insererNouvelleLigneEtChangerEtat($pdo, $id_demande) {

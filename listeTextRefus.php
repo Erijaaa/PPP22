@@ -5,7 +5,8 @@ error_reporting(E_ALL);
 require_once 'connect.php';
 $connect = new ClsConnect();
 $pdo = $connect->getConnection();
-$rslt = $connect->textRefuss();
+$rslt = $connect->afficherTextRefus($pdo);
+
 ?>
 
 <!DOCTYPE html>
