@@ -853,39 +853,50 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Gestionnaire pour les formulaires
-  document.querySelectorAll("form").forEach((form) => {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      saveTableData(this);
+  document.addEventListener("DOMContentLoaded", function () {
+    // Gestionnaire pour tous les formulaires sauf contractForm
+    document.querySelectorAll("form").forEach((form) => {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Empêche la soumission par défaut pour exécuter saveTableData
+        saveTableData(this); // Exécute votre fonction personnalisée
+        this.submit(); // Soumet le formulaire manuellement vers verifierContrat.php
+      });
     });
-  });
-});
-// insertion
-document.addEventListener("DOMContentLoaded", function () {
-  // Ajout de lignes
-  document.querySelectorAll(".btn-add").forEach((button) => {
-    button.addEventListener("click", function () {
-      const table =
-        this.closest(".form-actions").previousElementSibling.querySelector(
-          "tbody"
-        );
-      const newRow = table.rows[0].cloneNode(true);
-      newRow.querySelectorAll("input").forEach((input) => (input.value = ""));
-      table.appendChild(newRow);
-    });
-  });
 
-  // Suppression de lignes
-  document.querySelectorAll(".btn-delete").forEach((button) => {
-    button.addEventListener("click", function () {
-      const table =
-        this.closest(".form-actions").previousElementSibling.querySelector(
-          "tbody"
-        );
-      if (table.rows.length > 1) {
-        table.deleteRow(table.rows.length - 1);
-      }
+    // Gestionnaire spécifique pour contractForm (optionnel)
+    const contractForm = document.getElementById("contractForm");
+    if (contractForm) {
+      contractForm.addEventListener("submit", function (e) {
+        console.log("contractForm soumis vers verifierContrat.php");
+      });
+    }
+  });
+  // insertion
+  document.addEventListener("DOMContentLoaded", function () {
+    // Ajout de lignes
+    document.querySelectorAll(".btn-add").forEach((button) => {
+      button.addEventListener("click", function () {
+        const table =
+          this.closest(".form-actions").previousElementSibling.querySelector(
+            "tbody"
+          );
+        const newRow = table.rows[0].cloneNode(true);
+        newRow.querySelectorAll("input").forEach((input) => (input.value = ""));
+        table.appendChild(newRow);
+      });
+    });
+
+    // Suppression de lignes
+    document.querySelectorAll(".btn-delete").forEach((button) => {
+      button.addEventListener("click", function () {
+        const table =
+          this.closest(".form-actions").previousElementSibling.querySelector(
+            "tbody"
+          );
+        if (table.rows.length > 1) {
+          table.deleteRow(table.rows.length - 1);
+        }
+      });
     });
   });
 });

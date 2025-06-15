@@ -124,6 +124,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <li><a href="pageAdmin.php" class="menu-item active" data-section="agents">👥 إدارة الوكلاء</a></li>
             <li><a href="listeDemAdmin.php" class="menu-item" data-section="requests">📋 قائمة المطالب</a></li>
             <li><a href="listeContratAdmin.php" class="menu-item" data-section="contracts">📄 قائمة العقود</a></li>
+            <li><a href="listeTextRefus.php" class="menu-item" data-section="textRefus">⚠️ قائمة نصوص الاعتراض</a></li>
         </ul>
     </div>
 
@@ -266,6 +267,38 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <div>
+        <!-- Contracts Management Section -->
+        <div id="contracts-content" class="content-section">
+            <h2>قائمة العقود</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>تاريخ التحرير</th>
+                        <th>عدد مطلب التحرير</th>
+                        <th>عدد العقد</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (is_array($resultats) && !empty($resultats)) { ?>
+                        <?php foreach ($resultats as $resultat) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($resultat['date_contrat'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($resultat['id_demande'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($resultat['num_contrat'] ?? ''); ?></td>
+                                <td class="<?php echo getStatusClass($resultat['etat_contrat'] ?? 0); ?>">
+                                    <?php echo getStatusText($resultat['etat_contrat'] ?? 0); ?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <tr>
+                            <td colspan="5">لا توجد عقود متاحة</td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
         <!-- Contracts Management Section -->
         <div id="contracts-content" class="content-section">
             <h2>قائمة العقود</h2>

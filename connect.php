@@ -898,7 +898,7 @@ class ClsConnect {
 
     //القسم الرابع
     //وثيقة الهوية
-    public function personneContratc(
+    /*public function personneContratc(
         $pdo,
         $prenom,
         $numero_document_identite,
@@ -931,9 +931,12 @@ class ClsConnect {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             try {
                 // Check if required fields are provided
-                if (!$numero_document_identite || !$id_demande || !$nom_complet_personne || !$role) {
-                    error_log("Missing required fields: numero_document_identite, id_demande, nom_complet_personne, or role");
-                    return "❌ Missing required data";
+                if (empty($numero_document_identite) || empty($id_demande_array) || empty($nom_complet_personne) || empty($role)) {
+                    error_log("Missing required fields: numero_document_identite, id_demande_array, nom_complet_personne, or role");
+                    return "❌ Missing required data: " . (empty($numero_document_identite) ? "numero_document_identite, " : "") .
+                           (empty($id_demande_array) ? "id_demande_array, " : "") .
+                           (empty($nom_complet_personne) ? "nom_complet_personne, " : "") .
+                           (empty($role) ? "role" : "");
                 }
     
                 // Handle array inputs for multiple rows
@@ -959,13 +962,17 @@ class ClsConnect {
                 $date_document_conjoint = is_array($date_document_conjoint) ? $date_document_conjoint : [$date_document_conjoint];
                 $lieu_document_conjoint = is_array($lieu_document_conjoint) ? $lieu_document_conjoint : [$lieu_document_conjoint];
                 $vendeur_acheteur = is_array($vendeur_acheteur) ? $vendeur_acheteur : [$vendeur_acheteur];
-                $id_demande = is_array($id_demande) ? $id_demande : [$id_demande];
+                $id_demande_array = is_array($id_demande_array) ? $id_demande_array : [$id_demande_array];
                 $nom_complet_personne = is_array($nom_complet_personne) ? $nom_complet_personne : [$nom_complet_personne];
                 $statut_contractant = is_array($statut_contractant) ? $statut_contractant : [$statut_contractant];
+                $notes = is_array($notes) ? $notes : [$notes];
                 $role = is_array($role) ? $role : [$role];
     
                 $success = true;
                 $errors = [];
+    
+                // Begin transaction for atomicity
+                $pdo->beginTransaction();
     
                 // Loop through each row of data
                 for ($i = 0; $i < count($numero_document_identite); $i++) {
@@ -975,8 +982,14 @@ class ClsConnect {
                         continue;
                     }
     
+                    // Prepare SQL query
                     $sql = "INSERT INTO personnes_contracteurs (
-                        prenom, numero_document_identite, nom, prenom_pere, date_emission_document, sexe, nationalite, adresse, profession, etat_civil, nom_conjoint, prenom_pere_conjoint, date_naissance_conjoint, lieu_naissance_conjoint, nationalite_conjoint, numero_document_conjoint, date_document_conjoint, lieu_document_conjoint, prenom_grand_pere_conjoint, prenom_conjoint, role, id_demande, nom_complet_personne, statut_contractant
+                        prenom, numero_document_identite, nom, prenom_pere, date_emission_document, sexe, 
+                        nationalite, adresse, profession, etat_civil, prenom_conjoint, nom_conjoint, 
+                        prenom_pere_conjoint, prenom_grand_pere_conjoint, surnom_conjoint, 
+                        date_naissance_conjoint, lieu_naissance_conjoint, nationalite_conjoint, 
+                        numero_document_conjoint, date_document_conjoint, lieu_document_conjoint, 
+                        vendeur_acheteur, id_demande, nom_complet_personne, statut_contractant, notes, role
                     ) VALUES (
                         :prenom, :numero_document_identite, :nom, :prenom_pere, :date_emission_document,
                         :sexe, :nationalite, :adresse, :profession, :etat_civil, :prenom_conjoint,
@@ -984,7 +997,7 @@ class ClsConnect {
                         :surnom_conjoint, :date_naissance_conjoint, :lieu_naissance_conjoint,
                         :nationalite_conjoint, :numero_document_conjoint, :date_document_conjoint,
                         :lieu_document_conjoint, :vendeur_acheteur, :id_demande, :nom_complet_personne,
-                        :statut_contractant ,:role 
+                        :statut_contractant, :notes, :role
                     )";
     
                     $stmt = $pdo->prepare($sql);
@@ -1011,31 +1024,40 @@ class ClsConnect {
                         ':date_document_conjoint' => $date_document_conjoint[$i] ?? null,
                         ':lieu_document_conjoint' => $lieu_document_conjoint[$i] ?? null,
                         ':vendeur_acheteur' => $vendeur_acheteur[$i] ?? null,
-                        ':id_demande' => $id_demande[$i] ?? null,
+                        ':id_demande' => $id_demande_array[$i] ?? null,
                         ':nom_complet_personne' => $nom_complet_personne[$i],
-                        ':statut_contractant' => $statut_contractant[$i],
-                        ':role' => $role[$i] 
+                        ':statut_contractant' => $statut_contractant[$i] ?? null,
+                        ':notes' => $notes[$i] ?? null,
+                        ':role' => $role[$i] ?? null
                     ]);
     
                     if (!$result) {
                         $success = false;
-                        $errors[] = "Failed to insert row " . ($i + 1);
+                        $errors[] = "Failed to insert row " . ($i + 1) . ": " . implode(", ", $stmt->errorInfo());
                     }
                 }
     
+                // Commit or rollback based on success
                 if ($success && empty($errors)) {
+                    $pdo->commit();
                     return "✅ Successfully inserted all contract parties";
                 } else {
+                    $pdo->rollBack();
                     error_log("Errors in personneContratc: " . implode(", ", $errors));
                     return "❌ Partial or no data inserted: " . implode(", ", $errors);
                 }
             } catch (PDOException $e) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
                 error_log("SQL Error in personneContratc: " . $e->getMessage());
                 return "❌ SQL Error: " . $e->getMessage();
             }
         }
         return null;
-    }
+    }*/
+    
+    
     
 
 

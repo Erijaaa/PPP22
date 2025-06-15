@@ -37,7 +37,7 @@ if ($user) {
               <label class="form-label" style="margin-right: 10px"></label>
               عدد الصلاحية   </label
               >
-              <select name="region" class="form-input" dir="rtl" required>
+              <select name="post" class="form-input" dir="rtl" required>
                 <option value="">-- --</option>
                 <option value="Tunis">0</option>
                 <option value="Tunis">1</option>

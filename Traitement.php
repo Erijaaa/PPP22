@@ -18,14 +18,6 @@ if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
     exit;
 }
 
-/*
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo "Formulaire reçu<br>";
-    echo "ID DEMANDE : " . htmlspecialchars($_POST['id_demande']);
-} else {
-    echo "Aucune donnée reçue.";
-}*/
-
 
 
 
@@ -134,7 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 }
 
 
-$pdo = $db->getConnection();
 $contratManagement = new contratManager($pdo);
 
 
@@ -156,209 +147,6 @@ $deposant = $db->getDeposant($id_demande);
 $sujetContrat = $db->getSubject($id_demande);
 
 
-// Initialize variables for dessin_immobilier1
-
-/*$nom_droit1 = '';
-$sujet_contrat1 = '';
-$unite1 = '';
-$detail_general = '';
-$contenu1 = '';
-$valeur_prix1 = '';
-$dure1 = '';
-$surplus1 = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['nom_droit1']) && isset($_POST['sujet_contrat1']) && isset($_POST['unite1']) && 
-        isset($_POST['detail_general']) && isset($_POST['contenu1']) && isset($_POST['valeur_prix1']) && 
-        isset($_POST['dure1']) && isset($_POST['surplus1'])) {
-        $nom_droit1 = is_array($_POST['nom_droit1']) ? $_POST['nom_droit1'][0] : $_POST['nom_droit1'];
-        $sujet_contrat1 = is_array($_POST['sujet_contrat1']) ? $_POST['sujet_contrat1'][0] : $_POST['sujet_contrat1'];
-        $unite1 = is_array($_POST['unite1']) ? $_POST['unite1'][0] : $_POST['unite1'];
-        $detail_general = is_array($_POST['detail_general']) ? $_POST['detail_general'][0] : $_POST['detail_general'];
-        $contenu1 = is_array($_POST['contenu1']) ? $_POST['contenu1'][0] : $_POST['contenu1'];
-        $valeur_prix1 = is_array($_POST['valeur_prix1']) ? $_POST['valeur_prix1'][0] : $_POST['valeur_prix1'];
-        $dure1 = is_array($_POST['dure1']) ? $_POST['dure1'][0] : $_POST['dure1'];
-        $surplus1 = is_array($_POST['surplus1']) ? $_POST['surplus1'][0] : $_POST['surplus1'];
-    }
-}
-$dessin1 = $db->dessin_immobilier1($pdo, $nom_droit1, $sujet_contrat1, $unite1, $detail_general, $contenu1, $valeur_prix1, $dure1, $surplus1);
-echo $dessin1;
-
-// Initialize variables for dessin_immobilier2
-$date_inscri2 = '';
-$lieu_inscri2 = '';
-$doc2 = '';
-$num_inscri2 = '';
-$num_succursale2 = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['date_inscri2']) && isset($_POST['lieu_inscri2']) && isset($_POST['doc2']) && 
-        isset($_POST['num_inscri2']) && isset($_POST['num_succursale2'])) {
-        $date_inscri2 = is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'][0] : $_POST['date_inscri2'];
-        $lieu_inscri2 = is_array($_POST['lieu_inscri2']) ? $_POST['lieu_inscri2'][0] : $_POST['lieu_inscri2'];
-        $doc2 = is_array($_POST['doc2']) ? $_POST['doc2'][0] : $_POST['doc2'];
-        $num_inscri2 = is_array($_POST['num_inscri2']) ? $_POST['num_inscri2'][0] : $_POST['num_inscri2'];
-        $num_succursale2 = is_array($_POST['num_succursale2']) ? $_POST['num_succursale2'][0] : $_POST['num_succursale2'];
-    }
-}
-$dessin2 = $db->dessin_immobilier2($pdo, $date_inscri2, $lieu_inscri2, $doc2, $num_inscri2, $num_succursale2);
-echo $dessin2;
-
-// Initialize variables for dessin_immobilier3
-$regime_finance_couple3 = '';
-$remarques3 = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['regime_finance_couple3']) && isset($_POST['remarques3'])) {
-        $regime_finance_couple3 = is_array($_POST['regime_finance_couple3']) ? $_POST['regime_finance_couple3'][0] : $_POST['regime_finance_couple3'];
-        $remarques3 = is_array($_POST['remarques3']) ? $_POST['remarques3'][0] : $_POST['remarques3'];
-    }
-}
-$dessin3 = $db->dessin_immobilier3($pdo, $regime_finance_couple3, $remarques3);
-echo $dessin3;
-
-// Initialize variables for dessin_immobilier4
-$valeur_contrat_dinar = '';
-$prix_ecriture = '';
-$statut_contractant = 'approved'; // Default value, adjust to valid status
-$id_demande = null; // Default to NULL, assuming nullable
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['valeur_contrat_dinar']) && isset($_POST['prix_ecriture'])) {
-        $valeur_contrat_dinar = is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'][0] : $_POST['valeur_contrat_dinar'];
-        $prix_ecriture = is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'][0] : $_POST['prix_ecriture'];
-    }
-
-    // Log input parameters
-    error_log("Calling dessin_immobilier4: valeur_contrat_dinar=$valeur_contrat_dinar, prix_ecriture=$prix_ecriture, id_demande=$id_demande, statut_contractant=$statut_contractant");
-}
-
-$dessin4 = $db->dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture, $id_demande, $statut_contractant);
-echo "<p>$dessin4</p>";
-/*if (strpos($dessin4, "✅") === 0) {
-    // Redirect to display page on success
-    header("Location: pageValidationValideur.php"); // Adjust to your display page
-    exit;
-}*/
-
-/*$chapitre = $db->insertChapitres($pdo); 
-echo $chapitre;
-
-$prenom_personne = '';
-$prenom_pere = '';
-$prenom_grandpere = '';
-$nom_personne = '';
-$statut = '';
-$signature = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['prenom_personne']) && isset($_POST['prenom_pere']) && isset($_POST['prenom_grandpere']) && isset($_POST['nom_personne']) && isset($_POST['statut']) && isset($_POST['signature'])) {
-        $prenom_personne = is_array($_POST['prenom_personne']) ? $_POST['prenom_personne'][0] : $_POST['prenom_personne'];
-        $prenom_pere = is_array($_POST['prenom_pere']) ? $_POST['prenom_pere'][0] : $_POST['prenom_pere'];
-        $prenom_grandpere = is_array($_POST['prenom_grandpere']) ? $_POST['prenom_grandpere'][0] : $_POST['prenom_grandpere'];
-        $nom_personne = is_array($_POST['nom_personne']) ? $_POST['nom_personne'][0] : $_POST['nom_personne'];
-        $statut = is_array($_POST['statut']) ? $_POST['statut'][0] : $_POST['statut'];
-        $signature = is_array($_POST['signature']) ? $_POST['signature'][0] : $_POST['signature'];
-    }
-}
-
-$personne1 = $db->idPersonnes($pdo);
-echo $personne1;
-
-
-$id_montant1 = '';
-$partieabstrait1 = '';
-$montant_obligatoire1 = '';
-$montant_paye1 = '';
-$num_recu1 = '';
-$date_payement1 = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['id_montant1']) && isset($_POST['partieabstrait1']) && isset($_POST['montant_obligatoire1']) && isset($_POST['montant_paye1']) && isset($_POST['num_recu1']) && isset($_POST['date_payement1'])) {
-        $id_montant1 = is_array($_POST['id_montant1']) ? $_POST['id_montant1'][0] : $_POST['id_montant1'];
-        $partieabstrait1 = is_array($_POST['partieabstrait1']) ? $_POST['partieabstrait1'][0] : $_POST['partieabstrait1'];
-        $montant_obligatoire1 = is_array($_POST['montant_obligatoire1']) ? $_POST['montant_obligatoire1'][0] : $_POST['montant_obligatoire1'];
-        $montant_paye1 = is_array($_POST['montant_paye1']) ? $_POST['montant_paye1'][0] : $_POST['montant_paye1'];
-        $num_recu1 = is_array($_POST['num_recu1']) ? $_POST['num_recu1'][0] : $_POST['num_recu1'];
-        $date_payement1 = is_array($_POST['date_payement1']) ? $_POST['date_payement1'][0] : $_POST['date_payement1'];
-    }
-}
-$p1 = $db->perception1($pdo , $id_montant1, $partieabstrait1, $montant_obligatoire1, $montant_paye1, $num_recu1, $date_payement1);
-echo $p1;
-
-// Traitement des données avant l'appel à perception3
-$valeur_dinar3 = '';
-$pourcent3 = '';
-$montant_dinar3 = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['valeur_dinar3']) && isset($_POST['pourcent3']) && isset($_POST['montant_dinar3'])) {
-        $valeur_dinar3 = is_array($_POST['valeur_dinar3']) ? $_POST['valeur_dinar3'][0] : $_POST['valeur_dinar3'];
-        $pourcent3 = is_array($_POST['pourcent3']) ? $_POST['pourcent3'][0] : $_POST['pourcent3'];
-        $montant_dinar3 = is_array($_POST['montant_dinar3']) ? $_POST['montant_dinar3'][0] : $_POST['montant_dinar3'];
-    }
-}
-
-$p3 = $db->perception3($pdo, $valeur_dinar3, $pourcent3, $montant_dinar3);
-echo $p3;
-
-
-// Traitement des données avant l'appel à perception2
-$statut2 = '';
-$redacteur2 = '';
-$redaction2 = '';
-$revision2 = "";
-$validationFinal2 = "";
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-    if (isset($_POST['statut2']) && isset($_POST['redacteur2']) && isset($_POST['redaction2']) && isset($_POST['revision2']) && isset($_POST['validationFinal2'])) {
-        $statut2 = is_array($_POST['statut2']) ? $_POST['statut2'][0] : $_POST['statut2'];
-        $redacteur2 = is_array($_POST['redacteur2']) ? $_POST['redacteur2'][0] : $_POST['redacteur2'];
-        $redaction2 = is_array($_POST['redaction2']) ? $_POST['redaction2'][0] : $_POST['redaction2'];
-        $revision2 = is_array($_POST['revision2']) ? $_POST['revision2'][0] : $_POST['revision2'];
-        $validationFinal2 = is_array($_POST['validationFinal2']) ? $_POST['validationFinal2'][0] : $_POST['validationFinal2'];
-    }
-}
-
-$p2 = $db->perception2($pdo, $statut2, $redacteur2, $redaction2, $revision2, $validationFinal2);
-echo $p2;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-  // Check if all required POST fields are set
-  if (isset($_POST['id_montant1'], $_POST['partieabstrait1'], $_POST['montant_obligatoire1'], 
-            $_POST['montant_paye1'], $_POST['num_recu1'], $_POST['date_payement1'])) {
-      $id_montant1 = is_array($_POST['id_montant1']) ? $_POST['id_montant1'][0] : $_POST['id_montant1'];
-      $partieabstrait1 = is_array($_POST['partieabstrait1']) ? $_POST['partieabstrait1'][0] : $_POST['partieabstrait1'];
-      $montant_obligatoire1 = is_array($_POST['montant_obligatoire1']) ? $_POST['montant_obligatoire1'][0] : $_POST['montant_obligatoire1'];
-      $montant_paye1 = is_array($_POST['montant_paye1']) ? $_POST['montant_paye1'][0] : $_POST['montant_paye1'];
-      $num_recu1 = is_array($_POST['num_recu1']) ? $_POST['num_recu1'][0] : $_POST['num_recu1'];
-      $date_payement1 = is_array($_POST['date_payement1']) ? $_POST['date_payement1'][0] : $_POST['date_payement1'];
-
-      // Call perception1 with defined variables
-      $p1 = $db->perception1($pdo, $id_montant1, $partieabstrait1, $montant_obligatoire1, 
-                             $montant_paye1, $num_recu1, $date_payement1);
-      echo $p1;
-  } else {
-      echo "❌ Missing required POST fields";
-  }
-}*/
-
-/*$p4 = $db->perception4($pdo);
-echo $p4;
-
-$titre = $db->nomTITRE($pdo);
-echo $titre;
-
-$gouv = $db->nomGOUV($pdo);
-echo $gouv;*/
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require_once("connect.php");
-$db = new ClsConnect();
-$pdo = $db->getConnection();
 
 if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
     $id_demande = $_GET['id_demande'];
@@ -481,8 +269,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         $contenue_chapitre = isset($_POST['contenue_chapitre']) ? trim($_POST['contenue_chapitre']) : '';
 
         // Appels aux fonctions de sauvegarde
-        $personne = $db->personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande_array, $nom_complet_personne, $statut_contractant, $notes);
-        if ($personne === false) throw new Exception("Erreur personneContratc");
+        /*$personne = $db->personneContratc($pdo, $prenom, $numero_document_identite, $nom, $prenom_pere, $date_emission_document, $sexe, $nationalite, $adresse, $profession, $etat_civil, $prenom_conjoint, $nom_conjoint, $prenom_pere_conjoint, $prenom_grand_pere_conjoint, $surnom_conjoint, $date_naissance_conjoint, $lieu_naissance_conjoint, $nationalite_conjoint, $numero_document_conjoint, $date_document_conjoint, $lieu_document_conjoint, $vendeur_acheteur, $id_demande_array, $nom_complet_personne, $statut_contractant, $notes);
+        if ($personne === false) throw new Exception("Erreur personneContratc");*/
 
         $dessin1 = $db->dessin_immobilier1($pdo, $nom_droit1[0] ?? '', $sujet_contrat1[0] ?? '', $unite1[0] ?? '', $detail_general[0] ?? '', $contenu1[0] ?? '', $valeur_prix1[0] ?? '', $dure1[0] ?? '', $surplus1[0] ?? '');
         if ($dessin1 === false) throw new Exception("Erreur dessin_immobilier1");
@@ -739,7 +527,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
             </thead>
             <tbody>
               <tr>
-              <td><input type="text" name="nom_complet_vendeur" required /></td>
+              <td><input type="text"></td>
               <td><div class="section1">
                       <button id="openModalBtn" class="btn">إضافة وثيقة الهوية</button>
                       <div id="myModal" class="modal">
@@ -751,7 +539,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="numero_document_identite">رقم وثيقة الهوية</label>
-                                <input type="text" id="numero_document_identite" name="numero_document_identite[]" required />
+                                <input type="text" id="numero_document_identite" >
                               </div>
                             </div>
 
@@ -763,8 +551,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="prenom"
-                                      name="prenom[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -774,8 +561,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="prenom_pere"
-                                      name="prenom_pere[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -788,8 +574,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="nom"
-                                      name="nom[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -799,8 +584,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="date"
                                       id="date_emission_document"
-                                      name="date_emission_document[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -812,7 +596,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                 <div class="form-col">
                                   <div class="form-group">
                                     <label for="sexe">الجنس</label>
-                                    <select id="sexe" name="sexe[]" required>
+                                    <select id="sexe">
                                       <option value="">اختر الجنس</option>
                                       <option value="male">ذكر</option>
                                       <option value="female">أنثى</option>
@@ -825,8 +609,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="nationalite"
-                                      name="nationalite[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -836,7 +619,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="adresse">العنوان</label>
-                                <input type="text" id="adresse" name="adresse[]" required />
+                                <input type="text" id="adresse" >
                               </div>
                               <div class="form-row">
                                 <div class="form-col">
@@ -845,8 +628,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="profession"
-                                      name="profession[]"
-                                      required
+                                     
                                     />
                                   </div>
                                 </div>
@@ -855,8 +637,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <label for="etat_civil">الحالة العائلية</label>
                                     <select
                                       id="etat_civil"
-                                      name="etat_civil[]"
-                                      required
+                                      
                                     >
                                       <option value="">اختر الحالة</option>
                                       <option value="single">أعزب</option>
@@ -877,7 +658,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                 <div class="form-col">
                                   <div class="form-group">
                                     <label for="prenom_conjoint">إسم الزوج (ة)</label>
-                                    <input type="text" id="prenom_conjoint" name="prenom_conjoint[]" required/>
+                                    <input type="text" id="prenom_conjoint">
                                   </div>
                                 </div>
                                 <div class="form-col">
@@ -886,8 +667,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="prenom_pere_conjoint"
-                                      name="prenom_pere_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -900,8 +680,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="prenom_grand_pere_conjoint"
-                                      name="prenom_grand_pere_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -911,8 +690,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="nom_conjoint"
-                                      name="nom_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -925,8 +703,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="date"
                                       id="date_naissance_conjoint"
-                                      name="date_naissance_conjoint[]"
-                                      required
+                                     
                                     />
                                   </div>
                                 </div>
@@ -936,8 +713,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="lieu_naissance_conjoint"
-                                      name="lieu_naissance_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -950,8 +726,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="nationalite_conjoint"
-                                      name="nationalite_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -961,8 +736,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="numero_document_conjoint"
-                                      name="numero_document_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -975,7 +749,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="date"
                                       id="date_document_conjoint"
-                                      name="date_document_conjoint[]"
                                     />
                                   </div>
                                 </div>
@@ -985,8 +758,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                                     <input
                                       type="text"
                                       id="lieu_document_conjoint"
-                                      name="lieu_document_conjoint[]"
-                                      required
+                                      
                                     />
                                   </div>
                                 </div>
@@ -996,13 +768,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                             <div class="form-section">
                                 <div class="form-group">
                                     <label for="notes">ملاحظات</label>
-                                    <textarea id="notes" name="notes[]"></textarea>
+                                    <textarea id="notes"></textarea>
                                 </div>
                             </div>
                             <div class="form-section">
                               <div class="form-group">
                                 <label for="statut_contractant">صفة المتعاقد</label>
-                                <select id="statut_contractant" name="statut_contractant[]" required>
+                                <select id="statut_contractant" >
                                   <option value="">اختر الصفة</option>
                                   <option value="principal">أصلي</option>
                                   <option value="mandataire">وكيل</option>
@@ -1017,13 +789,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                     </div> 
                   </td>
                   <td>
-                  <select name="vendeur_acheteur[]" id="vendeur_acheteur" required>
+                  <select id="vendeur_acheteur" required>
                         <option value="">صفة المتعاقد ..</div></option>
                         <option value="vendeur">البائع</option>
                         <option value="acheteur">المشتري</option>
                       </select>               
                   </td>
-                  <input type="hidden" name="nom_complet_personne[]" id="nom_complet_personne" />
+                  <input type="hidden"  id="nom_complet_personne" >
                 </tr>
             </tbody>
           </table>
@@ -1087,7 +859,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
             </form>
             
 
-            <form method="POST" action="">
               <h3>بيانات تتعلق بمراجع انجرار الترسيم</h3>
               <table>
                 <thead>
@@ -1101,11 +872,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                 </thead>
                 <tbody>
                   <tr>
-                    <td><input type="date" name="date_inscri2[]"></td>
-                    <td><input type="text" name="[]"></td>
-                    <td><input type="text" name="doc2[]"></td>
-                    <td><input type="text" name="num_inscri2[]"></td>
-                    <td><input type="text" name="num_succursale2[]"></td>
+                    <td><input type="date" ></td>
+                    <td><input type="text" ></td>
+                    <td><input type="text" ></td>
+                    <td><input type="text" ></td>
+                    <td><input type="text" ></td>
                   </tr>
                 </tbody>
               </table>
@@ -1113,7 +884,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                 <button type="button" class="btn-delete">حذف</button>
                 <button type="button" class="btn-add">إضافة سطر</button>
               </div>
-              </form>
               
              
 
@@ -1148,7 +918,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
 
               
 
-              <form method="POST" action="">
                 <h3>المبلغ الجملي لموضوع التعاقد</h3>
                 <table>
                     <thead>
@@ -1159,8 +928,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="text" name="valeur_contrat_dinar[]" required /></td>
-                            <td><input type="text" name="prix_ecriture[]" required /></td>
+                            <td><input type="text" ></td>
+                            <td><input type="text" ></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1168,7 +937,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                     <button type="button" class="btn-delete">حذف</button>
                     <button type="button" class="btn-add">إضافة سطر</button>
                 </div>
-              </form>
 
 
 
@@ -1308,8 +1076,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="somme_prix_obligatoire[]" required/></td>
-                <td><input type="text" name="somme_prix_paye[]" required/></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
               </tr>
             </tbody>
           </table>
@@ -1405,13 +1173,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
               </tr>
             </tbody>
             </table>
-              <form method="post" action="verifierContrat.php" id="contractForm">
-              <input type="hidden" name="id_demande" value="<?php echo htmlspecialchars($id_demande); ?>">
-              <div style="text-align: center; margin-top: 20px;">
-                <button type="submit" style="background-color: red; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            <a href="verifierContrat.php" class="save-button">
                 حفظ البيانات
-                </button>
-              </div>
+                <span class="icon">💾</span>
+            </a>
             </div>
           </div>
           
