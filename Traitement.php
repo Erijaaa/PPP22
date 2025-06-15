@@ -513,300 +513,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                   </div>
                   <img src="media/logo.png" alt="ONPFF" class="logo" />
                 </div>
-
-        <div class="table-container">
-          <div class="section-title">القسم الرابع : البيانات المتعلقة بأطراف التعاقد</div>
-          <form method="POST" action="">
-          <table id="parties-table">
+        </div> 
+        <div id="contract-parties-content" class="main-content">
+        <div class="section-title">القسم الرابع : البيانات المتعلقة بأطراف التعاقد</div>
+        <table id="parties-table">
             <thead>
-              <tr>
-                <th>الاسم الثلاثي للمتعاقد</th>
-                <th>تسمية الطرف</th>
-                <th>الصفة</th>
-              </tr>
+                <tr>
+                    <th>الاسم الثلاثي للمتعاقد</th>
+                    <th>تسمية الطرف</th>
+                    <th>الصفة</th>
+                </tr>
             </thead>
             <tbody>
-              <tr>
-              <td><input type="text"></td>
-              <td><div class="section1">
-                      <button id="openModalBtn" class="btn">إضافة وثيقة الهوية</button>
-                      <div id="myModal" class="modal">
-                        <div class="modal-content">
-                          <span class="close">&times;</span>
-                          <h2>وثيقة الهوية</h2>
-
-                          <form id="identityForm">
-                            <div class="form-section">
-                              <div class="form-group">
-                                <label for="numero_document_identite">رقم وثيقة الهوية</label>
-                                <input type="text" id="numero_document_identite" >
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom">الإسم</label>
-                                    <input
-                                      type="text"
-                                      id="prenom"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_pere">إسم الأب</label>
-                                    <input
-                                      type="text"
-                                      id="prenom_pere"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nom">اللقب</label>
-                                    <input
-                                      type="text"
-                                      id="nom"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="date_emission_document">تاريخ إصدارها</label>
-                                    <input
-                                      type="date"
-                                      id="date_emission_document"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="sexe">الجنس</label>
-                                    <select id="sexe">
-                                      <option value="">اختر الجنس</option>
-                                      <option value="male">ذكر</option>
-                                      <option value="female">أنثى</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nationalite">الجنسبة</label>
-                                    <input
-                                      type="text"
-                                      id="nationalite"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-group">
-                                <label for="adresse">العنوان</label>
-                                <input type="text" id="adresse" >
-                              </div>
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="profession">المهنة</label>
-                                    <input
-                                      type="text"
-                                      id="profession"
-                                     
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="etat_civil">الحالة العائلية</label>
-                                    <select
-                                      id="etat_civil"
-                                      
-                                    >
-                                      <option value="">اختر الحالة</option>
-                                      <option value="single">أعزب</option>
-                                      <option value="married">متزوج</option>
-                                      <option value="divorced">مطلق</option>
-                                      <option value="widowed">أرمل</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-section-title">
-                                النظام المالي للزواج حسب الحالة المدنية
-                              </div>
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_conjoint">إسم الزوج (ة)</label>
-                                    <input type="text" id="prenom_conjoint">
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_pere_conjoint">إسم الأب</label>
-                                    <input
-                                      type="text"
-                                      id="prenom_pere_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_grand_pere_conjoint">إسم الجد</label>
-                                    <input
-                                      type="text"
-                                      id="prenom_grand_pere_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nom_conjoint">اللقب</label>
-                                    <input
-                                      type="text"
-                                      id="nom_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="date_naissance_conjoint">تاريخ الولادة</label>
-                                    <input
-                                      type="date"
-                                      id="date_naissance_conjoint"
-                                     
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="lieu_naissance_conjoint">مكانها</label>
-                                    <input
-                                      type="text"
-                                      id="lieu_naissance_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nationalite_conjoint">الجنسبة</label>
-                                    <input
-                                      type="text"
-                                      id="nationalite_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="numero_document_conjoint">رقمها</label>
-                                    <input
-                                      type="text"
-                                      id="numero_document_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="date_document_conjoint">تاريخها</label>
-                                    <input
-                                      type="date"
-                                      id="date_document_conjoint"
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="marriageCertificatePlace">مكانها</label>
-                                    <input
-                                      type="text"
-                                      id="lieu_document_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                                <div class="form-group">
-                                    <label for="notes">ملاحظات</label>
-                                    <textarea id="notes"></textarea>
-                                </div>
-                            </div>
-                            <div class="form-section">
-                              <div class="form-group">
-                                <label for="statut_contractant">صفة المتعاقد</label>
-                                <select id="statut_contractant" >
-                                  <option value="">اختر الصفة</option>
-                                  <option value="principal">أصلي</option>
-                                  <option value="mandataire">وكيل</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="hideMessage()"></div>
-                            
-                          </form>
-                        </div>  
-                      </div> 
-                    </div> 
-                  </td>
-                  <td>
-                  <select id="vendeur_acheteur" required>
-                        <option value="">صفة المتعاقد ..</div></option>
+                <tr>
+                    <td><input type="text" name="nom_complet_personne[]" readonly></td>
+                    <td><select name="vendeur_acheteur[]">
+                        <option value="">صفة المتعاقد</option>
                         <option value="vendeur">البائع</option>
                         <option value="acheteur">المشتري</option>
-                      </select>               
-                  </td>
-                  <input type="hidden"  id="nom_complet_personne" >
+                    </select></td>
+                    <td><select name="statut_contractant[]">
+                        <option value="">اختر الصفة</option>
+                        <option value="principal">أصلي</option>
+                        <option value="mandataire">وكيل</option>
+                    </select></td>
+                    <input type="hidden" name="prenom[]">
+                    <input type="hidden" name="nom[]">
+                    <input type="hidden" name="numero_document_identite[]">
+                    <input type="hidden" name="prenom_pere[]">
+                    <input type="hidden" name="date_emission_document[]">
+                    <input type="hidden" name="sexe[]">
+                    <input type="hidden" name="nationalite[]">
+                    <input type="hidden" name="adresse[]">
+                    <input type="hidden" name="profession[]">
+                    <input type="hidden" name="etat_civil[]">
+                    <input type="hidden" name="prenom_conjoint[]">
+                    <input type="hidden" name="nom_conjoint[]">
+                    <input type="hidden" name="prenom_pere_conjoint[]">
+                    <input type="hidden" name="prenom_grand_pere_conjoint[]">
+                    <input type="hidden" name="date_naissance_conjoint[]">
+                    <input type="hidden" name="lieu_naissance_conjoint[]">
+                    <input type="hidden" name="nationalite_conjoint[]">
+                    <input type="hidden" name="numero_document_conjoint[]">
+                    <input type="hidden" name="date_document_conjoint[]">
+                    <input type="hidden" name="lieu_document_conjoint[]">
+                    <input type="hidden" name="notes[]">
+                    <input type="hidden" name="id_demande[]" value="<?php echo $id_demande; ?>">
                 </tr>
             </tbody>
-          </table>
-          </form>
-          <div class="form-actions">
+        </table>
+        <div class="form-actions">
             <button type="button" class="btn-delete">حذف</button>
             <button type="button" class="btn-add">إضافة سطر</button>
-          </div>
-          </div>
         </div>
-      </div>
+    </div>       
+
     
     
       <!-- Property Burdens Section -->

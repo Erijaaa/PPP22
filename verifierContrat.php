@@ -8,6 +8,14 @@ $resultat = $connect->insertTextRefusR($pdo);
 if ($resultat) {
     echo "<script>alert('".$resultat."');</script>";
 }
+
+if (isset($_POST['ajouter_ligne'])) {
+    require_once 'connect.php'; // si tu as une classe ou connexion PDO
+    $pdo = (new ClsConnect())->getConnection(); // selon ta méthode de connexion
+    $id_demande = $_POST['id_demande']; // tu dois passer cet ID depuis ton formulaire
+    insererNouvelleLigne($pdo, $id_demande);
+}
+
 ?>
 
 
@@ -253,10 +261,12 @@ if ($resultat) {
 </head>
 <body>
     <div class="container">
-        <h1 class="title" href="listeContrat.php">تأكيد العقد</h1>
-        <a href="listeContrat.php" class="button button-1">حفظ العقد</a>
+        <h1 class="title" href="listeContratRedacteur.php">تأكيد العقد</h1>
+        <form method="post" action="listeContratRedacteur.php">
+            <input type="hidden" name="id_demande" value="123"> <!-- cet ID doit venir dynamiquement -->
+            <button type="submit" name="ajouter_ligne" class="button button-1">حفظ العقد</button>
+        </form>
         <a href="#" class="button button-2" onclick="openModal()">نص الاعتراض</a>
-
         <div class="modal-overlay" id="modalOverlay" style="display: none;">
             <form method="POST" action="">
                 <div class="modal">
