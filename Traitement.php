@@ -352,6 +352,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         <div id="property-burdens" class="menu-item">التحملات على العقار</div>
         <div id="contract-terms" class="menu-item">الأحكام التعاقدية</div>
         <div id="extraction" class="menu-item">الاستخلاص</div>
+        <button onclick="window.location.href='logout.php'" data-section="logout" class="menu-item" style="color: red; background: none; border: none; cursor: pointer;">
+          ❌ تسجيل الخروج
+        </button>
       </div>
 
        <!-- General Data Section -->

@@ -1005,8 +1005,11 @@ if ($resultat) echo "<p>$resultat</p>";
             <?php endif; ?>
 
             
-            <div class="container" style="display: inline;">
+            <div class="container" style="display: inline-block;">
                 <a href="#" class="action-btn object-btn" onclick="openModal()"> ⚠️ اعتراض على العقد </a>
+                <a href="logout.php" class="action-btn object-btn" data-section="logout"> ❌ تسجيل الخروج</a>
+
+                
 
                 <div class="modal-overlay" id="modalOverlay" style="display: none;">
                     <form method="POST" action="">

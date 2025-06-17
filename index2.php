@@ -34,9 +34,7 @@ if ($user) {
             <h1 class="form-title"> تحرير العقود</h1>
 
             <div class="form-group" style="display: flex; align-items: center">
-              <label class="form-label" style="margin-right: 10px"></label>
-              نوع الحساب    </label
-              >
+              <label class="form-label" style="margin-right: 10px"></label>نوع الحساب</label>
               <select name="post" class="form-input" dir="rtl" required>
                 <option value="">-- --</option>
                 <option value="0">إدارة المنظومة</option>
@@ -47,8 +45,7 @@ if ($user) {
 
             <div class="form-group" style="display: flex; align-items: center">
               <label class="form-label" style="margin-right: 10px"
-                >الإدارة الجهوية</label
-              >
+                >الإدارة الجهوية</label>
               <select name="region" class="form-input" dir="rtl" required>
                 <option value="">-- --</option>
                 <option value="Tunis">تونس</option>

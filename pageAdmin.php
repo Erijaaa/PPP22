@@ -144,11 +144,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="form-container">
                 <form id="agentForm" method="POST" action="">
                     <div class="form-group" style="display: flex; align-items: center">
-                        <label for="post">عدد الصلاحية</label>
+                        <label for="post">نوع الحساب</label>
                         <select name="post" required>
                             <option value="">-- --</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
+                            <option value="1">تحرير العقود </option>
+                            <option value="2">مصادقة على العقود</option>
                         </select>
                     </div>
                     <div class="form-group">

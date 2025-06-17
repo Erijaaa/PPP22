@@ -152,7 +152,7 @@ function getStatusText($etat) {
             <li><a href="listeDemAdmin.php" class="menu-item active" data-section="requests">📋 قائمة المطالب</a></li>
             <li><a href="listeContratAdmin.php" class="menu-item" data-section="contracts">📄 قائمة العقود</a></li>
             <li><a href="listeTextRefus.php" class="menu-item" data-section="textRefus">⚠️ قائمة نصوص الاعتراض</a></li>
-
+            <li><a href="logout.php" class="menu-item logout" data-section="logout">❌ تسجيل الخروج</a></li> 
         </ul>
     </div>
 
