@@ -86,8 +86,11 @@ class ClsConnect {
             return false;
         }
 
-        $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE cin = :cin_admin AND password = :password");
-        $stmt->bindParam(':cin_admin', $cin);
+        // $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE cin = :cin_admin AND password = :password");
+        $stmt = $this->pdo->prepare("SELECT * FROM acteurs WHERE cin = :cin_acteur AND password = :password");
+        
+        $stmt->bindParam(':cin_acteur', $cin);
+
         $stmt->bindParam(':password', $password);
         $stmt->execute();
 

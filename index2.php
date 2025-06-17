@@ -31,17 +31,17 @@ if ($user) {
       <div class="main-content">
         <form action="verifier_email.php" method="post">
           <div class="login-form">
-            <h1 class="form-title">محرر العقد</h1>
+            <h1 class="form-title">المنظومة المعلوماتية لتحرير العقود</h1>
 
             <div class="form-group" style="display: flex; align-items: center">
               <label class="form-label" style="margin-right: 10px"></label>
-              عدد الصلاحية   </label
+              نوع الحساب    </label
               >
               <select name="post" class="form-input" dir="rtl" required>
                 <option value="">-- --</option>
-                <option value="Tunis">0</option>
-                <option value="Tunis">1</option>
-                <option value="Tunis">2</option>
+                <option value="0">إدارة المنظومة</option>
+                <option value="1">تحرير العقود</option>
+                <option value="2">مصادقة على العقود</option>
               </select>
             </div>
 

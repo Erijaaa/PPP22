@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8bafcd 0%, #8bafcd 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -36,7 +36,7 @@
         .title {
             font-size: 3rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #163e60;
             margin-bottom: 50px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             letter-spacing: 2px;
@@ -76,7 +76,7 @@
         }
 
         .button-1 {
-            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            background: linear-gradient(135deg, #8bafcd 0%, #8bafcd 100%);
         }
 
         .button-1:hover {
@@ -85,7 +85,7 @@
         }
 
         .button-2 {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            background: linear-gradient(135deg, #8bafcd 0%, #8bafcd 100%);
         }
 
         .button-2:hover {

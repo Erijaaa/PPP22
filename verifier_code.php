@@ -11,8 +11,22 @@ if (isset($_POST['code'])) {
         // Code correct, marquer l'utilisateur comme vérifié
         $_SESSION['verified'] = true;
         // Rediriger vers la page d'accueil ou le tableau de bord
-        header("Location: pageRedacteur.php");
-        exit();
+
+        $user=$_SESSION['userAuth'];
+        echo "user connecter => " .$user["post"];
+        // exit();
+        if ($user['post'] == "1") {
+            header("Location: pageRedacteur.php");
+            exit();
+        } elseif ($user['post'] == "0") {
+            header("Location: pageAdmin.php");
+            exit();
+        } elseif ($user['post'] == "2") {
+            header("Location: listeContrat.php");
+            exit();
+        } else {
+            $error_message = "Rôle non reconnu.";
+        }
     } else {
         $error_message = "Code de vérification incorrect. Veuillez réessayer.";
     }

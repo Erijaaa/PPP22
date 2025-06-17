@@ -27,8 +27,8 @@ try {
     $conn = new PDO($dsn, $username, $password_db);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt = $conn->prepare("SELECT * FROM public.admin WHERE cin_admin = :cin_admin AND password = :password");
-    $stmt->bindParam(':cin_admin', $cin_admin);
+    $stmt = $conn->prepare("SELECT * FROM acteurs WHERE cin_acteur = :cin_acteur AND password = :password");
+    $stmt->bindParam(':cin_acteur', $cin_admin);
     $stmt->bindParam(':password', $password);
     $stmt->execute();
 
@@ -43,7 +43,7 @@ try {
         $code_verification = mt_rand(100000, 999999);
 
         $_SESSION['code_verification'] = $code_verification;
-        $_SESSION['user_id'] = $user['nom_admin'];
+        $_SESSION['user_id'] = $user['id_acteur'];
         $_SESSION['userAuth'] = $user;
 
         // Envoi de l'e-mail avec PHPMailer
