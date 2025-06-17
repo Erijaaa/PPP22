@@ -161,7 +161,9 @@
         <a href="consultation.php" class="button button-1"> قائمة المطالب </a>
         <a href="listeContratRedacteur.php" class="button button-2"> قائمة العقود </a>
     </div>
-
+    <div class="logout-container">
+        <a href="logout.php" class="logout-button">تسجيل خروج</a>
+    </div>
     <script>
         document.querySelectorAll('.button').forEach(button => {
             button.addEventListener('click', function(e) {

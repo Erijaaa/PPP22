@@ -40,6 +40,27 @@ function getStatusText($etat) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قائمة العقود</title>
     <link rel="stylesheet" href="css/consultation.css">
+    <style>
+        .logout-container {
+        text-align: center;
+        }
+
+        .logout-button {
+        display: inline-block;
+        background-color: #dc3545; /* rouge */
+        color: white;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+        background-color: #c82333; /* plus foncé au survol */
+        }
+
+    </style>
 </head> 
 <body>
     <div class="container">
@@ -78,6 +99,9 @@ function getStatusText($etat) {
             <?php } ?>
             </tbody>
         </table>
+    </div>
+    <div class="logout-container">
+        <a href="logout.php" class="logout-button">تسجيل خروج</a>
     </div>
 </body>
 </html>
