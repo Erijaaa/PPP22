@@ -159,7 +159,7 @@ function getStatusText($etat) {
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1>قائمة المطالب</h1>
+            <h1>📋 قائمة المطالب</h1>
         </div>
         
         <!-- Filtres -->

@@ -133,12 +133,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1>لوحة التحكم</h1>
+            <h1>👥 إدارة الوكلاء</h1>
         </div>
 
         <!-- Agents Management Section -->
         <div id="agents-content" class="content-section active">
-            <h2>إدارة الوكلاء</h2>
+           
 
             <!-- Form -->
             <div class="form-container">
@@ -271,7 +271,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div>
         <!-- Contracts Management Section -->
         <div id="contracts-content" class="content-section">
-            <h2>قائمة العقود</h2>
+            <h2> قائمة العقود</h2>
             <table>
                 <thead>
                     <tr>

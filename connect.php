@@ -1139,7 +1139,7 @@ class ClsConnect {
         }
         return null;
     }
-    public function dessin_immobilier2($pdo) {
+    /*public function dessin_immobilier2($pdo) {
         if (isset($_POST['submit'])) {
             try {
                 // Check if inputs are arrays and iterate over them
@@ -1199,8 +1199,7 @@ class ClsConnect {
             }
         }
         return null;
-    }
-        
+    }*/   
     
     public function dessin_immobilier3($pdo) {
         if (isset($_POST['submit'])) {
@@ -1254,7 +1253,7 @@ class ClsConnect {
         }
         return null;
     }
-    public function dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture, $id_demande, $statut_contractant) {
+    /*public function dessin_immobilier4($pdo, $valeur_contrat_dinar, $prix_ecriture, $id_demande, $statut_contractant) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             try {
                 // Validate input
@@ -1295,7 +1294,7 @@ class ClsConnect {
             }
         }
         return null;
-    }
+    }*/
     
    
     
@@ -1440,7 +1439,7 @@ class ClsConnect {
 
     //القسم الرابع
     //IDpersonnes
-    public function idPersonnes($pdo) {
+    /*public function idPersonnes($pdo) {
         if (isset($_POST['submit'])) {
             try {
                 // Check if inputs are arrays and convert scalars to arrays
@@ -1516,7 +1515,7 @@ class ClsConnect {
             }
         }
         return null;
-    }
+    }*/
 
 
     //perception1

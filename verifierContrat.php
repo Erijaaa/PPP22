@@ -35,7 +35,7 @@ if (isset($_POST['ajouter_ligne'])) {
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #d7dbdd 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #163e60 0%, #163e60 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -58,7 +58,7 @@ if (isset($_POST['ajouter_ligne'])) {
         .title {
             font-size: 3rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #072b4a;
             margin-bottom: 50px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             letter-spacing: 2px;
@@ -98,7 +98,7 @@ if (isset($_POST['ajouter_ligne'])) {
         }
 
         .button-1 {
-            background: linear-gradient(135deg, #ce6f43 0%, #f18ac7 100%);
+            background: linear-gradient(135deg, #456886 0%, #456886 100%);
         }
 
         .button-1:hover {
@@ -107,7 +107,7 @@ if (isset($_POST['ajouter_ligne'])) {
         }
 
         .button-2 {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            background: linear-gradient(135deg, #456886 0%, #456886 100%);
         }
 
         .button-2:hover {
@@ -210,14 +210,14 @@ if (isset($_POST['ajouter_ligne'])) {
             background: none;
             border: none;
             font-size: 24px;
-            color: #2c3e50;
+            color: #456886;
             cursor: pointer;
         }
 
         .modal-header {
             font-size: 2rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: #456886;
             margin-bottom: 20px;
         }
 
@@ -250,7 +250,7 @@ if (isset($_POST['ajouter_ligne'])) {
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            background: linear-gradient(135deg, #fa709a 0%, #456886 100%);
         }
 
         .btn-primary:hover {
@@ -261,12 +261,14 @@ if (isset($_POST['ajouter_ligne'])) {
 </head>
 <body>
     <div class="container">
-        <h1 class="title" href="listeContratRedacteur.php">تأكيد العقد</h1>
+        <h1 class="title" href="listeContratRedacteur.php"> تأكيد العقد</h1>
         <form method="post" action="listeContratRedacteur.php">
             <input type="hidden" name="id_demande" value="123"> <!-- cet ID doit venir dynamiquement -->
-            <button type="submit" name="ajouter_ligne" class="button button-1">حفظ العقد</button>
+            <button type="submit" name="ajouter_ligne" class="button button-1">📥 حفظ العقد</button>
         </form>
-        <a href="#" class="button button-2" onclick="openModal()">نص الاعتراض</a>
+        <a href="#" class="button button-2" onclick="openModal()"> 🚫 نص الاعتراض</a>
+        <a class="button button-1" href="logout.php" data-section="logout">❌ تسجيل الخروج</a>
+
         <div class="modal-overlay" id="modalOverlay" style="display: none;">
             <form method="POST" action="">
                 <div class="modal">

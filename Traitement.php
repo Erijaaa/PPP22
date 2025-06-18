@@ -22,7 +22,7 @@ if (isset($_GET['id_demande']) && isset($_GET['num_recu'])) {
 
 
 // Initialize variables for personneContratc
-$prenom = '';
+/*$prenom = '';
 $numero_document_identite = '';
 $nom = '';
 $prenom_pere = '';
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     } catch (Exception $e) {
         echo "❌ Une erreur est survenue : " . $e->getMessage();
     }
-}
+}*/
 
 
 $contratManagement = new contratManager($pdo);
@@ -191,6 +191,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         $code_pieces = isset($_POST['code_pieces']) ? array_map('trim', (array)$_POST['code_pieces']) : [];
 
         // 3. Contract Parties
+        $nom_complet_personne = isset($_POST['nom_complet_personne']) ? array_map('trim', (array)$_POST['nom_complet_personne']) : [];
+        $numero_document_identite = isset($_POST['numero_document_identite']) ? array_map('trim', (array)$_POST['numero_document_identite']) : [];
+        $role = isset($_POST['role']) ? array_map('trim', (array)$_POST['role']) : [];
+
+        /*
         $prenom = isset($_POST['prenom']) ? array_map('trim', (array)$_POST['prenom']) : [];
         $numero_document_identite = isset($_POST['numero_document_identite']) ? array_map('trim', (array)$_POST['numero_document_identite']) : [];
         $nom = isset($_POST['nom']) ? array_map('trim', (array)$_POST['nom']) : [];
@@ -217,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         $statut_contractant = isset($_POST['statut_contractant']) ? array_map('trim', (array)$_POST['statut_contractant']) : [];
         $notes = isset($_POST['notes']) ? array_map('trim', (array)$_POST['notes']) : [];
         $id_demande_array = isset($_POST['id_demande']) ? (array)$_POST['id_demande'] : [$id_demande];
-
+*/
         // 4. Property Burdens (dessin_immobilier1)
         $nom_droit1 = isset($_POST['nom_droit1']) ? array_map('trim', (array)$_POST['nom_droit1']) : [];
         $sujet_contrat1 = isset($_POST['sujet_contrat1']) ? array_map('trim', (array)$_POST['sujet_contrat1']) : [];
@@ -229,17 +234,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         $surplus1 = isset($_POST['surplus1']) ? array_map('trim', (array)$_POST['surplus1']) : [];
 
         // 5. Autres sections (dessin_immobilier2, dessin_immobilier3, etc.)
-        $date_inscri2 = isset($_POST['date_inscri2']) ? (is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'][0] : $_POST['date_inscri2']) : '';
+        /*$date_inscri2 = isset($_POST['date_inscri2']) ? (is_array($_POST['date_inscri2']) ? $_POST['date_inscri2'][0] : $_POST['date_inscri2']) : '';
         $lieu_inscri2 = isset($_POST['lieu_inscri2']) ? (is_array($_POST['lieu_inscri2']) ? $_POST['lieu_inscri2'][0] : $_POST['lieu_inscri2']) : '';
         $doc2 = isset($_POST['doc2']) ? (is_array($_POST['doc2']) ? $_POST['doc2'][0] : $_POST['doc2']) : '';
         $num_inscri2 = isset($_POST['num_inscri2']) ? (is_array($_POST['num_inscri2']) ? $_POST['num_inscri2'][0] : $_POST['num_inscri2']) : '';
-        $num_succursale2 = isset($_POST['num_succursale2']) ? (is_array($_POST['num_succursale2']) ? $_POST['num_succursale2'][0] : $_POST['num_succursale2']) : '';
-
+        $num_succursale2 = isset($_POST['num_succursale2']) ? (is_array($_POST['num_succursale2']) ? $_POST['num_succursale2'][0] : $_POST['num_succursale2']) : '';*/
         $regime_finance_couple3 = isset($_POST['regime_finance_couple3']) ? (is_array($_POST['regime_finance_couple3']) ? $_POST['regime_finance_couple3'][0] : $_POST['regime_finance_couple3']) : '';
         $remarques3 = isset($_POST['remarques3']) ? (is_array($_POST['remarques3']) ? $_POST['remarques3'][0] : $_POST['remarques3']) : '';
 
-        $valeur_contrat_dinar = isset($_POST['valeur_contrat_dinar']) ? (is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'][0] : $_POST['valeur_contrat_dinar']) : '';
-        $prix_ecriture = isset($_POST['prix_ecriture']) ? (is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'][0] : $_POST['prix_ecriture']) : '';
+        /*$valeur_contrat_dinar = isset($_POST['valeur_contrat_dinar']) ? (is_array($_POST['valeur_contrat_dinar']) ? $_POST['valeur_contrat_dinar'][0] : $_POST['valeur_contrat_dinar']) : '';
+        $prix_ecriture = isset($_POST['prix_ecriture']) ? (is_array($_POST['prix_ecriture']) ? $_POST['prix_ecriture'][0] : $_POST['prix_ecriture']) : '';*/
 
         $statut2 = isset($_POST['statut2']) ? (is_array($_POST['statut2']) ? $_POST['statut2'][0] : $_POST['statut2']) : '';
         $redacteur2 = isset($_POST['redacteur2']) ? (is_array($_POST['redacteur2']) ? $_POST['redacteur2'][0] : $_POST['redacteur2']) : '';
@@ -293,8 +297,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         $p3 = $db->perception3($pdo, $valeur_dinar3, $pourcent3, $montant_dinar3);
         if ($p3 === false) throw new Exception("Erreur perception3");
 
-        $personne1 = $db->idPersonnes($pdo, $prenom_personne, $prenom_pere, $prenom_grandpere, $nom_personne, $statut, $signature);
-        if ($personne1 === false) throw new Exception("Erreur idPersonnes");
+        /*$personne1 = $db->idPersonnes($pdo, $prenom_personne, $prenom_pere, $prenom_grandpere, $nom_personne, $statut, $signature);
+        if ($personne1 === false) throw new Exception("Erreur idPersonnes");*/
 
         $chapitre = $db->insertChapitres($pdo, $contenue_chapitre);
         if ($chapitre === false) throw new Exception("Erreur insertChapitres");
@@ -340,18 +344,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>نظام معالجة العقود</title>
     <link rel="stylesheet" href="css/Traitement.css" />
+    <style>
+        .save-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 30px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #4DD0E1 0%, #00BCD4 100%);
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .save-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .save-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+            background: linear-gradient(135deg, #5DD5E5 0%, #00C8D8 100%);
+        }
+
+        .save-button:hover::before {
+            left: 100%;
+        }
+
+        .save-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(0, 188, 212, 0.3);
+        }
+
+        .save-button .icon {
+            margin-right: 8px;
+            margin-left: 0;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .save-button:hover .icon {
+            transform: scale(1.1);
+        }
+    </style>
   </head>
 
   <body>
     <div class="container22">
       <!-- Sidebar Navigation -->
       <div class="sidebar">
-        <div id="general-data" class="menu-item active">معطيات عامة</div>
-        <div id="documents" class="menu-item">المؤيدات</div>
-        <div id="contract-parties" class="menu-item">أطراف التعاقد</div>
-        <div id="property-burdens" class="menu-item">التحملات على العقار</div>
-        <div id="contract-terms" class="menu-item">الأحكام التعاقدية</div>
-        <div id="extraction" class="menu-item">الاستخلاص</div>
+        <div id="general-data" class="menu-item active"> 📊 معطيات عامة</div>
+        <div id="documents" class="menu-item"> 📄 المؤيدات</div>
+        <div id="contract-parties" class="menu-item"> 🤝 أطراف التعاقد</div>
+        <div id="property-burdens" class="menu-item"> 🏗️ التحملات على العقار</div>
+        <div id="contract-terms" class="menu-item"> 📑 الأحكام التعاقدية</div>
+        <div id="extraction" class="menu-item"> 💰 الاستخلاص</div>
         <button onclick="window.location.href='logout.php'" data-section="logout" class="menu-item" style="color: red; background: none; border: none; cursor: pointer;">
           ❌ تسجيل الخروج
         </button>
@@ -524,282 +587,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
             <thead>
               <tr>
                 <th>الاسم الثلاثي للمتعاقد</th>
-                <th>تسمية الطرف</th>
+                <th>رقم التعريف</th>
                 <th>الصفة</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-              <td><input type="text"></td>
-              <td><div class="section1">
-                      <button id="openModalBtn" class="btn">إضافة وثيقة الهوية</button>
-                      <div id="myModal" class="modal">
-                        <div class="modal-content">
-                          <span class="close">&times;</span>
-                          <h2>وثيقة الهوية</h2>
-
-                          <form id="identityForm">
-                            <div class="form-section">
-                              <div class="form-group">
-                                <label for="numero_document_identite">رقم وثيقة الهوية</label>
-                                <input type="text" id="numero_document_identite" >
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom">الإسم</label>
-                                    <input
-                                      type="text"
-                                      id="prenom"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_pere">إسم الأب</label>
-                                    <input
-                                      type="text"
-                                      id="prenom_pere"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nom">اللقب</label>
-                                    <input
-                                      type="text"
-                                      id="nom"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="date_emission_document">تاريخ إصدارها</label>
-                                    <input
-                                      type="date"
-                                      id="date_emission_document"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="sexe">الجنس</label>
-                                    <select id="sexe">
-                                      <option value="">اختر الجنس</option>
-                                      <option value="male">ذكر</option>
-                                      <option value="female">أنثى</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nationalite">الجنسبة</label>
-                                    <input
-                                      type="text"
-                                      id="nationalite"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-group">
-                                <label for="adresse">العنوان</label>
-                                <input type="text" id="adresse" >
-                              </div>
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="profession">المهنة</label>
-                                    <input
-                                      type="text"
-                                      id="profession"
-                                     
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="etat_civil">الحالة العائلية</label>
-                                    <select
-                                      id="etat_civil"
-                                      
-                                    >
-                                      <option value="">اختر الحالة</option>
-                                      <option value="single">أعزب</option>
-                                      <option value="married">متزوج</option>
-                                      <option value="divorced">مطلق</option>
-                                      <option value="widowed">أرمل</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                              <div class="form-section-title">
-                                النظام المالي للزواج حسب الحالة المدنية
-                              </div>
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_conjoint">إسم الزوج (ة)</label>
-                                    <input type="text" id="prenom_conjoint">
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_pere_conjoint">إسم الأب</label>
-                                    <input
-                                      type="text"
-                                      id="prenom_pere_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="prenom_grand_pere_conjoint">إسم الجد</label>
-                                    <input
-                                      type="text"
-                                      id="prenom_grand_pere_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nom_conjoint">اللقب</label>
-                                    <input
-                                      type="text"
-                                      id="nom_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="date_naissance_conjoint">تاريخ الولادة</label>
-                                    <input
-                                      type="date"
-                                      id="date_naissance_conjoint"
-                                     
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="lieu_naissance_conjoint">مكانها</label>
-                                    <input
-                                      type="text"
-                                      id="lieu_naissance_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="nationalite_conjoint">الجنسبة</label>
-                                    <input
-                                      type="text"
-                                      id="nationalite_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="numero_document_conjoint">رقمها</label>
-                                    <input
-                                      type="text"
-                                      id="numero_document_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div class="form-row">
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="date_document_conjoint">تاريخها</label>
-                                    <input
-                                      type="date"
-                                      id="date_document_conjoint"
-                                    />
-                                  </div>
-                                </div>
-                                <div class="form-col">
-                                  <div class="form-group">
-                                    <label for="marriageCertificatePlace">مكانها</label>
-                                    <input
-                                      type="text"
-                                      id="lieu_document_conjoint"
-                                      
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="form-section">
-                                <div class="form-group">
-                                    <label for="notes">ملاحظات</label>
-                                    <textarea id="notes"></textarea>
-                                </div>
-                            </div>
-                            <div class="form-section">
-                              <div class="form-group">
-                                <label for="statut_contractant">صفة المتعاقد</label>
-                                <select id="statut_contractant" >
-                                  <option value="">اختر الصفة</option>
-                                  <option value="principal">أصلي</option>
-                                  <option value="mandataire">وكيل</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;" onclick="hideMessage()"></div>
-                            
-                          </form>
-                        </div>  
-                      </div> 
-                    </div> 
-                  </td>
-                  <td>
-                  <select id="vendeur_acheteur" required>
-                        <option value="">صفة المتعاقد ..</div></option>
-                        <option value="vendeur">البائع</option>
-                        <option value="acheteur">المشتري</option>
-                      </select>               
-                  </td>
-                  <input type="hidden"  id="nom_complet_personne" >
-                </tr>
+                <td><input type="text"  id="nom_complet_personne[]" required /></td>
+                <td><input type="text" name="numero_document_identite[]" required /></td>
+                <td>
+                  <select id="role" name="role[]" required>
+                    <option value="">صفة المتعاقد ..</div></option>
+                    <option value="vendeur">البائع</option>
+                    <option value="acheteur">المشتري</option>
+                  </select>               
+                </td>
+              </tr>
             </tbody>
           </table>
           </form>
@@ -875,11 +678,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                   </thead>
                   <tbody>
                     <tr>
-                      <td><input type="date" ></td>
-                      <td><input type="text" ></td>
-                      <td><input type="text" ></td>
-                      <td><input type="text" ></td>
-                      <td><input type="text" ></td>
+                      <td><input type="date"></td>
+                      <td><input type="text"></td>
+                      <td><input type="text"></td>
+                      <td><input type="text"></td>
+                      <td><input type="text"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -924,8 +727,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                       </thead>
                       <tbody>
                           <tr>
-                              <td><input type="text" ></td>
-                              <td><input type="text" ></td>
+                              <td><input type="text"></td>
+                              <td><input type="text"></td>
                           </tr>
                       </tbody>
                   </table>
@@ -1002,12 +805,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
             </thead>
             <tbody>
               <tr>
-                <td><input type="text" name="prenom_personne[]" required/></td>
-                <td><input type="text" name="prenom_pere[]" required/></td>
-                <td><input type="text" name="prenom_grandpere[]" required/></td>
-                <td><input type="text" name="nom_personne[]" required/></td>
-                <td><input type="text" name="statut[]" required/></td>
-                <td><input type="text" name="signature[]" required/></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text" ></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
               </tr>
             </tbody>
           </table>
@@ -1164,8 +967,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
             </tbody>
             </table>
             <a href="verifierContrat.php" class="save-button">
-                حفظ البيانات
                 <span class="icon">💾</span>
+                حفظ البيانات
             </a>
             </div>
           </div>

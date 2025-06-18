@@ -78,7 +78,7 @@ $rslt = $connect->afficherTextRefus($pdo);
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1>قائمة نصوص الاعتراض</h1>
+            <h1>⚠️ قائمة نصوص الاعتراض </h1>
         </div>
         <table class="refus-table">
             <thead>

@@ -38,7 +38,7 @@ function getStatusText($etat) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قائمة العقود</title>
+    <title>قائمة العقود </title>
     <link rel="stylesheet" href="css/consultation.css">
     <style>
         .logout-container {
@@ -65,7 +65,7 @@ function getStatusText($etat) {
 <body>
     <div class="container">
         <div class="header">
-            <h2>قائمة العقود</h2>
+            <h2>قائمة العقود 📝</h2>
         </div>
         <table>
             <thead>

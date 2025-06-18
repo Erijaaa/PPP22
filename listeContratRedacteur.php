@@ -65,7 +65,7 @@ function getStatusText($etat) {
 <body>
     <div class="container">
         <div class="header">
-            <h2>قائمة العقود</h2>
+            <h2>قائمة العقود 📝 </h2>
         </div>
         <table>
             <thead>

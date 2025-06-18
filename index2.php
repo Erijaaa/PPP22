@@ -31,7 +31,7 @@ if ($user) {
       <div class="main-content">
         <form action="verifier_email.php" method="post">
           <div class="login-form">
-            <h1 class="form-title"> تحرير العقود</h1>
+            <h1 class="form-title">  المنظومة المعلوماتية لتحرير العقود</h1>
 
             <div class="form-group" style="display: flex; align-items: center">
               <label class="form-label" style="margin-right: 10px"></label>نوع الحساب</label>

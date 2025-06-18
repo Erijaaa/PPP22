@@ -147,7 +147,7 @@ function getStatusText($etat_contrat) {
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1>قائمة العقود</h1>
+            <h1>📄 قائمة العقود </h1>
         </div>
         
         <!-- Filtres -->
