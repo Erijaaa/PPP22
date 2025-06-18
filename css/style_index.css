@@ -51,13 +51,13 @@ body {
   max-width: 450px;
 }
 
-.form-title {
-  font-size: 70px;
+/*.form-title {
+  font-size: 80px;
   font-weight: bold;
   text-align: right;
   margin-bottom: 70px;
-  color: #000;
-}
+  color: #11500b;
+}*/
 
 .form-group {
   display: flex;
@@ -114,15 +114,16 @@ select.form-input {
 }
 
 /* Style pour la section du logo ONPF */
-.logo-section {
-  justify-self: start;
-  text-align: center;
+/*.logo-section {
+  justify-self: right;
+  order: 5;
+  font-size: 45px;
 }
 
 .onpf-logo {
   width: 700px;
   height: auto;
-}
+}*/
 
 /* Media queries pour la version mobile */
 @media (max-width: 992px) {
@@ -138,8 +139,9 @@ select.form-input {
   }
 
   .logo-section {
-    justify-self: center;
-    order: 2;
+    justify-self: right;
+    order: 5;
+    font-size: 45px;
   }
 
   .onpf-logo {

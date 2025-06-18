@@ -18,6 +18,48 @@ if ($user) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style_index.css" />
+    <style>
+      .logo-section {
+        justify-self: right;
+        order: 5;
+        font-size: 55px;
+      }
+
+      .onpf-logo {
+        width: 700px;
+        height: auto;
+      }
+      .form-title {
+        font-size: 60px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 80px;
+        color: #11500b;
+      }
+
+      .logo-container {
+        text-align: right;
+        width: 700px;
+        height: auto;
+      }
+      .connect-btn {
+            position: relative;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #1d6117, #1d6117);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+            outline: none;
+        }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -99,7 +141,10 @@ if ($user) {
               />
             </div>
 
-            <button type="submit" class="btn-connect">CONNECTER</button>
+            <button type="submit" class="connect-btn">
+              <span class="icon">→</span>
+              CONNECTER
+            </button>
           </div>
         </form>
 
