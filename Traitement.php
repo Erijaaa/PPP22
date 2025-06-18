@@ -650,7 +650,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                             <td><input type="text" name="nom_droit1[]" required /></td>
                             <td><input type="text" name="sujet_contrat1[]" required /></td>
                             <td><input type="text" name="unite1[]" required /></td>
-                            <td><input type="number" name="detail_general[]" required /></td>
+                            <td><input type="text" name="detail_general[]" required /></td>
                             <td><input type="text" name="contenu1[]" required /></td>
                             <td><input type="text" name="valeur_prix1[]" required /></td>
                             <td><input type="text" name="dure1[]" required /></td>
