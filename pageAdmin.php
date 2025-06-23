@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once("connect.php");
+require_once("connect.php"); 
 $db = new ClsConnect();
 $pdo = $db->getConnection();
 
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 }
 
 // Fetch all users
-$sql = "SELECT * FROM public.users";
+$sql = "SELECT * FROM public.acteurs";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -152,32 +152,32 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="agentName">الاسم و اللقب</label>
-                        <input type="text" id="agentName" name="nom_prenom_user" required>
+                        <label for="prenom_acteur">الاسم </label>
+                        <input type="text" id="prenom_acteur" name="prenom_acteur" required>
                     </div>
                     <div class="form-group">
-                        <label for="cin">رقم التعريف</label>
-                        <input type="text" id="cin" name="cin_user" required>
+                        <label for="nom_acteur">اللقب </label>
+                        <input type="text" id="nom_acteur" name="nom_acteur" required>
                     </div>
                     <div class="form-group">
-                        <label for="agentEmail">البريد الإلكتروني</label>
-                        <input type="email" id="agentEmail" name="email_user" required>
+                        <label for="cin_acteur">رقم التعريف</label>
+                        <input type="text" id="cin_acteur" name="cin_acteur" required>
                     </div>
                     <div class="form-group">
-                        <label for="agentAdresse">العنوان</label>
-                        <input type="text" id="agentAdresse" name="adresse_user" required>
+                        <label for="email">البريد الإلكتروني</label>
+                        <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="agentTele">رقم الهاتف</label>
-                        <input type="text" id="agentTele" name="telephone_user" required>
+                        <label for="adresse">العنوان</label>
+                        <input type="text" id="adresse" name="adresse" required>
                     </div>
                     <div class="form-group">
-                        <label for="agentNaissance">تاريخ الولادة</label>
-                        <input type="date" id="agentNaissance" name="date_naissance_user" required>
+                        <label for="telephone">رقم الهاتف</label>
+                        <input type="text" id="telephone" name="telephone" required>
                     </div>
                     <div class="form-group">
                         <label for="password">كلمة المرور</label>
-                        <input type="text" id="password" name="password_user" required>
+                        <input type="text" id="password" name="password" required>
                     </div>
                     <div class="form-actions">
                         <button type="submit" name="submit" class="btn btn-primary">إضافة</button>
@@ -192,7 +192,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <table>
                     <thead>
                         <tr>
-                            <th>الاسم و اللقب</th>
+                            <th>الاسم </th>
+                            <th> اللقب </th>
                             <th>رقم التعريف</th>
                             <th>البريد الإلكتروني</th>
                             <th>الوظيفة</th>
@@ -202,16 +203,17 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tbody>
                         <?php foreach ($users as $user): ?>
                             <tr>
-                                <td><strong><?= htmlspecialchars($user['nom_prenom_user'] ?? '') ?></strong></td>
-                                <td><?= htmlspecialchars($user['cin_user'] ?? '') ?></td>
-                                <td><?= htmlspecialchars($user['email_user'] ?? '') ?></td>
+                                <td><strong><?= htmlspecialchars($user['prenom_acteur'] ?? '') ?></strong></td>
+                                <td><strong><?= htmlspecialchars($user['nom_acteur'] ?? '') ?></strong></td>
+                                <td><?= htmlspecialchars($user['cin_acteur'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($user['post']) ?></td>
                                 <td class="actions">
                                     <button class="edit-btn" onclick="showEditForm(this, <?= htmlspecialchars(json_encode($user)) ?>)">تعديل</button>
-                                    <?php if (($user['cin_user'] ?? null) !== ($_SESSION['cin_user'] ?? null)): ?>
+                                    <?php if (($user['cin_acteur'] ?? null) !== ($_SESSION['cin_acteur'] ?? null)): ?>
                                         <button class="delete-btn" onclick="deleteRow(this); return confirm('هل أنت متأكد من حذف هذا المستخدم من القائمة؟')">حذف</button>
                                     <?php endif; ?>
-                                </td>
+                                </td> 
                             </tr>
                             <!-- Hidden edit form row -->
                             <tr class="edit-form-row" style="display: none;">

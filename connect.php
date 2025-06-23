@@ -560,22 +560,25 @@ class ClsConnect {
     public function ajouterUser($pdo) {
         try {
             // Retrieve and validate input data
-            $nom_prenom_user = $_POST['nom_prenom_user'] ?? null;
-            $cin_user = $_POST['cin_user'] ?? null;
-            $email_user = $_POST['email_user'] ?? null;
-            $adresse_user = $_POST['adresse_user'] ?? null;
-            $telephone_user = $_POST['telephone_user'] ?? null;
-            $date_naissance_user = $_POST['date_naissance_user'] ?? null;
-            $password_user = $_POST['password_user'] ?? null;
+            $id_acteur = $_POST['id_acteur'] ?? null;
+            $nom_acteur = $_POST['nom_acteur'] ?? null;
+            $prenom_acteur = $_POST['prenom_acteur'] ?? null;
+            $cin_acteur = $_POST['cin_acteur'] ?? null;
+            $password = $_POST['password'] ?? null;
             $post = $_POST['post'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $adresse = $_POST['adresse'] ?? null;
+            $telephone = $_POST['telephone'] ?? null;
     
             // Check for missing fields
-            if (empty($nom_prenom_user) || empty($cin_user) || empty($email_user) || 
-                empty($adresse_user) || empty($telephone_user) || empty($date_naissance_user) || 
-                empty($password_user) || empty($post)) {
+            if (empty($id_acteur) || empty($nom_acteur) || empty($prenom_acteur) || 
+                empty($cin_acteur) || empty($password) || empty($post) || 
+                empty($email) || empty($adresse) || empty($telephone)) {
+                
                 error_log("Missing required fields in ajouterUser");
                 return "❌ Champs manquants";
             }
+
     
             // Validate post value against allowed values
             $allowed_post_values = [1, 2]; // Matches the form and updated database constraint
@@ -585,35 +588,34 @@ class ClsConnect {
             }
     
             // Check if cin_user already exists
-            $checkSql = "SELECT COUNT(*) FROM public.users WHERE cin_user = :cin_user";
+            $checkSql = "SELECT COUNT(*) FROM public.acteurs WHERE cin_acteur = :cin_acteur";
             $checkStmt = $pdo->prepare($checkSql);
-            $checkStmt->execute([':cin_user' => $cin_user]);
+            $checkStmt->execute([':cin_acteur' => $cin_acteur]);
             $cinCount = $checkStmt->fetchColumn();
     
             if ($cinCount > 0) {
-                error_log("Duplicate cin_user detected: " . $cin_user);
+                error_log("Duplicate cin_user detected: " . $cin_acteur);
                 return "❌ Erreur : Le CIN existe déjà dans la base de données";
             }
     
             // Prepare SQL query for insertion
-            $sql = "INSERT INTO public.users(
-                    nom_prenom_user, cin_user, email_user, adresse_user, telephone_user, 
-                    date_naissance_user, password_user, post)
-                    VALUES (:nom_prenom_user, :cin_user, :email_user, :adresse_user, 
-                            :telephone_user, :date_naissance_user, :password_user, :post)";
+            $sql = "INSERT INTO public.acteurs(
+                id_acteur, nom_acteur, prenom_acteur, cin_acteur, password, post, email, adresse, telephone)
+                VALUES (:id_acteur, :nom_acteur, :prenom_acteur, :cin_acteur, :password, :post, :email, :adresse, :telephone);";
     
             $stmt = $pdo->prepare($sql);
     
             // Execute with correct parameter binding
             $result = $stmt->execute([
-                ':nom_prenom_user' => $nom_prenom_user,
-                ':cin_user' => $cin_user,
-                ':email_user' => $email_user,
-                ':adresse_user' => $adresse_user,
-                ':telephone_user' => $telephone_user,
-                ':date_naissance_user' => $date_naissance_user,
-                ':password_user' => $password_user,
-                ':post' => $post
+                ':id_acteur' => $id_acteur,
+                ':nom_acteur' => $nom_acteur,
+                ':prenom_acteur' => $prenom_acteur,
+                ':cin_acteur' => $cin_acteur,
+                ':password' => $password,
+                ':post' => $post,
+                ':email' => $email,
+                ':adresse' => $adresse,
+                ':telephone' => $telephone
             ]);
     
             if (!$result) {
