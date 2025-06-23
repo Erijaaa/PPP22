@@ -23,10 +23,11 @@ if (empty($cin_admin) || empty($password)) {
 }
 
 try {
-    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;";
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;";   
     $conn = new PDO($dsn, $username, $password_db);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    
     $stmt = $conn->prepare("SELECT * FROM acteurs WHERE cin_acteur = :cin_acteur AND password = :password");
     $stmt->bindParam(':cin_acteur', $cin_admin);
     $stmt->bindParam(':password', $password);
@@ -57,6 +58,7 @@ try {
             $mail->Password = 'lcsy rpmw kwhn llxj';  
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
+
 
             $mail->setFrom('erijedridi1@gmail.com', 'Vérifier votre connexion');
             $mail->addAddress($user['email']);

@@ -413,7 +413,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
         <div id="documents" class="menu-item"> 📄 المؤيدات</div>
         <div id="contract-parties" class="menu-item"> 🤝 أطراف التعاقد</div>
         <div id="property-burdens" class="menu-item"> 🏗️ التحملات على العقار</div>
-        <div id="contract-terms" class="menu-item"> 📑 الأحكام التعاقدية</div>
+        <div id="contract-terms" class="menu-item"> ⚖️ الأحكام التعاقدية</div>
         <div id="extraction" class="menu-item"> 💰 الاستخلاص</div>
         <button onclick="window.location.href='logout.php'" data-section="logout" class="menu-item" style="color: red; background: none; border: none; cursor: pointer;">
           ❌ تسجيل الخروج
@@ -708,13 +708,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
                     </tbody>
                   </table>
                   
-                  </form>
-                  <div cass="form-actions">
-                    <button type="button" class="btn-delete">حذف</button>
-                    <button type="button" class="btn-add">إضافة سطر</button>
-                  </div>          
-                </form> 
-
+                  <div class="form-actions">
+                      <button type="button" class="btn-delete">حذف</button>
+                      <button type="button" class="btn-add">إضافة سطر</button>
+                  </div>
                 
 
                   <h3>المبلغ الجملي لموضوع التعاقد</h3>
@@ -966,6 +963,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
               </tr>
             </tbody>
             </table>
+            <div class="form-actions">
+              <button type="button" class="btn-delete">حذف</button>
+              <button type="button" class="btn-add">إضافة سطر</button>
+            </div>
             <a href="verifierContrat.php" class="save-button">
                 <span class="icon">💾</span>
                 حفظ البيانات
@@ -977,5 +978,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_all_data'])) {
       </div>
 </div>
 <script src="script/script.js"></script>
+
 </body>
 </html>
