@@ -140,7 +140,7 @@ class ClsConnect {
     }
 
     public function traitResult($type_demande) {
-        $sql = "SELECT * FROM public.\"T_demande\" WHERE type_demande = :type_demande";
+        $sql = "SELECT * FROM public.\"T_demande\" WHERE type_demande = :type_demande AND etat_demande = 0";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':type_demande', $type_demande, PDO::PARAM_INT);
         $stmt->execute();
@@ -1948,7 +1948,7 @@ class ClsConnect {
 
     //أطراف التعاقد
     public function getPerContracV() {
-        $sql = "SELECT nom_complet_personne, role
+        $sql = "SELECT nom_complet_personne, role , numero_document_identite
                 FROM personnes_contracteurs"; 
 
         $stmt = $this->pdo->prepare($sql); 

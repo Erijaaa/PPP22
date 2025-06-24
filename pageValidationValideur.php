@@ -43,7 +43,8 @@ $PC = []; // Initialiser
 
 if ($id_demande) {
     try {
-        $sql = "SELECT * FROM personnes_contracteurs WHERE id_demande = :id_demande";
+        $sql = "SELECT numero_document_identite, role, nom_complet_personne
+        FROM personnes_contracteurs WHERE id_demande = :id_demande";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['id_demande' => $id_demande]);
         $PC = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -609,6 +610,7 @@ if ($resultat) echo "<p>$resultat</p>";
                             <tr>
                                 <th></th>
                                 <th>الاسم الثلاثي بالكامل</th>
+                                <th>رقم التعريف</th>
                                 <th>الصفة</th>
                             </tr>
                         </thead>
@@ -618,6 +620,7 @@ if ($resultat) echo "<p>$resultat</p>";
                             <tr>
                                 <td><?php echo htmlspecialchars($compteur++); ?></td>
                                 <td><?php echo htmlspecialchars($pc['nom_complet_personne'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($pc['numero_document_identite'] ?? ''); ?></td>
                                 <td><?php echo htmlspecialchars($pc['role'] ?? ''); ?></td>
                             </tr>
                             <?php endforeach; ?>

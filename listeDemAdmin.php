@@ -40,11 +40,13 @@ try {
             break;
         case 'status':
             $query .= ' ORDER BY CASE 
-                        WHEN etat_demande = 1 THEN 1 
-                        WHEN etat_demande = 0 THEN 1 
-                        WHEN etat_demande = -1 THEN -1 
-                        ELSE 1 END';
+                WHEN etat_demande = 1 THEN 1 
+                WHEN etat_demande = 0 THEN 2 
+                WHEN etat_demande = -1 THEN 3 
+                ELSE 4 
+                END';
             break;
+            
     }
     
     $stmt = $pdo->prepare($query);
@@ -63,8 +65,8 @@ function formatDate($date) {
 
 
 // Fonction pour obtenir la classe CSS de l'état
-function getStatusClass($etat) {
-    switch($etat) {
+function getStatusClass($etat_demande) {
+    switch($etat_demande) {
         case 1:
             return 'status-approved';
         case -1:
@@ -75,8 +77,8 @@ function getStatusClass($etat) {
 }
 
 // Fonction pour obtenir le texte de l'état
-function getStatusText($etat) {
-    switch($etat) {
+function getStatusText($etat_demande) {
+    switch($etat_demande) {
         case 1:
             return 'مقبول';
         case -1:
