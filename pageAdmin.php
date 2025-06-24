@@ -32,8 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     echo "</div>";
 }
 
+
 // Fetch all users
-$sql = "SELECT * FROM public.acteurs";
+$sql = "SELECT * FROM acteurs";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -164,6 +165,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <input type="text" id="cin_acteur" name="cin_acteur" required>
                     </div>
                     <div class="form-group">
+                        <label for="cin_acteur">تاريخ الولادة </label>
+                        <input type="date" id="date_naissance_acteur" name="date_naissance_acteur" required>
+                    </div>
+                    <div class="form-group">
                         <label for="email">البريد الإلكتروني</label>
                         <input type="email" id="email" name="email" required>
                     </div>
@@ -196,6 +201,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th> اللقب </th>
                             <th>رقم التعريف</th>
                             <th>البريد الإلكتروني</th>
+                            <th>العنوان</th>
                             <th>الوظيفة</th>
                             <th>الإجراءات</th>
                         </tr>
@@ -207,6 +213,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><strong><?= htmlspecialchars($user['nom_acteur'] ?? '') ?></strong></td>
                                 <td><?= htmlspecialchars($user['cin_acteur'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user['adresse'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($user['post']) ?></td>
                                 <td class="actions">
                                     <button class="edit-btn" onclick="showEditForm(this, <?= htmlspecialchars(json_encode($user)) ?>)">تعديل</button>
@@ -219,35 +226,39 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <tr class="edit-form-row" style="display: none;">
                                 <td colspan="5">
                                     <form class="edit-user-form" method="POST" action="">
-                                        <input type="hidden" name="original_cin_user" value="<?= htmlspecialchars($user['cin_user'] ?? '') ?>">
+                                        <input type="hidden" name="original_cin_acteur" value="<?= htmlspecialchars($user['cin_acteur'] ?? '') ?>">
                                         <input type="hidden" name="update" value="1">
                                         <div class="form-group">
-                                            <label>الاسم و اللقب</label>
-                                            <input type="text" name="nom_prenom_user" value="<?= htmlspecialchars($user['nom_prenom_user'] ?? '') ?>" required>
+                                            <label>الاسم </label>
+                                            <input type="text" name="prenom_acteur" value="<?= htmlspecialchars($user['prenom_acteur'] ?? '') ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>اللقب </label>
+                                            <input type="text" name="nom_acteur" value="<?= htmlspecialchars($user['nom_acteur'] ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>رقم التعريف</label>
-                                            <input type="text" name="cin_user" value="<?= htmlspecialchars($user['cin_user'] ?? '') ?>" required>
+                                            <input type="text" name="cin_acteur" value="<?= htmlspecialchars($user['cin_acteur'] ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>البريد الإلكتروني</label>
-                                            <input type="email" name="email_user" value="<?= htmlspecialchars($user['email_user'] ?? '') ?>" required>
+                                            <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
-                                            <label>العنوان</label>
-                                            <input type="text" name="adresse_user" value="<?= htmlspecialchars($user['adresse_user'] ?? '') ?>" required>
+                                            <label> العنوان</label>
+                                            <input type="text" name="adresse" value="<?= htmlspecialchars($user['adresse'] ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>رقم الهاتف</label>
-                                            <input type="text" name="telephone_user" value="<?= htmlspecialchars($user['telephone_user'] ?? '') ?>" required>
+                                            <input type="text" name="telephone" value="<?= htmlspecialchars($user['telephone'] ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>تاريخ الولادة</label>
-                                            <input type="date" name="date_naissance_user" value="<?= htmlspecialchars($user['date_naissance_user'] ?? '') ?>" required>
+                                            <input type="date" name="date_naissance_acteur" value="<?= htmlspecialchars($user['date_naissance_acteur'] ?? '') ?>" required>
                                         </div>
                                         <div class="form-group">
                                             <label>كلمة المرور</label>
-                                            <input type="text" name="password_user" placeholder="أدخل كلمة مرور جديدة أو اتركها فارغة">
+                                            <input type="text" name="password" placeholder="أدخل كلمة مرور جديدة أو اتركها فارغة">
                                         </div>
                                         <div class="form-group">
                                             <label>عدد الصلاحية</label>

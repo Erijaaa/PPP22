@@ -559,8 +559,7 @@ class ClsConnect {
     //ajouter un nouveau user par l'admin
     public function ajouterUser($pdo) {
         try {
-            // Retrieve and validate input data
-            $id_acteur = $_POST['id_acteur'] ?? null;
+            // Récupération des données POST
             $nom_acteur = $_POST['nom_acteur'] ?? null;
             $prenom_acteur = $_POST['prenom_acteur'] ?? null;
             $cin_acteur = $_POST['cin_acteur'] ?? null;
@@ -570,153 +569,185 @@ class ClsConnect {
             $adresse = $_POST['adresse'] ?? null;
             $telephone = $_POST['telephone'] ?? null;
     
-            // Check for missing fields
-            if (empty($id_acteur) || empty($nom_acteur) || empty($prenom_acteur) || 
-                empty($cin_acteur) || empty($password) || empty($post) || 
-                empty($email) || empty($adresse) || empty($telephone)) {
-                
-                error_log("Missing required fields in ajouterUser");
-                return "❌ Champs manquants";
-            }
-
+            // Vérification des champs obligatoires
+            $missing_fields = [];
+            if (empty($nom_acteur)) $missing_fields[] = 'nom_acteur';
+            if (empty($prenom_acteur)) $missing_fields[] = 'prenom_acteur';
+            if (empty($cin_acteur)) $missing_fields[] = 'cin_acteur';
+            if (empty($password)) $missing_fields[] = 'password';
+            if (empty($post)) $missing_fields[] = 'post';
+            if (empty($email)) $missing_fields[] = 'email';
+            if (empty($adresse)) $missing_fields[] = 'adresse';
+            if (empty($telephone)) $missing_fields[] = 'telephone';
     
-            // Validate post value against allowed values
-            $allowed_post_values = [1, 2]; // Matches the form and updated database constraint
-            if (!in_array($post, $allowed_post_values)) {
-                error_log("Invalid post value: $post. Allowed values: " . implode(', ', $allowed_post_values));
-                return "❌ Erreur : Valeur invalide pour le champ 'post'. Valeurs autorisées : " . implode(', ', $allowed_post_values);
+            if (!empty($missing_fields)) {
+                error_log("Champs manquants dans ajouterUser : " . implode(', ', $missing_fields));
+                return "❌ Champs manquants : " . implode(', ', $missing_fields);
             }
     
-            // Check if cin_user already exists
+            // Validation du champ post (exemple: 1 ou 2)
+            $allowed_post_values = [1, 2];
+            if (!in_array((int)$post, $allowed_post_values, true)) {
+                error_log("Valeur post invalide : $post");
+                return "❌ Valeur invalide pour le champ 'post'. Valeurs autorisées : " . implode(', ', $allowed_post_values);
+            }
+    
+            // Vérifier si le CIN existe déjà
             $checkSql = "SELECT COUNT(*) FROM public.acteurs WHERE cin_acteur = :cin_acteur";
             $checkStmt = $pdo->prepare($checkSql);
             $checkStmt->execute([':cin_acteur' => $cin_acteur]);
             $cinCount = $checkStmt->fetchColumn();
     
             if ($cinCount > 0) {
-                error_log("Duplicate cin_user detected: " . $cin_acteur);
+                error_log("CIN déjà existant : $cin_acteur");
                 return "❌ Erreur : Le CIN existe déjà dans la base de données";
             }
     
-            // Prepare SQL query for insertion
-            $sql = "INSERT INTO public.acteurs(
-                id_acteur, nom_acteur, prenom_acteur, cin_acteur, password, post, email, adresse, telephone)
-                VALUES (:id_acteur, :nom_acteur, :prenom_acteur, :cin_acteur, :password, :post, :email, :adresse, :telephone);";
+            // Hasher le mot de passe
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    
+            // Préparer la requête INSERT sans id_acteur (auto-incrémenté)
+            $sql = "INSERT INTO public.acteurs
+                    (nom_acteur, prenom_acteur, cin_acteur, password, post, email, adresse, telephone)
+                    VALUES
+                    (:nom_acteur, :prenom_acteur, :cin_acteur, :password, :post, :email, :adresse, :telephone)";
     
             $stmt = $pdo->prepare($sql);
     
-            // Execute with correct parameter binding
             $result = $stmt->execute([
-                ':id_acteur' => $id_acteur,
                 ':nom_acteur' => $nom_acteur,
                 ':prenom_acteur' => $prenom_acteur,
                 ':cin_acteur' => $cin_acteur,
-                ':password' => $password,
-                ':post' => $post,
+                ':password' => $hashedPassword,
+                ':post' => (int)$post,
                 ':email' => $email,
                 ':adresse' => $adresse,
                 ':telephone' => $telephone
             ]);
     
             if (!$result) {
-                error_log("Failed to insert user: " . print_r($stmt->errorInfo(), true));
+                error_log("Échec insertion utilisateur : " . print_r($stmt->errorInfo(), true));
                 return "❌ Échec de l'insertion";
             }
     
             return "✅ Utilisateur inséré avec succès";
+    
         } catch (PDOException $e) {
-            error_log("Erreur dans ajouterUser: " . $e->getMessage());
+            error_log("Erreur dans ajouterUser : " . $e->getMessage());
             return "❌ Erreur SQL : " . $e->getMessage();
         }
     }
+    
+    
 
 
     //update user
     public function updateUser($pdo) {
         try {
-            $original_cin_user = $_POST['original_cin_user'] ?? null;
-            $nom_prenom_user = $_POST['nom_prenom_user'] ?? null;
-            $cin_user = $_POST['cin_user'] ?? null;
-            $email_user = $_POST['email_user'] ?? null;
-            $adresse_user = $_POST['adresse_user'] ?? null;
-            $telephone_user = $_POST['telephone_user'] ?? null;
-            $date_naissance_user = $_POST['date_naissance_user'] ?? null;
-            $password_user = $_POST['password_user'] ?? null;
+            // Récupérer les champs envoyés par le formulaire
+            $original_cin_acteur = $_POST['original_cin_acteur'] ?? null;
+            $nom_acteur = $_POST['nom_acteur'] ?? null;
+            $prenom_acteur = $_POST['prenom_acteur'] ?? null;
+            $cin_acteur = $_POST['cin_acteur'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $adresse = $_POST['adresse'] ?? null;
+            $telephone = $_POST['telephone'] ?? null;
+            $date_naissance_acteur = $_POST['date_naissance_acteur'] ?? null;
             $post = $_POST['post'] ?? null;
-
+            $password = $_POST['password'] ?? null;
+    
+            // Vérification des champs obligatoires (sauf password qui peut être vide)
             $missing_fields = [];
-            if (empty($original_cin_user)) $missing_fields[] = 'original_cin_user';
-            if (empty($nom_prenom_user)) $missing_fields[] = 'nom_prenom_user';
-            if (empty($cin_user)) $missing_fields[] = 'cin_user';
-            if (empty($email_user)) $missing_fields[] = 'email_user';
-            if (empty($adresse_user)) $missing_fields[] = 'adresse_user';
-            if (empty($telephone_user)) $missing_fields[] = 'telephone_user';
-            if (empty($date_naissance_user)) $missing_fields[] = 'date_naissance_user';
+            if (empty($original_cin_acteur)) $missing_fields[] = 'original_cin_acteur';
+            if (empty($nom_acteur)) $missing_fields[] = 'nom_acteur';
+            if (empty($prenom_acteur)) $missing_fields[] = 'prenom_acteur';
+            if (empty($cin_acteur)) $missing_fields[] = 'cin_acteur';
+            if (empty($email)) $missing_fields[] = 'email';
+            if (empty($adresse)) $missing_fields[] = 'adresse';
+            if (empty($telephone)) $missing_fields[] = 'telephone';
+            if (empty($date_naissance_acteur)) $missing_fields[] = 'date_naissance_acteur';
             if (empty($post)) $missing_fields[] = 'post';
-
+    
             if (!empty($missing_fields)) {
-                error_log("Missing fields in updateUser: " . implode(', ', $missing_fields));
-                return "❌ Champs manquants: " . implode(', ', $missing_fields);
+                error_log("Champs manquants dans updateUser : " . implode(', ', $missing_fields));
+                return "❌ Champs manquants : " . implode(', ', $missing_fields);
             }
-
+    
+            // Validation du champ post
             $allowed_post_values = [1, 2];
-            if (!in_array($post, $allowed_post_values)) {
-                error_log("Invalid post value: $post. Allowed values: " . implode(', ', $allowed_post_values));
+            if (!in_array((int)$post, $allowed_post_values, true)) {
+                error_log("Valeur post invalide : $post");
                 return "❌ Valeur invalide pour le champ 'post'. Valeurs autorisées : " . implode(', ', $allowed_post_values);
             }
-
-            // Check if cin_user exists in the database
-            $checkSql = "SELECT COUNT(*) FROM public.users WHERE cin_user = :cin_user";
+    
+            // Vérifier si cin_acteur existe déjà sauf pour l'utilisateur courant
+            $checkSql = "SELECT COUNT(*) FROM acteurs WHERE cin_acteur = :cin_acteur AND cin_acteur <> :original_cin_acteur";
             $checkStmt = $pdo->prepare($checkSql);
-            $checkStmt->execute([':cin_user' => $cin_user]);
+            $checkStmt->execute([
+                ':cin_acteur' => $cin_acteur,
+                ':original_cin_acteur' => $original_cin_acteur
+            ]);
             $cinCount = $checkStmt->fetchColumn();
-            error_log("Checking cin_user: $cin_user, count: $cinCount, original_cin_user: $original_cin_user");
-
-            if ($cinCount > 0 && $cin_user !== $original_cin_user) {
-                error_log("cin_user already exists: $cin_user");
+    
+            error_log("Vérification cin_acteur : $cin_acteur, count: $cinCount, original_cin_acteur: $original_cin_acteur");
+    
+            if ($cinCount > 0) {
+                error_log("cin_acteur déjà existant : $cin_acteur");
                 return "❌ Le CIN existe déjà, aucune modification effectuée";
             }
-
-            $sql = "UPDATE public.users SET
-                    nom_prenom_user = :nom_prenom_user,
-                    cin_user = :cin_user,
-                    email_user = :email_user,
-                    adresse_user = :adresse_user,
-                    telephone_user = :telephone_user,
-                    date_naissance_user = :date_naissance_user,
-                    post = :post";
+    
+            // Construction de la requête UPDATE
+            $sql = "UPDATE acteurs SET
+                        nom_acteur = :nom_acteur,
+                        prenom_acteur = :prenom_acteur,
+                        cin_acteur = :cin_acteur,
+                        email = :email,
+                        adresse = :adresse,
+                        telephone = :telephone,
+                        date_naissance_acteur = :date_naissance_acteur,
+                        post = :post";
+    
             $params = [
-                ':nom_prenom_user' => $nom_prenom_user,
-                ':cin_user' => $cin_user,
-                ':email_user' => $email_user,
-                ':adresse_user' => $adresse_user,
-                ':telephone_user' => $telephone_user,
-                ':date_naissance_user' => $date_naissance_user,
-                ':post' => $post,
-                ':original_cin_user' => $original_cin_user
+                ':nom_acteur' => $nom_acteur,
+                ':prenom_acteur' => $prenom_acteur,
+                ':cin_acteur' => $cin_acteur,
+                ':email' => $email,
+                ':adresse' => $adresse,
+                ':telephone' => $telephone,
+                ':date_naissance_acteur' => $date_naissance_acteur,
+                ':post' => (int)$post,
+                ':original_cin_acteur' => $original_cin_acteur
             ];
-
-            if (!empty($password_user)) {
-                $sql .= ", password_user = :password_user";
-                $params[':password_user'] = $password_user; // Consider hashing
+    
+            // Ajouter password si modifié (avec hash)
+            if (!empty($password)) {
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $sql .= ", password = :password";
+                $params[':password'] = $hashedPassword;
             }
-
-            $sql .= " WHERE cin_user = :original_cin_user";
-
+    
+            $sql .= " WHERE cin_acteur = :original_cin_acteur";
+    
             $stmt = $pdo->prepare($sql);
             $result = $stmt->execute($params);
-
+    
             if (!$result) {
-                error_log("Failed to update user: " . print_r($stmt->errorInfo(), true));
+                error_log("Erreur mise à jour user : " . print_r($stmt->errorInfo(), true));
                 return "❌ Échec de la mise à jour";
             }
-
+    
             return "✅ Utilisateur mis à jour avec succès";
+    
         } catch (PDOException $e) {
             error_log("Erreur dans updateUser: " . $e->getMessage());
             return "❌ Erreur SQL : " . $e->getMessage();
         }
     }
+    
+    
+    
+   
+    
     
     
     // Méthodes pour les demandes
