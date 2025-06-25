@@ -593,7 +593,7 @@ class ClsConnect {
             }
     
             // Vérifier si le CIN existe déjà
-            $checkSql = "SELECT COUNT(*) FROM public.acteurs WHERE cin_acteur = :cin_acteur";
+            $checkSql = "SELECT COUNT(*) FROM acteurs WHERE cin_acteur = :cin_acteur";
             $checkStmt = $pdo->prepare($checkSql);
             $checkStmt->execute([':cin_acteur' => $cin_acteur]);
             $cinCount = $checkStmt->fetchColumn();
@@ -604,10 +604,9 @@ class ClsConnect {
             }
     
             // Hasher le mot de passe
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            //$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
-            // Préparer la requête INSERT sans id_acteur (auto-incrémenté)
-            $sql = "INSERT INTO public.acteurs
+            $sql = "INSERT INTO acteurs
                     (nom_acteur, prenom_acteur, cin_acteur, password, post, email, adresse, telephone)
                     VALUES
                     (:nom_acteur, :prenom_acteur, :cin_acteur, :password, :post, :email, :adresse, :telephone)";
@@ -618,7 +617,7 @@ class ClsConnect {
                 ':nom_acteur' => $nom_acteur,
                 ':prenom_acteur' => $prenom_acteur,
                 ':cin_acteur' => $cin_acteur,
-                ':password' => $hashedPassword,
+                ':password' => $password,
                 ':post' => (int)$post,
                 ':email' => $email,
                 ':adresse' => $adresse,

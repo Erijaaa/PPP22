@@ -294,3 +294,14 @@ PDF content filled
 PDF generated successfully at: C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_23.pdf
 Save error: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
 Database connection closed
+app.py started: ['C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/app.py', '22']
+Font loaded successfully
+id_demande: 22
+Database connection established
+Query executed successfully
+PDF path: C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_22.pdf
+PDF canvas created
+PDF content filled
+PDF generated successfully at: C:/wamp64/www/PFE_erij/PFEEEEEEEEEEEEE/contrat_22.pdf
+Save error: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+Database connection closed
